@@ -3,6 +3,31 @@ html {
   font-family: "Source Sans Pro", sans-serif;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  display: flex;
+  min-height: 100vh;
+}
+
+#game {
+  margin: auto auto;
+  padding: 0 20px 20px 20px;
+  border: 1px solid;
+  border-radius: 10px;
+  text-align: center;
+
+  width: 1280px;
+}
+
+#game svg {
+  border: 1px solid;
+  border-radius: 10px;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
