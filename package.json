@@ -2,8 +2,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
-    "lint": "eslint -w .",
-    "lint:fix": "eslint -w . --fix"
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.50.0",
@@ -14,6 +15,9 @@
     "typescript": "^4.9.5"
   },
   "eslintConfig": {
+    "env": {
+      "browser": true
+    },
     "extends": [
       "eslint:recommended",
       "plugin:@typescript-eslint/recommended",
@@ -24,5 +28,8 @@
       "@typescript-eslint"
     ],
     "root": true
+  },
+  "prettier": {
+    "semi": false
   }
 }

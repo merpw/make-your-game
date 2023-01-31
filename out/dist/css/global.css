@@ -1,0 +1,10 @@
+@import "font.css";
+html {
+  font-family: "Source Sans Pro", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
