@@ -35,7 +35,7 @@ export default class Hero {
     )
     this.element.height.baseVal.value = HERO_SIZE
     this.element.width.baseVal.value = HERO_SIZE
-    this.element.style.fill = "green"
+    this.element.style.fill = "rebeccapurple"
     this.element.id = "mainHero"
     this.element.x.baseVal.value = x
     this.element.y.baseVal.value = y

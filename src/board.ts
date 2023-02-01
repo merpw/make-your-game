@@ -2,19 +2,28 @@ import Hero from "./hero"
 
 const CELL_SIZE = 10
 
+const CELL_TYPES = [
+  { type: "empty", color: "white" },
+  { type: "wall", color: "black" },
+  { type: "bush", color: "green" },
+] as const
+
+type CellType = (typeof CELL_TYPES)[number]["type"]
+
 export class Cell {
-  public type: "empty" | "wall" = "empty"
+  public type: CellType
   element: SVGRectElement
 
-  constructor(type: "empty" | "wall" = "empty") {
-    this.type = type
+  constructor(typeCode: number) {
+    this.type = CELL_TYPES[typeCode].type
     this.element = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "rect"
     )
     this.element.width.baseVal.value = CELL_SIZE
     this.element.height.baseVal.value = CELL_SIZE
-    this.element.style.fill = type === "empty" ? "white" : "black"
+
+    this.element.style.fill = CELL_TYPES[typeCode].color
   }
 }
 
@@ -54,7 +63,7 @@ export class Board {
     this.hero.y += this.hero.speedY * frameTimeDiff
 
     if (
-      heroCells.right.type === "wall" &&
+      heroCells.right.type !== "empty" &&
       this.hero.speedX > 0 &&
       heroRect.right >= heroCells.right.element.x.baseVal.value
     ) {
@@ -62,7 +71,7 @@ export class Board {
     }
 
     if (
-      heroCells.left.type === "wall" &&
+      heroCells.left.type !== "empty" &&
       this.hero.speedX < 0 &&
       heroRect.left <= heroCells.left.element.x.baseVal.value + CELL_SIZE
     ) {
@@ -70,7 +79,7 @@ export class Board {
     }
 
     if (
-      heroCells.bottom.type === "wall" &&
+      heroCells.bottom.type !== "empty" &&
       this.hero.speedY > 0 &&
       heroRect.bottom >= heroCells.bottom.element.y.baseVal.value
     ) {
@@ -78,7 +87,7 @@ export class Board {
     }
 
     if (
-      heroCells.top.type === "wall" &&
+      heroCells.top.type !== "empty" &&
       this.hero.speedY < 0 &&
       heroRect.top <= heroCells.top.element.y.baseVal.value + CELL_SIZE
     ) {
@@ -109,7 +118,7 @@ export class Board {
     boardNums.unshift(new Array(boardNums[0].length).fill(1))
 
     this.cells = boardNums.map((row) =>
-      row.map((cell) => new Cell(cell === 0 ? "empty" : "wall"))
+      row.map((cellCode) => new Cell(cellCode))
     )
 
     this.cells.forEach((row, y) => {
