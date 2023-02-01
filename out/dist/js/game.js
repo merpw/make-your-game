@@ -1,18 +1,20 @@
 // don't forget .js extensions
-import { Cell } from "./board.js" // don't forget the .js extension
+import { Board } from "./board.js" // don't forget the .js extension
 import Hero from "./hero.js"
+import { level1 } from "./levels.js"
 const FPS = 60
 const NORMAL_FRAME_TIME = 1000 / FPS
-const cell = new Cell()
-console.log("Game is running", cell)
 const svg = document.querySelector("#game svg")
-const circle = svg.querySelector("#mainHero")
-export const mainHero = new Hero(circle)
+export const mainHero = new Hero(5, 5)
+const board = new Board(svg, mainHero, level1)
+svg.viewBox.baseVal.width = board.width
+svg.viewBox.baseVal.height = board.height
+svg.appendChild(mainHero.element)
 let lastTime = 0
 const step = (timestamp) => {
   const frameTime = timestamp - lastTime
   lastTime = timestamp
-  mainHero.render(frameTime / NORMAL_FRAME_TIME)
+  board.render(frameTime / NORMAL_FRAME_TIME)
   window.requestAnimationFrame(step)
 }
 window.requestAnimationFrame(step)

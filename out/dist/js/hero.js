@@ -1,5 +1,6 @@
 import KeyState from "./keys.js"
-const HERO_SPEED = 1
+const HERO_SPEED = 0.4
+const HERO_SIZE = 7
 const DIAGONAL_SPEED = HERO_SPEED * (Math.sqrt(2) / 2)
 export default class Hero {
   checkKeys() {
@@ -14,18 +15,22 @@ export default class Hero {
       this.speedY *= DIAGONAL_SPEED / HERO_SPEED
     }
   }
-  render(frameTimeDiff) {
-    this.x += this.speedX * frameTimeDiff
-    this.y += this.speedY * frameTimeDiff
-    // TODO: maybe change this (transform?)
-    this.element.cx.baseVal.value = this.x
-    this.element.cy.baseVal.value = this.y
-  }
-  constructor(element) {
+  constructor(x, y) {
+    this.width = HERO_SIZE
+    this.height = HERO_SIZE
     this.speedX = 0
     this.speedY = 0
-    this.element = element
-    this.x = element.cx.baseVal.value
-    this.y = element.cy.baseVal.value
+    this.element = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    )
+    this.element.height.baseVal.value = HERO_SIZE
+    this.element.width.baseVal.value = HERO_SIZE
+    this.element.style.fill = "green"
+    this.element.id = "mainHero"
+    this.element.x.baseVal.value = x
+    this.element.y.baseVal.value = y
+    this.x = x
+    this.y = y
   }
 }
