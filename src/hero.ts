@@ -15,6 +15,7 @@ export default class Hero {
   speedY = 0
 
   checkKeys() {
+    // TODO add an automatic correction of the player's position directed to the center axis of the row/column, to force the player to move close to the center of cells
     this.speedX = 0
     this.speedY = 0
     KeyState.ArrowRight && (this.speedX += HERO_SPEED)
