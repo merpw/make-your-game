@@ -4,9 +4,17 @@ const KeyState = {
   ArrowRight: false,
   ArrowLeft: false,
   ArrowUp: false,
-  ArrowDown: false
+  ArrowDown: false,
+  s: false, // second right key
+  q: false, // second left key
+  w: false, // second up key
+  a: false, // second down key
+  f: false, // fungus mount key
+  t: false // fungus terminate key
 }
 export default KeyState
+
+// TODO restyle moves to WASD keys. And F and T keys for fungus.
 
 window.addEventListener("keydown", (event: KeyboardEvent) => {
   if (event.key in KeyState) {

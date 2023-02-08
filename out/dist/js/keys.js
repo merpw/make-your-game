@@ -3,9 +3,16 @@ const KeyState = {
     ArrowRight: false,
     ArrowLeft: false,
     ArrowUp: false,
-    ArrowDown: false
+    ArrowDown: false,
+    s: false,
+    q: false,
+    w: false,
+    a: false,
+    f: false,
+    t: false // fungus terminate key
 };
 export default KeyState;
+// TODO restyle moves to WASD keys. And F and T keys for fungus.
 window.addEventListener("keydown", (event) => {
     if (event.key in KeyState) {
         // TODO add a check for if no another keys are already pressed, to prevent diagonal movement

@@ -18,10 +18,10 @@ export default class Hero {
     // TODO add an automatic correction of the player's position directed to the center axis of the row/column, to force the player to move close to the center of cells
     this.speedX = 0
     this.speedY = 0
-    KeyState.ArrowRight && (this.speedX += HERO_SPEED)
-    KeyState.ArrowLeft && (this.speedX += -HERO_SPEED)
-    KeyState.ArrowUp && (this.speedY += -HERO_SPEED)
-    KeyState.ArrowDown && (this.speedY += HERO_SPEED)
+    if (KeyState.s || KeyState.ArrowRight) this.speedX += HERO_SPEED
+    if (KeyState.q || KeyState.ArrowLeft) this.speedX += -HERO_SPEED
+    if (KeyState.w || KeyState.ArrowUp) this.speedY += -HERO_SPEED
+    if (KeyState.a || KeyState.ArrowDown) this.speedY += HERO_SPEED
 
     if (this.speedX !== 0 && this.speedY !== 0) {
       this.speedX *= DIAGONAL_SPEED / HERO_SPEED
