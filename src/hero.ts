@@ -1,7 +1,7 @@
 import KeyState from "./keys.js"
 
 const HERO_SPEED = 0.4
-const HERO_SIZE = 7
+const HERO_SIZE = 8
 const DIAGONAL_SPEED = HERO_SPEED * (Math.sqrt(2) / 2)
 
 export default class Hero {
