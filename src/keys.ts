@@ -4,7 +4,7 @@ const KeyState = {
   ArrowRight: false,
   ArrowLeft: false,
   ArrowUp: false,
-  ArrowDown: false,
+  ArrowDown: false
 }
 export default KeyState
 
