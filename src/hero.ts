@@ -1,3 +1,5 @@
+import Fung from "./fung.js"
+import { svg } from "./game.js"
 import KeyState from "./keys.js"
 
 const HERO_SPEED = 0.4
@@ -27,6 +29,13 @@ export default class Hero {
       this.speedX *= DIAGONAL_SPEED / HERO_SPEED
       this.speedY *= DIAGONAL_SPEED / HERO_SPEED
     }
+
+    // TODO fungi section
+    if (KeyState.f) {
+      svg.appendChild(new Fung(this.x, this.y).element)
+    } // TODO mount the fung
+    if (KeyState.t) {} // TODO terminate fungi
+
   }
 
   constructor(x: number, y: number) {

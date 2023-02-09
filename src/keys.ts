@@ -9,12 +9,12 @@ const KeyState = {
   q: false, // second left key
   w: false, // second up key
   a: false, // second down key
-  f: false, // fungus mount key
-  t: false // fungus terminate key
+  f: false, // fung mount key
+  t: false // fung terminate key
 }
 export default KeyState
 
-// TODO restyle moves to WASD keys. And F and T keys for fungus.
+// TODO restyle moves to WASD keys. And F and T keys for fung.
 
 window.addEventListener("keydown", (event: KeyboardEvent) => {
   if (event.key in KeyState) {

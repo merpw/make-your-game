@@ -1,3 +1,4 @@
+import Fung from "./fung"
 import Hero from "./hero"
 
 const CELL_SIZE = 8
@@ -33,7 +34,18 @@ export class Board {
   public height: number
   public hero: Hero
 
+  public fungi: Fung[] = []
+
   render(frameTimeDiff: number) {
+    this.renderHero(frameTimeDiff)
+    this.renderFunges(frameTimeDiff)
+  }
+
+  renderFunges(frameTimeDiff: number) {
+
+  }
+
+  renderHero(frameTimeDiff: number) {
     const heroCellX = Math.floor(
       (this.hero.x + this.hero.height / 2) / CELL_SIZE
     )

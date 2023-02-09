@@ -6,7 +6,7 @@ import { level1 } from "./levels.js"
 const FPS = 60
 const NORMAL_FRAME_TIME = 1000 / FPS
 
-const svg = document.querySelector("#game svg") as SVGSVGElement
+export const svg = document.querySelector("#game svg") as SVGSVGElement
 export const mainHero = new Hero(8, 8)
 
 const board = new Board(svg, mainHero, level1)

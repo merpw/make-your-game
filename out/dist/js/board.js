@@ -15,6 +15,12 @@ export class Cell {
 }
 export class Board {
     render(frameTimeDiff) {
+        this.renderHero(frameTimeDiff);
+        this.renderFunges(frameTimeDiff);
+    }
+    renderFunges(frameTimeDiff) {
+    }
+    renderHero(frameTimeDiff) {
         const heroCellX = Math.floor((this.hero.x + this.hero.height / 2) / CELL_SIZE);
         const heroCellY = Math.floor((this.hero.y + this.hero.width / 2) / CELL_SIZE);
         const heroCells = {
@@ -67,6 +73,7 @@ export class Board {
         return this.cells[y][x];
     }
     constructor(svg, hero, boardNums) {
+        this.fungi = [];
         this.hero = hero;
         boardNums.forEach((row) => {
             row.push(1);
