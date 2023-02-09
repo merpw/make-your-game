@@ -7,6 +7,18 @@ const FPS = 60
 const NORMAL_FRAME_TIME = 1000 / FPS
 
 export const svg = document.querySelector("#game svg") as SVGSVGElement
+// create svg group for the field
+const landscape = document.createElementNS("http://www.w3.org/2000/svg", "g")
+landscape.setAttribute("id", "landscape")
+const sheeps = document.createElementNS("http://www.w3.org/2000/svg", "g")
+const players = document.createElementNS("http://www.w3.org/2000/svg", "g")
+const clouds = document.createElementNS("http://www.w3.org/2000/svg", "g")
+// add groups to svg
+svg.appendChild(landscape) // include stones, bush, grass(empty), also the fungi will add/remove dinamically
+svg.appendChild(sheeps) // include sheeps in demonized and normal state
+svg.appendChild(players) // include players
+svg.appendChild(clouds) // include clouds after fungi explosion with animation
+
 export const mainHero = new Hero(8, 8)
 
 const board = new Board(svg, mainHero, level1)
@@ -14,7 +26,7 @@ const board = new Board(svg, mainHero, level1)
 svg.viewBox.baseVal.width = board.width
 svg.viewBox.baseVal.height = board.height
 
-svg.appendChild(mainHero.element)
+players.appendChild(mainHero.element)
 
 let lastTime = 0
 const step: FrameRequestCallback = (timestamp: number) => {

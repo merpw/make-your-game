@@ -22,10 +22,11 @@ export default class Hero {
             this.speedY *= DIAGONAL_SPEED / HERO_SPEED;
         }
         // TODO fungi section
+        const landscape = svg.querySelector("g");
         if (KeyState.f) {
-            svg.appendChild(new Fung(this.x, this.y).element);
+            landscape.appendChild(new Fung(this.x, this.y).element);
         } // TODO mount the fung
-        if (KeyState.t) { } // TODO terminate fungi
+        // TODO terminate fungi if (KeyState.t) {}
     }
     constructor(x, y) {
         this.width = HERO_SIZE;

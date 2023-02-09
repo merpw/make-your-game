@@ -31,11 +31,11 @@ export default class Hero {
     }
 
     // TODO fungi section
+    const landscape = svg.querySelector("g") as SVGGElement
     if (KeyState.f) {
-      svg.appendChild(new Fung(this.x, this.y).element)
+      landscape.appendChild(new Fung(this.x, this.y).element)
     } // TODO mount the fung
-    if (KeyState.t) {} // TODO terminate fungi
-
+    // TODO terminate fungi if (KeyState.t) {}
   }
 
   constructor(x: number, y: number) {

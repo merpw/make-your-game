@@ -6,7 +6,7 @@ const CELL_SIZE = 8
 const CELL_TYPES = [
   { type: "empty", color: "white" },
   { type: "wall", color: "black" },
-  { type: "bush", color: "green" }
+  { type: "bush", color: "green" },
 ] as const
 
 type CellType = (typeof CELL_TYPES)[number]["type"]
@@ -38,12 +38,10 @@ export class Board {
 
   render(frameTimeDiff: number) {
     this.renderHero(frameTimeDiff)
-    this.renderFunges(frameTimeDiff)
+    //TODO this.renderFunges(frameTimeDiff)
   }
 
-  renderFunges(frameTimeDiff: number) {
-
-  }
+  // TODO renderFunges(frameTimeDiff: number) {}
 
   renderHero(frameTimeDiff: number) {
     const heroCellX = Math.floor(
@@ -61,14 +59,14 @@ export class Board {
       bottomRight: this.cells[heroCellY + 1][heroCellX + 1],
       topLeft: this.cells[heroCellY - 1][heroCellX - 1],
       topRight: this.cells[heroCellY - 1][heroCellX + 1],
-      bottomLeft: this.cells[heroCellY + 1][heroCellX - 1]
+      bottomLeft: this.cells[heroCellY + 1][heroCellX - 1],
     }
 
     const heroRect = {
       top: this.hero.y,
       bottom: this.hero.y + this.hero.height,
       left: this.hero.x,
-      right: this.hero.x + this.hero.width
+      right: this.hero.x + this.hero.width,
     }
 
     this.hero.x += this.hero.speedX * frameTimeDiff
@@ -133,11 +131,14 @@ export class Board {
       row.map((cellCode) => new Cell(cellCode))
     )
 
+    // get the group g element from the svg
+    const landscape = svg.querySelector("g") as SVGGElement
+
     this.cells.forEach((row, y) => {
       row.forEach((cell, x) => {
         cell.element.x.baseVal.value = x * CELL_SIZE
         cell.element.y.baseVal.value = y * CELL_SIZE
-        svg.appendChild(cell.element)
+        landscape.appendChild(cell.element)
       })
     })
 
@@ -165,6 +166,6 @@ function intersectRect(r1: DOMRect, r2: DOMRect, gap = 0) {
     left: r1.left - r2.right < 0,
     right: r2.left - r1.right < 0,
     top: r1.top - r2.bottom < 0,
-    bottom: r2.top - r1.bottom < 0
+    bottom: r2.top - r1.bottom < 0,
   }
 }
