@@ -37,18 +37,22 @@ export default class Hero {
     cloudsCoords.push({ x: x, y: y })
     // top
     if (cloudsCells.top.type === "empty") {
+      cloudsCoords.push({ x: x, y: y - CELL_SIZE / 2 }) // entermediate cloud, to smooth the borders
       cloudsCoords.push({ x: x, y: y - CELL_SIZE })
     }
     // bottom
     if (cloudsCells.bottom.type === "empty") {
+      cloudsCoords.push({ x: x, y: y + CELL_SIZE / 2 }) // entermediate cloud, to smooth the borders
       cloudsCoords.push({ x: x, y: y + CELL_SIZE })
     }
     // left
     if (cloudsCells.left.type === "empty") {
+      cloudsCoords.push({ x: x - CELL_SIZE / 2, y: y }) // entermediate cloud, to smooth the borders
       cloudsCoords.push({ x: x - CELL_SIZE, y: y })
     }
     // right
     if (cloudsCells.right.type === "empty") {
+      cloudsCoords.push({ x: x + CELL_SIZE / 2, y: y }) // entermediate cloud, to smooth the borders
       cloudsCoords.push({ x: x + CELL_SIZE, y: y })
     }
     return cloudsCoords
