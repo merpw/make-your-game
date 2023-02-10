@@ -1,3 +1,5 @@
+import { Cell, CELL_SIZE } from "./board.js"
+import Cloud from "./cloud.js"
 import Fung from "./fung.js"
 import { svg } from "./game.js"
 import KeyState from "./keys.js"
@@ -16,6 +18,69 @@ export default class Hero {
   speedX = 0
   speedY = 0
 
+  fungi: Fung[] = []
+
+  render(frameTimeDiff: number, cells: Cell[][]) {
+    const heroCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE)
+    const heroCellY = Math.floor((this.y + this.width / 2) / CELL_SIZE)
+
+    const heroCells = {
+      right: cells[heroCellY][heroCellX + 1],
+      left: cells[heroCellY][heroCellX - 1],
+      bottom: cells[heroCellY + 1][heroCellX],
+      top: cells[heroCellY - 1][heroCellX],
+      bottomRight: cells[heroCellY + 1][heroCellX + 1],
+      topLeft: cells[heroCellY - 1][heroCellX - 1],
+      topRight: cells[heroCellY - 1][heroCellX + 1],
+      bottomLeft: cells[heroCellY + 1][heroCellX - 1],
+    }
+
+    const heroRect = {
+      top: this.y,
+      bottom: this.y + this.height,
+      left: this.x,
+      right: this.x + this.width,
+    }
+
+    this.x += this.speedX * frameTimeDiff
+    this.y += this.speedY * frameTimeDiff
+
+    if (
+      heroCells.right.type !== "empty" &&
+      this.speedX > 0 &&
+      heroRect.right >= heroCells.right.element.x.baseVal.value
+    ) {
+      this.x -= this.speedX * frameTimeDiff
+    }
+
+    if (
+      heroCells.left.type !== "empty" &&
+      this.speedX < 0 &&
+      heroRect.left <= heroCells.left.element.x.baseVal.value + CELL_SIZE
+    ) {
+      this.x -= this.speedX * frameTimeDiff
+    }
+
+    if (
+      heroCells.bottom.type !== "empty" &&
+      this.speedY > 0 &&
+      heroRect.bottom >= heroCells.bottom.element.y.baseVal.value
+    ) {
+      this.y -= this.speedY * frameTimeDiff
+    }
+
+    if (
+      heroCells.top.type !== "empty" &&
+      this.speedY < 0 &&
+      heroRect.top <= heroCells.top.element.y.baseVal.value + CELL_SIZE
+    ) {
+      this.y -= this.speedY * frameTimeDiff
+    }
+
+    this.element.x.baseVal.value = this.x
+    this.element.y.baseVal.value = this.y
+  }
+
   checkKeys() {
     // TODO add an automatic correction of the player's position directed to the center axis of the row/column, to force the player to move close to the center of cells
     this.speedX = 0
@@ -31,11 +96,32 @@ export default class Hero {
     }
 
     // TODO fungi section
-    const landscape = svg.querySelector("g") as SVGGElement
     if (KeyState.f) {
-      landscape.appendChild(new Fung(this.x, this.y).element)
+      const fungibox = svg.querySelector("#fungi") as SVGGElement
+      const fung = new Fung(this.x, this.y)
+      this.fungi.push(fung)
+      fungibox.appendChild(fung.element)
     } // TODO mount the fung
-    // TODO terminate fungi if (KeyState.t) {}
+
+    if (KeyState.t) {
+      // remove all fungi
+      const clouds = svg.querySelector("#clouds") as SVGGElement
+      this.fungi.forEach((fung) => {
+        const x = fung.element.x.baseVal.value
+        const y = fung.element.y.baseVal.value
+        fung.element.remove()
+        const cloud = new Cloud(x, y)
+        clouds.appendChild(cloud.element)
+        cloud.boom()
+      })
+
+      // const fungi = svg.querySelector("fungi") as SVGGElement
+      // while (fungi.firstChild) {
+      //   const fung = fungi.firstChild as SVGRectElement
+
+      //   fungi.removeChild(fungi.firstChild)
+      // }
+    } // TODO terminate fungi
   }
 
   constructor(x: number, y: number) {

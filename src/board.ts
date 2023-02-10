@@ -1,7 +1,7 @@
 import Fung from "./fung"
 import Hero from "./hero"
 
-const CELL_SIZE = 8
+export const CELL_SIZE = 8
 
 const CELL_TYPES = [
   { type: "empty", color: "white" },
@@ -34,78 +34,8 @@ export class Board {
   public height: number
   public hero: Hero
 
-  public fungi: Fung[] = []
-
   render(frameTimeDiff: number) {
-    this.renderHero(frameTimeDiff)
-    //TODO this.renderFunges(frameTimeDiff)
-  }
-
-  // TODO renderFunges(frameTimeDiff: number) {}
-
-  renderHero(frameTimeDiff: number) {
-    const heroCellX = Math.floor(
-      (this.hero.x + this.hero.height / 2) / CELL_SIZE
-    )
-    const heroCellY = Math.floor(
-      (this.hero.y + this.hero.width / 2) / CELL_SIZE
-    )
-
-    const heroCells = {
-      right: this.cells[heroCellY][heroCellX + 1],
-      left: this.cells[heroCellY][heroCellX - 1],
-      bottom: this.cells[heroCellY + 1][heroCellX],
-      top: this.cells[heroCellY - 1][heroCellX],
-      bottomRight: this.cells[heroCellY + 1][heroCellX + 1],
-      topLeft: this.cells[heroCellY - 1][heroCellX - 1],
-      topRight: this.cells[heroCellY - 1][heroCellX + 1],
-      bottomLeft: this.cells[heroCellY + 1][heroCellX - 1],
-    }
-
-    const heroRect = {
-      top: this.hero.y,
-      bottom: this.hero.y + this.hero.height,
-      left: this.hero.x,
-      right: this.hero.x + this.hero.width,
-    }
-
-    this.hero.x += this.hero.speedX * frameTimeDiff
-    this.hero.y += this.hero.speedY * frameTimeDiff
-
-    if (
-      heroCells.right.type !== "empty" &&
-      this.hero.speedX > 0 &&
-      heroRect.right >= heroCells.right.element.x.baseVal.value
-    ) {
-      this.hero.x -= this.hero.speedX * frameTimeDiff
-    }
-
-    if (
-      heroCells.left.type !== "empty" &&
-      this.hero.speedX < 0 &&
-      heroRect.left <= heroCells.left.element.x.baseVal.value + CELL_SIZE
-    ) {
-      this.hero.x -= this.hero.speedX * frameTimeDiff
-    }
-
-    if (
-      heroCells.bottom.type !== "empty" &&
-      this.hero.speedY > 0 &&
-      heroRect.bottom >= heroCells.bottom.element.y.baseVal.value
-    ) {
-      this.hero.y -= this.hero.speedY * frameTimeDiff
-    }
-
-    if (
-      heroCells.top.type !== "empty" &&
-      this.hero.speedY < 0 &&
-      heroRect.top <= heroCells.top.element.y.baseVal.value + CELL_SIZE
-    ) {
-      this.hero.y -= this.hero.speedY * frameTimeDiff
-    }
-
-    this.hero.element.x.baseVal.value = this.hero.x
-    this.hero.element.y.baseVal.value = this.hero.y
+    this.hero.render(frameTimeDiff, this.cells)
   }
 
   getRandomEmptyCell(): Cell {

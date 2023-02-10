@@ -1,3 +1,5 @@
+import { CELL_SIZE } from "./board.js";
+import Cloud from "./cloud.js";
 import Fung from "./fung.js";
 import { svg } from "./game.js";
 import KeyState from "./keys.js";
@@ -5,6 +7,50 @@ const HERO_SPEED = 0.4;
 const HERO_SIZE = 8;
 const DIAGONAL_SPEED = HERO_SPEED * (Math.sqrt(2) / 2);
 export default class Hero {
+    render(frameTimeDiff, cells) {
+        const heroCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE);
+        const heroCellY = Math.floor((this.y + this.width / 2) / CELL_SIZE);
+        const heroCells = {
+            right: cells[heroCellY][heroCellX + 1],
+            left: cells[heroCellY][heroCellX - 1],
+            bottom: cells[heroCellY + 1][heroCellX],
+            top: cells[heroCellY - 1][heroCellX],
+            bottomRight: cells[heroCellY + 1][heroCellX + 1],
+            topLeft: cells[heroCellY - 1][heroCellX - 1],
+            topRight: cells[heroCellY - 1][heroCellX + 1],
+            bottomLeft: cells[heroCellY + 1][heroCellX - 1],
+        };
+        const heroRect = {
+            top: this.y,
+            bottom: this.y + this.height,
+            left: this.x,
+            right: this.x + this.width,
+        };
+        this.x += this.speedX * frameTimeDiff;
+        this.y += this.speedY * frameTimeDiff;
+        if (heroCells.right.type !== "empty" &&
+            this.speedX > 0 &&
+            heroRect.right >= heroCells.right.element.x.baseVal.value) {
+            this.x -= this.speedX * frameTimeDiff;
+        }
+        if (heroCells.left.type !== "empty" &&
+            this.speedX < 0 &&
+            heroRect.left <= heroCells.left.element.x.baseVal.value + CELL_SIZE) {
+            this.x -= this.speedX * frameTimeDiff;
+        }
+        if (heroCells.bottom.type !== "empty" &&
+            this.speedY > 0 &&
+            heroRect.bottom >= heroCells.bottom.element.y.baseVal.value) {
+            this.y -= this.speedY * frameTimeDiff;
+        }
+        if (heroCells.top.type !== "empty" &&
+            this.speedY < 0 &&
+            heroRect.top <= heroCells.top.element.y.baseVal.value + CELL_SIZE) {
+            this.y -= this.speedY * frameTimeDiff;
+        }
+        this.element.x.baseVal.value = this.x;
+        this.element.y.baseVal.value = this.y;
+    }
     checkKeys() {
         // TODO add an automatic correction of the player's position directed to the center axis of the row/column, to force the player to move close to the center of cells
         this.speedX = 0;
@@ -22,17 +68,36 @@ export default class Hero {
             this.speedY *= DIAGONAL_SPEED / HERO_SPEED;
         }
         // TODO fungi section
-        const landscape = svg.querySelector("g");
         if (KeyState.f) {
-            landscape.appendChild(new Fung(this.x, this.y).element);
+            const fungibox = svg.querySelector("#fungi");
+            const fung = new Fung(this.x, this.y);
+            this.fungi.push(fung);
+            fungibox.appendChild(fung.element);
         } // TODO mount the fung
-        // TODO terminate fungi if (KeyState.t) {}
+        if (KeyState.t) {
+            // remove all fungi
+            const clouds = svg.querySelector("#clouds");
+            this.fungi.forEach((fung) => {
+                const x = fung.element.x.baseVal.value;
+                const y = fung.element.y.baseVal.value;
+                fung.element.remove();
+                const cloud = new Cloud(x, y);
+                clouds.appendChild(cloud.element);
+                cloud.boom();
+            });
+            // const fungi = svg.querySelector("fungi") as SVGGElement
+            // while (fungi.firstChild) {
+            //   const fung = fungi.firstChild as SVGRectElement
+            //   fungi.removeChild(fungi.firstChild)
+            // }
+        } // TODO terminate fungi
     }
     constructor(x, y) {
         this.width = HERO_SIZE;
         this.height = HERO_SIZE;
         this.speedX = 0;
         this.speedY = 0;
+        this.fungi = [];
         this.element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
         this.element.height.baseVal.value = HERO_SIZE;
         this.element.width.baseVal.value = HERO_SIZE;
