@@ -1,7 +1,7 @@
 import { Cell, CELL_SIZE } from "./board.js"
 import Cloud from "./cloud.js"
 import Fung from "./fung.js"
-import { svg } from "./game.js"
+import { svg, board } from "./game.js"
 import KeyState from "./keys.js"
 
 const HERO_SPEED = 0.4
@@ -19,6 +19,40 @@ export default class Hero {
   speedY = 0
 
   fungi: Fung[] = []
+
+  cloudsXYCoords(cells: Cell[][], x: number, y: number) {
+    const fungCellX = Math.floor((x + CELL_SIZE / 2) / CELL_SIZE)
+    const fungCellY = Math.floor((y + CELL_SIZE / 2) / CELL_SIZE)
+
+    const cloudsCells = {
+      right: cells[fungCellY][fungCellX + 1],
+      left: cells[fungCellY][fungCellX - 1],
+      bottom: cells[fungCellY + 1][fungCellX],
+      top: cells[fungCellY - 1][fungCellX],
+    }
+
+    // collect new clouds coordinates, for 5 clouds include: center, top, bottom, left, right clouds
+    const cloudsCoords = []
+    // center
+    cloudsCoords.push({ x: x, y: y })
+    // top
+    if (cloudsCells.top.type === "empty") {
+      cloudsCoords.push({ x: x, y: y - CELL_SIZE })
+    }
+    // bottom
+    if (cloudsCells.bottom.type === "empty") {
+      cloudsCoords.push({ x: x, y: y + CELL_SIZE })
+    }
+    // left
+    if (cloudsCells.left.type === "empty") {
+      cloudsCoords.push({ x: x - CELL_SIZE, y: y })
+    }
+    // right
+    if (cloudsCells.right.type === "empty") {
+      cloudsCoords.push({ x: x + CELL_SIZE, y: y })
+    }
+    return cloudsCoords
+  }
 
   render(frameTimeDiff: number, cells: Cell[][]) {
     const heroCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE)
@@ -115,9 +149,12 @@ export default class Hero {
         const x = fung.element.x.baseVal.value
         const y = fung.element.y.baseVal.value
         fung.element.remove()
-        const cloud = new Cloud(x, y)
-        clouds.appendChild(cloud.element)
-        cloud.boom()
+        const cloudsXY = this.cloudsXYCoords(board.cells, x, y)
+        cloudsXY.forEach((c) => {
+          const cloud = new Cloud(c.x, c.y)
+          clouds.appendChild(cloud.element)
+          cloud.boom()
+        })
       })
       this.fungi = []
     } // TODO terminate fungi

@@ -23,7 +23,7 @@ svg.appendChild(sheeps); // include sheeps in demonized and normal state
 svg.appendChild(players); // include players
 svg.appendChild(clouds); // include clouds after fungi explosion with animation
 export const mainHero = new Hero(8, 8);
-const board = new Board(svg, mainHero, level1);
+export const board = new Board(svg, mainHero, level1);
 svg.viewBox.baseVal.width = board.width;
 svg.viewBox.baseVal.height = board.height;
 players.appendChild(mainHero.element);

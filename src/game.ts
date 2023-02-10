@@ -27,7 +27,7 @@ svg.appendChild(clouds) // include clouds after fungi explosion with animation
 
 export const mainHero = new Hero(8, 8)
 
-const board = new Board(svg, mainHero, level1)
+export const board = new Board(svg, mainHero, level1)
 
 svg.viewBox.baseVal.width = board.width
 svg.viewBox.baseVal.height = board.height
