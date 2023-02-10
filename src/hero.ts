@@ -114,7 +114,7 @@ export default class Hero {
         clouds.appendChild(cloud.element)
         cloud.boom()
       })
-
+      this.fungi = []
       // const fungi = svg.querySelector("fungi") as SVGGElement
       // while (fungi.firstChild) {
       //   const fung = fungi.firstChild as SVGRectElement
