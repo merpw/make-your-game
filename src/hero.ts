@@ -98,7 +98,12 @@ export default class Hero {
     // TODO fungi section
     if (KeyState.f) {
       const fungibox = svg.querySelector("#fungi") as SVGGElement
-      const fung = new Fung(this.x, this.y)
+      // determine the position of the new fung, it should be in the center of the cell
+      const nearCellCenterX =
+        Math.floor((this.x + CELL_SIZE / 2) / CELL_SIZE) * CELL_SIZE
+      const nearCellCenterY =
+        Math.floor((this.y + CELL_SIZE / 2) / CELL_SIZE) * CELL_SIZE
+      const fung = new Fung(nearCellCenterX, nearCellCenterY)
       this.fungi.push(fung)
       fungibox.appendChild(fung.element)
     } // TODO mount the fung
