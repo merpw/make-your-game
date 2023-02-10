@@ -89,11 +89,6 @@ export default class Hero {
                 cloud.boom();
             });
             this.fungi = [];
-            // const fungi = svg.querySelector("fungi") as SVGGElement
-            // while (fungi.firstChild) {
-            //   const fung = fungi.firstChild as SVGRectElement
-            //   fungi.removeChild(fungi.firstChild)
-            // }
         } // TODO terminate fungi
     }
     constructor(x, y) {
