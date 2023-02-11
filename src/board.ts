@@ -1,5 +1,6 @@
 import Fung from "./fung"
 import Hero from "./hero"
+import Sheep from "./sheep"
 
 export const CELL_SIZE = 8
 
@@ -28,27 +29,45 @@ export class Cell {
   }
 }
 
+interface YX {
+  x: number
+  y: number
+}
+
 export class Board {
   public cells: Cell[][]
   public width: number
   public height: number
   public hero: Hero
+  sheeps: Sheep[] = []
+  usedCellsYX: YX[] = []
 
   render(frameTimeDiff: number) {
     this.hero.render(frameTimeDiff, this.cells)
+    this.sheeps.forEach((sheep) => sheep.render(frameTimeDiff, this.cells))
   }
 
   getRandomEmptyCell(): Cell {
     const x = Math.floor(Math.random() * this.cells[0].length)
     const y = Math.floor(Math.random() * this.cells.length)
-    if (this.cells[y][x].type !== "empty") {
+    if (
+      this.cells[y][x].type !== "empty" ||
+      this.usedCellsYX.find((yx) => yx.x === x && yx.y === y)
+    ) {
       return this.getRandomEmptyCell()
     }
+    this.usedCellsYX.push({ y, x })
     return this.cells[y][x]
   }
 
-  constructor(svg: SVGSVGElement, hero: Hero, boardNums: number[][]) {
+  constructor(
+    svg: SVGSVGElement,
+    hero: Hero,
+    sheeps: Sheep[],
+    boardNums: number[][]
+  ) {
     this.hero = hero
+    this.sheeps = sheeps
 
     boardNums.forEach((row) => {
       row.push(1)
@@ -77,6 +96,14 @@ export class Board {
       heroCell.element.x.baseVal.value + (CELL_SIZE - this.hero.width) / 2
     this.hero.y =
       heroCell.element.y.baseVal.value + (CELL_SIZE - this.hero.height) / 2
+
+    this.sheeps.forEach((sheep) => {
+      const sheepCell = this.getRandomEmptyCell()
+      sheep.x =
+        sheepCell.element.x.baseVal.value + (CELL_SIZE - sheep.width) / 2
+      sheep.y =
+        sheepCell.element.y.baseVal.value + (CELL_SIZE - sheep.height) / 2
+    })
 
     this.width = this.cells[0].length * CELL_SIZE
     this.height = this.cells.length * CELL_SIZE

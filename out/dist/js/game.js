@@ -1,32 +1,33 @@
 // don't forget .js extensions
 import { Board } from "./board.js"; // don't forget the .js extension
 import Hero from "./hero.js";
-import { level1 } from "./levels.js";
+import { level1, level1sheeps } from "./levels.js";
 const FPS = 60;
 const NORMAL_FRAME_TIME = 1000 / FPS;
 export const svg = document.querySelector("#game svg");
-// create svg group for the field
-const landscape = document.createElementNS("http://www.w3.org/2000/svg", "g");
-const fungi = document.createElementNS("http://www.w3.org/2000/svg", "g");
-const sheeps = document.createElementNS("http://www.w3.org/2000/svg", "g");
-const players = document.createElementNS("http://www.w3.org/2000/svg", "g");
-const clouds = document.createElementNS("http://www.w3.org/2000/svg", "g");
-landscape.setAttribute("id", "landscape");
-fungi.setAttribute("id", "fungi");
-sheeps.setAttribute("id", "sheeps");
-players.setAttribute("id", "players");
-clouds.setAttribute("id", "clouds");
+// create svg groups g for the field
+const glandscape = document.createElementNS("http://www.w3.org/2000/svg", "g");
+const gfungi = document.createElementNS("http://www.w3.org/2000/svg", "g");
+const gsheeps = document.createElementNS("http://www.w3.org/2000/svg", "g");
+const gplayers = document.createElementNS("http://www.w3.org/2000/svg", "g");
+const gclouds = document.createElementNS("http://www.w3.org/2000/svg", "g");
+glandscape.setAttribute("id", "landscape");
+gfungi.setAttribute("id", "fungi");
+gsheeps.setAttribute("id", "sheeps");
+gplayers.setAttribute("id", "players");
+gclouds.setAttribute("id", "clouds");
 // add groups to svg
-svg.appendChild(landscape); // include stones, bush, grass(empty)
-svg.appendChild(fungi); // includes fungi will add/remove dinamically
-svg.appendChild(sheeps); // include sheeps in demonized and normal state
-svg.appendChild(players); // include players
-svg.appendChild(clouds); // include clouds after fungi explosion with animation
+svg.appendChild(glandscape); // include stones, bush, grass(empty)
+svg.appendChild(gfungi); // includes fungi will add/remove dinamically
+svg.appendChild(gsheeps); // include sheeps in demonized and normal state
+svg.appendChild(gplayers); // include players
+svg.appendChild(gclouds); // include clouds after fungi explosion with animation
 export const mainHero = new Hero(8, 8);
-export const board = new Board(svg, mainHero, level1);
+export const board = new Board(svg, mainHero, level1sheeps, level1);
 svg.viewBox.baseVal.width = board.width;
 svg.viewBox.baseVal.height = board.height;
-players.appendChild(mainHero.element);
+gplayers.appendChild(mainHero.element);
+level1sheeps.forEach((sheep) => gsheeps.appendChild(sheep.element));
 let lastTime = 0;
 const step = (timestamp) => {
     const frameTime = timestamp - lastTime;
