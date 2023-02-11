@@ -104,13 +104,20 @@ export default class Hero {
         }
         // TODO fungi section
         if (KeyState.f) {
-            const fungibox = svg.querySelector("#fungi");
-            // determine the position of the new fung, it should be in the center of the cell
-            const nearCellCenterX = Math.floor((this.x + CELL_SIZE / 2) / CELL_SIZE) * CELL_SIZE;
-            const nearCellCenterY = Math.floor((this.y + CELL_SIZE / 2) / CELL_SIZE) * CELL_SIZE;
-            const fung = new Fung(nearCellCenterX, nearCellCenterY);
-            this.fungi.push(fung);
-            fungibox.appendChild(fung.element);
+            if (this.fungi.length < 4) {
+                // TODO HARDCODED constant for the max number of fungi
+                const fungibox = svg.querySelector("#fungi");
+                // determine the position of the new fung, it should be in the center of the cell
+                const nearCellCenterX = Math.floor((this.x + CELL_SIZE / 2) / CELL_SIZE) * CELL_SIZE;
+                const nearCellCenterY = Math.floor((this.y + CELL_SIZE / 2) / CELL_SIZE) * CELL_SIZE;
+                if (!this.fungi.some((fung) => fung.element.x.baseVal.value === nearCellCenterX &&
+                    fung.element.y.baseVal.value === nearCellCenterY)) {
+                    // the cell is not already occupied by a fung
+                    const fung = new Fung(nearCellCenterX, nearCellCenterY);
+                    this.fungi.push(fung);
+                    fungibox.appendChild(fung.element);
+                }
+            }
         } // TODO mount the fung
         if (KeyState.t) {
             // remove all fungi
