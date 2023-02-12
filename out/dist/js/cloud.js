@@ -15,6 +15,8 @@ export default class Cloud {
         this.element.height.baseVal.value = CLOUD_SIZE;
         this.element.width.baseVal.value = CLOUD_SIZE;
         this.element.style.fill = "red";
+        this.element.style.stroke = "black"; // TODO: remove later
+        this.element.style.strokeWidth = "1px solid";
         this.element.id = "cloud";
         this.element.x.baseVal.value = x;
         this.element.y.baseVal.value = y;
