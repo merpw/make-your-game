@@ -14,7 +14,6 @@ export default class Bush {
 
   // check the each sheep's position to the Bush, and if distance from the bush to not demonized sheep is less than BUSH_SIZE, remove the bush
   render(sheeps: Sheep[]) {
-    console.log("bush render")
     this.element.x.baseVal.value = this.x
     this.element.y.baseVal.value = this.y
 
