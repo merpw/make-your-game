@@ -1,7 +1,8 @@
 import Sheep from "./sheep.js"
+import Bush from "./bush.js"
 
 export const level1 = [
-  [0, 0, 2, 0, 2, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0],
   [0, 1, 0, 1, 0, 1, 0],
   [0, 0, 0, 0, 0, 0, 0],
   [0, 1, 0, 1, 0, 1, 0],
@@ -18,3 +19,5 @@ export const level1sheeps: Sheep[] = [
   new Sheep(1, 3, false, 2),
   new Sheep(1, 5, false, 3),
 ]
+
+export const level1bushes: Bush[] = [new Bush(1, 1), new Bush(1, 3)]

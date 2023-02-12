@@ -1,3 +1,4 @@
+import Bush from "./bush"
 import Fung from "./fung"
 import Hero from "./hero"
 import Sheep from "./sheep"
@@ -39,11 +40,17 @@ export class Board {
   public width: number
   public height: number
   public hero: Hero
+  bushes: Bush[] = []
   sheeps: Sheep[] = []
   usedCellsYX: YX[] = []
 
   render(frameTimeDiff: number) {
     this.hero.render(frameTimeDiff, this.cells)
+
+    this.bushes.forEach((bush) => bush.render(this.sheeps))
+    // clean up the eaten bushes
+    this.bushes = this.bushes.filter((bush) => !bush.eaten)
+
     this.sheeps.forEach((sheep) => sheep.render(frameTimeDiff, this.cells))
   }
 
@@ -63,11 +70,13 @@ export class Board {
   constructor(
     svg: SVGSVGElement,
     hero: Hero,
+    bushes: Bush[],
     sheeps: Sheep[],
     boardNums: number[][]
   ) {
     this.hero = hero
     this.sheeps = sheeps
+    this.bushes = bushes
 
     boardNums.forEach((row) => {
       row.push(1)
@@ -81,7 +90,7 @@ export class Board {
     )
 
     // get the group g element from the svg
-    const landscape = svg.querySelector("g") as SVGGElement
+    const landscape = svg.querySelector("#landscape") as SVGGElement
 
     this.cells.forEach((row, y) => {
       row.forEach((cell, x) => {
@@ -97,12 +106,20 @@ export class Board {
     this.hero.y =
       heroCell.element.y.baseVal.value + (CELL_SIZE - this.hero.height) / 2
 
+    // place sheeps on the board
     this.sheeps.forEach((sheep) => {
       const sheepCell = this.getRandomEmptyCell()
       sheep.x =
         sheepCell.element.x.baseVal.value + (CELL_SIZE - sheep.width) / 2
       sheep.y =
         sheepCell.element.y.baseVal.value + (CELL_SIZE - sheep.height) / 2
+    })
+
+    // place bushes on the board
+    this.bushes.forEach((bush) => {
+      const bushCell = this.getRandomEmptyCell()
+      bush.x = bushCell.element.x.baseVal.value + (CELL_SIZE - bush.width) / 2
+      bush.y = bushCell.element.y.baseVal.value + (CELL_SIZE - bush.height) / 2
     })
 
     this.width = this.cells[0].length * CELL_SIZE
