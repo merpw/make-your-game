@@ -1,5 +1,7 @@
 // TODO implement Bush class.
 // Can be eaten by the Sheep, and disappears.
+import { CELL_SIZE } from "./board.js"
+import { board } from "./game.js"
 import Sheep from "./sheep.js"
 
 const BUSH_SIZE = 8
@@ -32,6 +34,9 @@ export default class Bush {
         ) {
           this.element.remove()
           this.eaten = true
+          const bushCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE)
+          const bushCellY = Math.floor((this.y + this.width / 2) / CELL_SIZE)
+          board.cells[bushCellY][bushCellX].type = "empty"
         }
       }
     })

@@ -54,16 +54,17 @@ export class Board {
     this.sheeps.forEach((sheep) => sheep.render(frameTimeDiff, this.cells))
   }
 
-  getRandomEmptyCell(): Cell {
+  getRandomEmptyCell(setType: CellType = CELL_TYPES[0].type): Cell {
     const x = Math.floor(Math.random() * this.cells[0].length)
     const y = Math.floor(Math.random() * this.cells.length)
     if (
       this.cells[y][x].type !== "empty" ||
       this.usedCellsYX.find((yx) => yx.x === x && yx.y === y)
     ) {
-      return this.getRandomEmptyCell()
+      return this.getRandomEmptyCell(setType)
     }
     this.usedCellsYX.push({ y, x })
+    this.cells[y][x].type = setType
     return this.cells[y][x]
   }
 
@@ -117,7 +118,7 @@ export class Board {
 
     // place bushes on the board
     this.bushes.forEach((bush) => {
-      const bushCell = this.getRandomEmptyCell()
+      const bushCell = this.getRandomEmptyCell(CELL_TYPES[2].type)
       bush.x = bushCell.element.x.baseVal.value + (CELL_SIZE - bush.width) / 2
       bush.y = bushCell.element.y.baseVal.value + (CELL_SIZE - bush.height) / 2
     })

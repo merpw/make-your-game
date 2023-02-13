@@ -15,9 +15,14 @@ export const level1 = [
  * Anyways the coordinates will be overriden by board random empty cell coordinates
  */
 export const level1sheeps: Sheep[] = [
-  new Sheep(1, 1, true, 1),
+  new Sheep(1, 1, false, 1),
   new Sheep(1, 3, false, 2),
-  new Sheep(1, 5, false, 3),
+  new Sheep(1, 5, true, 3),
 ]
 
-export const level1bushes: Bush[] = [new Bush(1, 1), new Bush(1, 3)]
+export const level1bushes: Bush[] = [
+  new Bush(1, 1),
+  new Bush(1, 3),
+  new Bush(1, 5),
+  new Bush(1, 7),
+]

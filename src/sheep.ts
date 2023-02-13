@@ -17,38 +17,13 @@ export default class Sheep {
   height = SHEEP_SIZE
 
   /**direction of sheep moving. 1 - positive X, 2 - positive Y, 3 - negative X, 4 - negative Y */
-  direction = 1
+  direction = 0
 
   speedX = 0
   speedY = 0
 
   render(frameTimeDiff: number, cells: Cell[][]) {
-    // const sheepCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE)
-    // const sheepCellY = Math.floor((this.y + this.width / 2) / CELL_SIZE)
-
-    // const sheepCells = {
-    //   right: cells[sheepCellY][sheepCellX + 1],
-    //   left: cells[sheepCellY][sheepCellX - 1],
-    //   bottom: cells[sheepCellY + 1][sheepCellX],
-    //   top: cells[sheepCellY - 1][sheepCellX],
-    //   bottomRight: cells[sheepCellY + 1][sheepCellX + 1],
-    //   topLeft: cells[sheepCellY - 1][sheepCellX - 1],
-    //   topRight: cells[sheepCellY - 1][sheepCellX + 1],
-    //   bottomLeft: cells[sheepCellY + 1][sheepCellX - 1],
-    // }
-
-    // const sheepRect = {
-    //   top: this.y,
-    //   bottom: this.y + this.height,
-    //   left: this.x,
-    //   right: this.x + this.width,
-    // }
-
-    // this.x += this.speedX * frameTimeDiff
-    // this.y += this.speedY * frameTimeDiff
-
     this.move(frameTimeDiff, cells)
-
     this.element.x.baseVal.value = this.x
     this.element.y.baseVal.value = this.y
   }
@@ -109,6 +84,8 @@ export default class Sheep {
     const sheepCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE)
     const sheepCellY = Math.floor((this.y + this.width / 2) / CELL_SIZE)
 
+    this.fixDisplacementBeforeNewMove(sheepCellX, sheepCellY)
+
     const sheepCells = {
       right: cells[sheepCellY][sheepCellX + 1],
       left: cells[sheepCellY][sheepCellX - 1],
@@ -136,6 +113,23 @@ export default class Sheep {
     }
   }
 
+  fixDisplacementBeforeNewMove(sheepCellX: number, sheepCellY: number) {
+    this.x = sheepCellX * CELL_SIZE
+    this.y = sheepCellY * CELL_SIZE
+  }
+
+  /**creates array and fill it using
+   *  @param n number
+   *  @param multiplier length of the array
+   *  */
+  bigChanceX(n: number, multiplier: number) {
+    // create array of n with random length
+    return Array.from({ length: multiplier }, () => n)
+  }
+
+  private majorMultiplier = 40 // increase chances to move in some major direction
+  private minorMultiplier = 20 // increase chances to move in some direction
+  private backMultiplier = 1 // not increase chances to move back(but still possible), so it is 1
   /**get new random direction for sheep, but try to decrease chances to move back */
   getNewRandomDirection(sheepCells: {
     right: Cell
@@ -143,29 +137,77 @@ export default class Sheep {
     bottom: Cell
     top: Cell
   }) {
-    const availableDirections = []
+    /**array of directions available for move */
+    let adi: number[] = []
     const obstacles = this.demonized ? ["wall", "bush"] : ["wall"]
-    if (obstacles.indexOf(sheepCells.right.type) === -1) {
-      availableDirections.push(this.direction === 3 ? 1 : 1, 1, 1, 1) //more chance to do not go back
-    }
-    if (obstacles.indexOf(sheepCells.left.type) === -1) {
-      availableDirections.push(this.direction === 1 ? 3 : 3, 3, 3, 3) //more chance to do not go back
-    }
-    if (obstacles.indexOf(sheepCells.bottom.type) === -1) {
-      availableDirections.push(this.direction === 4 ? 2 : 2, 2, 2, 2) //more chance to do not go back
-    }
-    if (obstacles.indexOf(sheepCells.top.type) === -1) {
-      availableDirections.push(this.direction === 2 ? 4 : 4, 4, 4, 4) //more chance to do not go back
+    let x1, x2, x3, x4: number // right, bottom, left, top coefficients
+
+    // forcing sheep to move more by sides if possible
+
+    if (this.direction === 1) {
+      //right, so increase top and bottom chances
+      x1 = this.minorMultiplier
+      x2 = this.majorMultiplier
+      x3 = this.backMultiplier
+      x4 = this.majorMultiplier
+    } else if (this.direction === 2) {
+      //bottom, so increase right and left chances
+      x1 = this.majorMultiplier
+      x2 = this.minorMultiplier
+      x3 = this.majorMultiplier
+      x4 = this.backMultiplier
+    } else if (this.direction === 3) {
+      //left, so increase top and bottom chances
+      x1 = this.backMultiplier
+      x2 = this.majorMultiplier
+      x3 = this.minorMultiplier
+      x4 = this.majorMultiplier
+    } else if (this.direction === 4) {
+      //top, so increase right and left chances
+      x1 = this.majorMultiplier
+      x2 = this.backMultiplier
+      x3 = this.majorMultiplier
+      x4 = this.minorMultiplier
+    } else {
+      //no direction, so equal chances
+      x1 = 1
+      x2 = 1
+      x3 = 1
+      x4 = 1
     }
 
-    if (availableDirections.length === 0) {
+    // add directions to array adi, if they are not obstacles
+
+    if (obstacles.indexOf(sheepCells.right.type) === -1) {
+      adi = adi.concat(this.bigChanceX(1, x1)) //more chance to do not go back
+    }
+    if (obstacles.indexOf(sheepCells.bottom.type) === -1) {
+      adi = adi.concat(this.bigChanceX(2, x2))
+    }
+    if (obstacles.indexOf(sheepCells.left.type) === -1) {
+      adi = adi.concat(this.bigChanceX(3, x3))
+    }
+    if (obstacles.indexOf(sheepCells.top.type) === -1) {
+      adi = adi.concat(this.bigChanceX(4, x4))
+    }
+
+    if (adi.length === 0) {
       //no way to move
       return 0
     }
-    //get random direction from available directions
-    return availableDirections[
-      Math.floor(Math.random() * availableDirections.length)
-    ]
+    // this.shuffleArray(adi)
+    // get random direction from available directions
+    const rd = adi[Math.floor(Math.random() * adi.length)]
+    this.direction = rd
+    return rd
+  }
+
+  shuffleArray(array: number[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[array[i], array[j]] = [array[j], array[i]]
+    }
+    return array
   }
 
   /** @param direction 1 (positive X), 2 (positive Y), 3 (negative X), 4 (negative Y) */
