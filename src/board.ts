@@ -2,7 +2,7 @@ import Bush from "./bush"
 import Hero from "./hero"
 import Sheep from "./sheep"
 
-export const CELL_SIZE = 8
+export const CELL_SIZE = 5
 
 const CELL_TYPES = [
   { type: "empty", color: "white" },

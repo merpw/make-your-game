@@ -1,8 +1,9 @@
 // TODO implement Fung class.
 // Follow the Hero class as an example, with modifications.
 // no move required, but demolution by pressing T keyboard key,
+import { CELL_SIZE } from "./board.js";
 // and mounting by pressing F keyboard key.
-const FUNG_SIZE = 8;
+const FUNG_SIZE = CELL_SIZE;
 export default class Fung {
     constructor(x, y) {
         this.width = FUNG_SIZE;

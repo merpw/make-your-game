@@ -1,4 +1,4 @@
-export const CELL_SIZE = 8;
+export const CELL_SIZE = 5;
 const CELL_TYPES = [
     { type: "empty", color: "white" },
     { type: "wall", color: "black" },

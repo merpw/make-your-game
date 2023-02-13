@@ -3,8 +3,8 @@ import { CELL_SIZE } from "./board.js";
 // import Fung from "./fung.js"
 // import { svg, board } from "./game.js"
 // import KeyState from "./keys.js"
-const SHEEP_SPEED = 0.4;
-const SHEEP_SIZE = 8;
+const SHEEP_SPEED = 0.1;
+const SHEEP_SIZE = CELL_SIZE;
 // const DIAGONAL_SPEED = SHEEP_SPEED * (Math.sqrt(2) / 2)
 export default class Sheep {
     render(frameTimeDiff, cells) {

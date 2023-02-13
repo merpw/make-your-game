@@ -10,7 +10,7 @@ const KeyState = {
   w: false, // second up key
   a: false, // second down key
   f: false, // fung mount key
-  t: false // fung terminate key
+  t: false, // fung terminate key
 }
 export default KeyState
 

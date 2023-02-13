@@ -4,7 +4,7 @@ import { CELL_SIZE } from "./board.js"
 import { board } from "./game.js"
 import Sheep from "./sheep.js"
 
-const BUSH_SIZE = 8
+const BUSH_SIZE = CELL_SIZE
 
 export default class Bush {
   element: SVGRectElement
@@ -28,9 +28,7 @@ export default class Bush {
       )
 
       if (!sheep.demonized) {
-        if (
-          (dx < BUSH_SIZE / 4 && dy < BUSH_SIZE / 4)
-        ) {
+        if (dx < BUSH_SIZE / 4 && dy < BUSH_SIZE / 4) {
           this.element.remove()
           this.eaten = true
           const bushCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE)

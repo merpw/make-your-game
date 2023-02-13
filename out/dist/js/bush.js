@@ -2,7 +2,7 @@
 // Can be eaten by the Sheep, and disappears.
 import { CELL_SIZE } from "./board.js";
 import { board } from "./game.js";
-const BUSH_SIZE = 8;
+const BUSH_SIZE = CELL_SIZE;
 export default class Bush {
     // check the each sheep's position to the Bush, and if distance from the bush to not demonized sheep is less than BUSH_SIZE, remove the bush
     render(sheeps) {
@@ -12,7 +12,7 @@ export default class Bush {
             const dx = Math.abs(this.element.x.baseVal.value - sheep.element.x.baseVal.value);
             const dy = Math.abs(this.element.y.baseVal.value - sheep.element.y.baseVal.value);
             if (!sheep.demonized) {
-                if ((dx < BUSH_SIZE / 4 && dy < BUSH_SIZE / 4)) {
+                if (dx < BUSH_SIZE / 4 && dy < BUSH_SIZE / 4) {
                     this.element.remove();
                     this.eaten = true;
                     const bushCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE);
