@@ -12,8 +12,7 @@ export default class Bush {
             const dx = Math.abs(this.element.x.baseVal.value - sheep.element.x.baseVal.value);
             const dy = Math.abs(this.element.y.baseVal.value - sheep.element.y.baseVal.value);
             if (!sheep.demonized) {
-                if ((dx < BUSH_SIZE && dy < BUSH_SIZE / 4) ||
-                    (dy < BUSH_SIZE && dx < BUSH_SIZE / 4)) {
+                if ((dx < BUSH_SIZE / 4 && dy < BUSH_SIZE / 4)) {
                     this.element.remove();
                     this.eaten = true;
                     const bushCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE);

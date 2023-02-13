@@ -29,8 +29,7 @@ export default class Bush {
 
       if (!sheep.demonized) {
         if (
-          (dx < BUSH_SIZE && dy < BUSH_SIZE / 4) ||
-          (dy < BUSH_SIZE && dx < BUSH_SIZE / 4)
+          (dx < BUSH_SIZE / 4 && dy < BUSH_SIZE / 4)
         ) {
           this.element.remove()
           this.eaten = true
