@@ -1,5 +1,4 @@
 import Bush from "./bush"
-import Fung from "./fung"
 import Hero from "./hero"
 import Sheep from "./sheep"
 
