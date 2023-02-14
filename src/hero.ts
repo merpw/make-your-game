@@ -123,10 +123,10 @@ export default class Hero {
     // TODO add an automatic correction of the player's position directed to the center axis of the row/column, to force the player to move close to the center of cells
     this.speedX = 0
     this.speedY = 0
-    if (KeyState.s || KeyState.ArrowRight) this.speedX += HERO_SPEED
-    if (KeyState.q || KeyState.ArrowLeft) this.speedX += -HERO_SPEED
+    if (KeyState.d || KeyState.ArrowRight) this.speedX += HERO_SPEED
+    if (KeyState.a || KeyState.ArrowLeft) this.speedX += -HERO_SPEED
     if (KeyState.w || KeyState.ArrowUp) this.speedY += -HERO_SPEED
-    if (KeyState.a || KeyState.ArrowDown) this.speedY += HERO_SPEED
+    if (KeyState.s || KeyState.ArrowDown) this.speedY += HERO_SPEED
 
     if (this.speedX !== 0 && this.speedY !== 0) {
       this.speedX *= DIAGONAL_SPEED / HERO_SPEED
@@ -134,7 +134,7 @@ export default class Hero {
     }
 
     // TODO fungi section
-    if (KeyState.f) {
+    if (KeyState.ö) {
       if (this.fungi.length < 4) {
         // TODO HARDCODED constant for the max number of fungi
         const fungibox = svg.querySelector("#fungi") as SVGGElement
@@ -158,7 +158,7 @@ export default class Hero {
       }
     } // TODO mount the fung
 
-    if (KeyState.t) {
+    if (KeyState.ä) {
       // remove all fungi
       const clouds = svg.querySelector("#clouds") as SVGGElement
       this.fungi.forEach((fung) => {

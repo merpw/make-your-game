@@ -4,12 +4,12 @@ const KeyState = {
     ArrowLeft: false,
     ArrowUp: false,
     ArrowDown: false,
-    s: false,
-    q: false,
-    w: false,
+    d: false,
     a: false,
-    f: false,
-    t: false, // fung terminate key
+    w: false,
+    s: false,
+    ö: false,
+    ä: false, // fung terminate key
 };
 export default KeyState;
 // TODO restyle moves to WASD keys. And F and T keys for fung.

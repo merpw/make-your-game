@@ -126,7 +126,7 @@ export class Board {
     this.height = this.cells.length * CELL_SIZE
   }
 }
-
+/*
 function intersectRect(r1: DOMRect, r2: DOMRect, gap = 0) {
   if (
     r2.left - r1.right > gap ||
@@ -143,3 +143,4 @@ function intersectRect(r1: DOMRect, r2: DOMRect, gap = 0) {
     bottom: r2.top - r1.bottom < 0,
   }
 }
+*/

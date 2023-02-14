@@ -78,17 +78,21 @@ export class Board {
         this.height = this.cells.length * CELL_SIZE;
     }
 }
-function intersectRect(r1, r2, gap = 0) {
-    if (r2.left - r1.right > gap ||
-        r1.left - r2.right > gap ||
-        r2.top - r1.bottom > gap ||
-        r1.top - r2.bottom > gap) {
-        return null;
-    }
-    return {
-        left: r1.left - r2.right < 0,
-        right: r2.left - r1.right < 0,
-        top: r1.top - r2.bottom < 0,
-        bottom: r2.top - r1.bottom < 0,
-    };
+/*
+function intersectRect(r1: DOMRect, r2: DOMRect, gap = 0) {
+  if (
+    r2.left - r1.right > gap ||
+    r1.left - r2.right > gap ||
+    r2.top - r1.bottom > gap ||
+    r1.top - r2.bottom > gap
+  ) {
+    return null
+  }
+  return {
+    left: r1.left - r2.right < 0,
+    right: r2.left - r1.right < 0,
+    top: r1.top - r2.bottom < 0,
+    bottom: r2.top - r1.bottom < 0,
+  }
 }
+*/ 

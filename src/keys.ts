@@ -5,12 +5,12 @@ const KeyState = {
   ArrowLeft: false,
   ArrowUp: false,
   ArrowDown: false,
-  s: false, // second right key
-  q: false, // second left key
+  d: false, // second right key
+  a: false, // second left key
   w: false, // second up key
-  a: false, // second down key
-  f: false, // fung mount key
-  t: false, // fung terminate key
+  s: false, // second down key
+  ö: false, // fung mount key
+  ä: false, // fung terminate key
 }
 export default KeyState
 
