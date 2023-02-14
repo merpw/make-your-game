@@ -9,8 +9,8 @@ const KeyState = {
   a: false, // second left key
   w: false, // second up key
   s: false, // second down key
-  ö: false, // fung mount key
-  ä: false, // fung terminate key
+  o: false, // fung mount key
+  p: false, // fung terminate key
 }
 export default KeyState
 

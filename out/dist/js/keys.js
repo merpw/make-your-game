@@ -8,8 +8,8 @@ const KeyState = {
     a: false,
     w: false,
     s: false,
-    ö: false,
-    ä: false, // fung terminate key
+    o: false,
+    p: false, // fung terminate key
 };
 export default KeyState;
 // TODO restyle moves to WASD keys. And F and T keys for fung.

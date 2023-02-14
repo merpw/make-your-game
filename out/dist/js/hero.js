@@ -103,7 +103,7 @@ export default class Hero {
             this.speedY *= DIAGONAL_SPEED / HERO_SPEED;
         }
         // TODO fungi section
-        if (KeyState.ö) {
+        if (KeyState.o) {
             if (this.fungi.length < 4) {
                 // TODO HARDCODED constant for the max number of fungi
                 const fungibox = svg.querySelector("#fungi");
@@ -119,7 +119,7 @@ export default class Hero {
                 }
             }
         } // TODO mount the fung
-        if (KeyState.ä) {
+        if (KeyState.p) {
             // remove all fungi
             const clouds = svg.querySelector("#clouds");
             this.fungi.forEach((fung) => {

@@ -134,7 +134,7 @@ export default class Hero {
     }
 
     // TODO fungi section
-    if (KeyState.ö) {
+    if (KeyState.o) {
       if (this.fungi.length < 4) {
         // TODO HARDCODED constant for the max number of fungi
         const fungibox = svg.querySelector("#fungi") as SVGGElement
@@ -158,7 +158,7 @@ export default class Hero {
       }
     } // TODO mount the fung
 
-    if (KeyState.ä) {
+    if (KeyState.p) {
       // remove all fungi
       const clouds = svg.querySelector("#clouds") as SVGGElement
       this.fungi.forEach((fung) => {
