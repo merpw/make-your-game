@@ -129,7 +129,12 @@ export default class Hero {
             this.fungi = [];
         } // TODO terminate fungi
     }
-    constructor(x, y) {
+    /**
+     * Create a new Hero in the given cell
+     *
+     * @param cell the cell where the hero will be created
+     */
+    constructor(cell) {
         this.speedX = 0;
         this.speedY = 0;
         this.fungi = [];
@@ -138,9 +143,9 @@ export default class Hero {
         this.element.width.baseVal.value = HERO_SIZE;
         this.element.style.fill = "rebeccapurple";
         this.element.id = "mainHero";
-        this.element.x.baseVal.value = x;
-        this.element.y.baseVal.value = y;
-        this.x = x;
-        this.y = y;
+        this.x = cell.x * CELL_SIZE;
+        this.y = cell.y * CELL_SIZE;
+        this.element.x.baseVal.value = this.x;
+        this.element.y.baseVal.value = this.y;
     }
 }

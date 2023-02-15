@@ -1,4 +1,4 @@
-import { mainHero } from "./game.js"
+import { board } from "./game.js"
 
 const KeyState = {
   ArrowRight: false,
@@ -20,7 +20,7 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
   const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
   if (key in KeyState) {
     KeyState[key as keyof typeof KeyState] = true
-    mainHero.checkKeys()
+    board.hero.checkKeys()
   }
 })
 
@@ -28,6 +28,6 @@ window.addEventListener("keyup", (event: KeyboardEvent) => {
   const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
   if (key in KeyState) {
     KeyState[key as keyof typeof KeyState] = false
-    mainHero.checkKeys()
+    board.hero.checkKeys()
   }
 })

@@ -172,7 +172,12 @@ export default class Hero {
     } // TODO terminate fungi
   }
 
-  constructor(x: number, y: number) {
+  /**
+   * Create a new Hero in the given cell
+   *
+   * @param cell the cell where the hero will be created
+   */
+  constructor(cell: Cell) {
     this.element = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "rect"
@@ -181,10 +186,25 @@ export default class Hero {
     this.element.width.baseVal.value = HERO_SIZE
     this.element.style.fill = "rebeccapurple"
     this.element.id = "mainHero"
-    this.element.x.baseVal.value = x
-    this.element.y.baseVal.value = y
 
-    this.x = x
-    this.y = y
+    this.x = cell.x * CELL_SIZE
+    this.y = cell.y * CELL_SIZE
+    this.element.x.baseVal.value = this.x
+    this.element.y.baseVal.value = this.y
   }
+}
+
+type Rect = {
+  left: number
+  right: number
+  top: number
+  bottom: number
+}
+const isColliding = (rect1: Rect, rect2: Rect) => {
+  return (
+    rect1.left < rect2.right &&
+    rect1.right > rect2.left &&
+    rect1.top < rect2.bottom &&
+    rect1.bottom > rect2.top
+  )
 }

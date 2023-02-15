@@ -50,9 +50,7 @@ export class Board {
             .sort(() => Math.random() - 0.5)
             .slice(0, count);
     }
-    constructor(svg, hero, level) {
-        this.hero = hero;
-        svg.getElementById("players").appendChild(hero.element);
+    constructor(svg, level) {
         const board = level.board;
         board.forEach((row) => {
             row.push(1);
@@ -73,29 +71,11 @@ export class Board {
         sheep.forEach((sheep) => {
             sheepGroup.appendChild(sheep.element);
         });
-        this.hero.x = heroCell.element.x.baseVal.value;
-        this.hero.y = heroCell.element.y.baseVal.value;
+        this.hero = new Hero(heroCell);
+        svg.getElementById("players").appendChild(this.hero.element);
         this.width = this.cells[0].length * CELL_SIZE;
         this.height = this.cells.length * CELL_SIZE;
         svg.viewBox.baseVal.width = this.width;
         svg.viewBox.baseVal.height = this.height;
     }
 }
-/*
-function intersectRect(r1: DOMRect, r2: DOMRect, gap = 0) {
-  if (
-    r2.left - r1.right > gap ||
-    r1.left - r2.right > gap ||
-    r2.top - r1.bottom > gap ||
-    r1.top - r2.bottom > gap
-  ) {
-    return null
-  }
-  return {
-    left: r1.left - r2.right < 0,
-    right: r2.left - r1.right < 0,
-    top: r1.top - r2.bottom < 0,
-    bottom: r2.top - r1.bottom < 0,
-  }
-}
-*/
