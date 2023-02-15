@@ -65,6 +65,7 @@ export default class Hero {
   }
 
   render(frameTimeDiff: number, neighbourCells: NeighbourCells) {
+    if (this.speedX === 0 && this.speedY === 0) return
     const heroRect = {
       left: this.x,
       right: this.x + HERO_SIZE,
@@ -72,8 +73,8 @@ export default class Hero {
       bottom: this.y + HERO_SIZE,
     }
 
-    this.x += this.speedX * frameTimeDiff
-    this.y += this.speedY * frameTimeDiff
+    let dx = this.speedX * frameTimeDiff
+    let dy = this.speedY * frameTimeDiff
 
     if (
       neighbourCells.right &&
@@ -81,36 +82,51 @@ export default class Hero {
       this.speedX > 0 &&
       heroRect.right >= neighbourCells.right.element.x.baseVal.value
     ) {
-      this.x -= this.speedX * frameTimeDiff
+      dx = 0
     }
-
     if (
       neighbourCells.left &&
       neighbourCells.left.type !== "empty" &&
       this.speedX < 0 &&
       heroRect.left <= neighbourCells.left.element.x.baseVal.value + CELL_SIZE
     ) {
-      this.x -= this.speedX * frameTimeDiff
+      dx = 0
     }
-
     if (
       neighbourCells.bottom &&
       neighbourCells.bottom.type !== "empty" &&
       this.speedY > 0 &&
       heroRect.bottom >= neighbourCells.bottom.element.y.baseVal.value
     ) {
-      this.y -= this.speedY * frameTimeDiff
+      dy = 0
     }
-
     if (
       neighbourCells.top &&
       neighbourCells.top.type !== "empty" &&
       this.speedY < 0 &&
       heroRect.top <= neighbourCells.top.element.y.baseVal.value + CELL_SIZE
     ) {
-      this.y -= this.speedY * frameTimeDiff
+      dy = 0
     }
 
+    // TODO: refactor collision detection
+    // for (const ways in neighbourCells) {
+    //   const cell = neighbourCells[ways as keyof NeighbourCells]
+    //   if (!cell) continue
+    //   const cellRect = {
+    //     left: cell.x,
+    //     right: cell.x + CELL_SIZE,
+    //     top: cell.y,
+    //     bottom: cell.y + CELL_SIZE,
+    //   }
+    //   if (isColliding(heroRect, cellRect)) {
+    //     dx = 0
+    //     dy = 0
+    //     break
+    //   }
+    // }
+    this.x += dx
+    this.y += dy
     this.element.x.baseVal.value = this.x
     this.element.y.baseVal.value = this.y
   }

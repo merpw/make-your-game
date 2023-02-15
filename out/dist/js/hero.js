@@ -44,38 +44,58 @@ export default class Hero {
         return cloudsCoords;
     }
     render(frameTimeDiff, neighbourCells) {
+        if (this.speedX === 0 && this.speedY === 0)
+            return;
         const heroRect = {
             left: this.x,
             right: this.x + HERO_SIZE,
             top: this.y,
             bottom: this.y + HERO_SIZE,
         };
-        this.x += this.speedX * frameTimeDiff;
-        this.y += this.speedY * frameTimeDiff;
+        let dx = this.speedX * frameTimeDiff;
+        let dy = this.speedY * frameTimeDiff;
         if (neighbourCells.right &&
             neighbourCells.right.type !== "empty" &&
             this.speedX > 0 &&
             heroRect.right >= neighbourCells.right.element.x.baseVal.value) {
-            this.x -= this.speedX * frameTimeDiff;
+            dx = 0;
         }
         if (neighbourCells.left &&
             neighbourCells.left.type !== "empty" &&
             this.speedX < 0 &&
             heroRect.left <= neighbourCells.left.element.x.baseVal.value + CELL_SIZE) {
-            this.x -= this.speedX * frameTimeDiff;
+            dx = 0;
         }
         if (neighbourCells.bottom &&
             neighbourCells.bottom.type !== "empty" &&
             this.speedY > 0 &&
             heroRect.bottom >= neighbourCells.bottom.element.y.baseVal.value) {
-            this.y -= this.speedY * frameTimeDiff;
+            dy = 0;
         }
         if (neighbourCells.top &&
             neighbourCells.top.type !== "empty" &&
             this.speedY < 0 &&
             heroRect.top <= neighbourCells.top.element.y.baseVal.value + CELL_SIZE) {
-            this.y -= this.speedY * frameTimeDiff;
+            dy = 0;
         }
+        // TODO: refactor collision detection
+        // for (const ways in neighbourCells) {
+        //   const cell = neighbourCells[ways as keyof NeighbourCells]
+        //   if (!cell) continue
+        //   const cellRect = {
+        //     left: cell.x,
+        //     right: cell.x + CELL_SIZE,
+        //     top: cell.y,
+        //     bottom: cell.y + CELL_SIZE,
+        //   }
+        //   if (isColliding(heroRect, cellRect)) {
+        //     dx = 0
+        //     dy = 0
+        //     break
+        //   }
+        // }
+        this.x += dx;
+        this.y += dy;
         this.element.x.baseVal.value = this.x;
         this.element.y.baseVal.value = this.y;
     }
@@ -149,3 +169,9 @@ export default class Hero {
         this.element.y.baseVal.value = this.y;
     }
 }
+const isColliding = (rect1, rect2) => {
+    return (rect1.left < rect2.right &&
+        rect1.right > rect2.left &&
+        rect1.top < rect2.bottom &&
+        rect1.bottom > rect2.top);
+};
