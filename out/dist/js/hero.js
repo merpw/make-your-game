@@ -1,8 +1,8 @@
-import { CELL_SIZE } from "./board.js";
 import Cloud from "./cloud.js";
 import Fung from "./fung.js";
 import { svg, board } from "./game.js";
 import KeyState from "./keys.js";
+import { CELL_SIZE } from "./cell.js";
 const HERO_SPEED = 0.2;
 const HERO_SIZE = CELL_SIZE;
 const DIAGONAL_SPEED = HERO_SPEED * (Math.sqrt(2) / 2);

@@ -1,16 +1,7 @@
-import Hero from "./hero"
+import Hero from "./hero.js"
 import { Level } from "./levels"
 import Sheep from "./sheep.js"
-
-export const CELL_SIZE = 5
-
-const CELL_TYPES = [
-  { type: "empty", color: "white" },
-  { type: "wall", color: "black" },
-  { type: "bush", color: "green" },
-] as const
-
-type CellType = (typeof CELL_TYPES)[number]["type"]
+import { Cell, CELL_SIZE } from "./cell.js"
 
 export type NeighbourCells = {
   top: Cell | null
@@ -23,37 +14,13 @@ export type NeighbourCells = {
   bottomRight: Cell | null
 }
 
-export class Cell {
-  type: CellType
-  element: SVGRectElement
-  x: number
-  y: number
-
-  constructor(typeCode: number, x: number, y: number) {
-    this.type = CELL_TYPES[typeCode].type
-    this.element = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    )
-    this.x = x
-    this.y = y
-
-    this.element.x.baseVal.value = this.x * CELL_SIZE
-    this.element.y.baseVal.value = this.y * CELL_SIZE
-
-    this.element.width.baseVal.value = CELL_SIZE
-    this.element.height.baseVal.value = CELL_SIZE
-
-    this.element.style.fill = CELL_TYPES[typeCode].color
-  }
-}
-
 export class Board {
   public cells: Cell[][]
   public width: number
   public height: number
   public hero: Hero
-  // sheeps: Sheep[]
+
+  // sheep: Sheep[]
 
   render(frameTimeDiff: number) {
     const heroCell = this.getCell(this.hero.x, this.hero.y)

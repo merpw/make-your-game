@@ -1,6 +1,6 @@
 // TODO implement Cloud class.
-import { CELL_SIZE } from "./board.js";
 //animation and after that remove from svg(not implemented yet)
+import { CELL_SIZE } from "./cell.js";
 const CLOUD_SIZE = CELL_SIZE;
 export default class Cloud {
     /**remove cloud with 1 second delay*/
@@ -10,8 +10,6 @@ export default class Cloud {
         }, 1000);
     }
     constructor(x, y) {
-        this.width = CLOUD_SIZE;
-        this.height = CLOUD_SIZE;
         this.element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
         this.element.height.baseVal.value = CLOUD_SIZE;
         this.element.width.baseVal.value = CLOUD_SIZE;

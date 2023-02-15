@@ -1,23 +1,18 @@
-import { Cell, CELL_SIZE } from "./board.js"
+import { Cell, CELL_SIZE } from "./cell.js"
 
+const SHEEP_SIZE = CELL_SIZE
 const SHEEP_SPEED = 0.1
-const SHEEP_SIZE = 5
 
 export default class Sheep {
   element: SVGRectElement
   x: number
   y: number
   demonized: boolean
-  width = SHEEP_SIZE
-  height = SHEEP_SIZE
 
   /**
    * 1 - positive X, 2 - positive Y, 3 - negative X, 4 - negative Y
    */
   direction: 1 | 2 | 3 | 4
-
-  speedX = 0
-  speedY = 0
 
   render(frameTimeDiff: number, cells: Cell[][]) {
     this.move(frameTimeDiff, cells)
@@ -47,9 +42,9 @@ export default class Sheep {
   // TODO: with high chance can be problems at least with speed of sheep
   /**
    * move sheep between two points(cell centers)
-   * @param	dt [s] - time elapsed from previous moment. 0 = start new process
-   * @param	finishX - coordinate of end moving, along x axis
-   * @param	finishY - coordinate of end moving, along y axis
+   * @param  dt [s] - time elapsed from previous moment. 0 = start new process
+   * @param  finishX - coordinate of end moving, along x axis
+   * @param  finishY - coordinate of end moving, along y axis
    */
   move(dt: number, cells: Cell[][], finishX = this.x, finishY = this.y) {
     if (dt > 0 && this.dt < this.t) {
@@ -73,8 +68,8 @@ export default class Sheep {
 
   /**analize the cells available for move to the next position, and execute new move */
   moveToNextCell(cells: Cell[][]) {
-    const sheepCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE)
-    const sheepCellY = Math.floor((this.y + this.width / 2) / CELL_SIZE)
+    const sheepCellX = Math.floor((this.x + SHEEP_SIZE / 2) / CELL_SIZE)
+    const sheepCellY = Math.floor((this.y + SHEEP_SIZE / 2) / CELL_SIZE)
 
     this.fixDisplacementBeforeNewMove(sheepCellX, sheepCellY)
 

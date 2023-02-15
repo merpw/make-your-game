@@ -1,8 +1,9 @@
-import { Cell, CELL_SIZE, NeighbourCells } from "./board.js"
+import { NeighbourCells } from "./board.js"
 import Cloud from "./cloud.js"
 import Fung from "./fung.js"
 import { svg, board } from "./game.js"
 import KeyState from "./keys.js"
+import { Cell, CELL_SIZE } from "./cell.js"
 
 const HERO_SPEED = 0.2
 const HERO_SIZE = CELL_SIZE

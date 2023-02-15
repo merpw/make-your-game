@@ -1,6 +1,6 @@
-import { CELL_SIZE } from "./board.js";
+import { CELL_SIZE } from "./cell.js";
+const SHEEP_SIZE = CELL_SIZE;
 const SHEEP_SPEED = 0.1;
-const SHEEP_SIZE = 5;
 export default class Sheep {
     render(frameTimeDiff, cells) {
         this.move(frameTimeDiff, cells);
@@ -10,9 +10,9 @@ export default class Sheep {
     // TODO: with high chance can be problems at least with speed of sheep
     /**
      * move sheep between two points(cell centers)
-     * @param	dt [s] - time elapsed from previous moment. 0 = start new process
-     * @param	finishX - coordinate of end moving, along x axis
-     * @param	finishY - coordinate of end moving, along y axis
+     * @param  dt [s] - time elapsed from previous moment. 0 = start new process
+     * @param  finishX - coordinate of end moving, along x axis
+     * @param  finishY - coordinate of end moving, along y axis
      */
     move(dt, cells, finishX = this.x, finishY = this.y) {
         if (dt > 0 && this.dt < this.t) {
@@ -37,8 +37,8 @@ export default class Sheep {
     }
     /**analize the cells available for move to the next position, and execute new move */
     moveToNextCell(cells) {
-        const sheepCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE);
-        const sheepCellY = Math.floor((this.y + this.width / 2) / CELL_SIZE);
+        const sheepCellX = Math.floor((this.x + SHEEP_SIZE / 2) / CELL_SIZE);
+        const sheepCellY = Math.floor((this.y + SHEEP_SIZE / 2) / CELL_SIZE);
         this.fixDisplacementBeforeNewMove(sheepCellX, sheepCellY);
         const sheepCells = {
             right: cells[sheepCellY][sheepCellX + 1],
@@ -150,10 +150,6 @@ export default class Sheep {
     }
     /** @param direction 1 (positive X), 2 (positive Y), 3 (negative X), 4 (negative Y) */
     constructor(x, y, demonized, direction) {
-        this.width = SHEEP_SIZE;
-        this.height = SHEEP_SIZE;
-        this.speedX = 0;
-        this.speedY = 0;
         /** position of sheep in cell, along x axis , at the beginning of moving*/
         this.startX = 0;
         /** position of sheep in cell, along y axis , at the beginning of moving*/

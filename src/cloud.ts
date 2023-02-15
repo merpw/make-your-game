@@ -1,16 +1,14 @@
 // TODO implement Cloud class.
 
-import { CELL_SIZE } from "./board.js"
-
 //animation and after that remove from svg(not implemented yet)
+import { CELL_SIZE } from "./cell.js"
+
 const CLOUD_SIZE = CELL_SIZE
 
 export default class Cloud {
   element: SVGRectElement
   x: number
   y: number
-  width = CLOUD_SIZE
-  height = CLOUD_SIZE
 
   /**remove cloud with 1 second delay*/
   boom() {

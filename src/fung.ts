@@ -2,17 +2,16 @@
 // Follow the Hero class as an example, with modifications.
 // no move required, but demolution by pressing T keyboard key,
 
-import { CELL_SIZE } from "./board.js"
-
 // and mounting by pressing F keyboard key.
+
+import { CELL_SIZE } from "./cell.js"
+
 const FUNG_SIZE = CELL_SIZE
 
 export default class Fung {
   element: SVGRectElement
   x: number
   y: number
-  width = FUNG_SIZE
-  height = FUNG_SIZE
 
   constructor(x: number, y: number) {
     this.element = document.createElementNS(
