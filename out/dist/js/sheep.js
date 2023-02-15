@@ -1,11 +1,6 @@
 import { CELL_SIZE } from "./board.js";
-// import Cloud from "./cloud.js"
-// import Fung from "./fung.js"
-// import { svg, board } from "./game.js"
-// import KeyState from "./keys.js"
 const SHEEP_SPEED = 0.1;
-const SHEEP_SIZE = CELL_SIZE;
-// const DIAGONAL_SPEED = SHEEP_SPEED * (Math.sqrt(2) / 2)
+const SHEEP_SIZE = 5;
 export default class Sheep {
     render(frameTimeDiff, cells) {
         this.move(frameTimeDiff, cells);
@@ -15,13 +10,11 @@ export default class Sheep {
     // TODO: with high chance can be problems at least with speed of sheep
     /**
      * move sheep between two points(cell centers)
-     * OLD DESCRIPTION FROM MY OTHER PROJECT CODE
-     * character moving along court
      * @param	dt [s] - time elapsed from previous moment. 0 = start new process
-     * @param	scx1 - real coordinate of end moving, along x axis
-     * @param	scy1 - real coordinate of end moving, along y axis
+     * @param	finishX - coordinate of end moving, along x axis
+     * @param	finishY - coordinate of end moving, along y axis
      */
-    move(dt, cells, scx1 = this.x, scy1 = this.y) {
+    move(dt, cells, finishX = this.x, finishY = this.y) {
         if (dt > 0 && this.dt < this.t) {
             //continue previous move
             this.dt += dt;
@@ -31,14 +24,11 @@ export default class Sheep {
         else if (dt === 0) {
             //abort not completion move and/or start new move
             this.dt = 0;
-            this.scx0 = this.x;
-            this.scy0 = this.y;
-            this.scx1 = scx1;
-            this.scy1 = scy1;
-            this.sdx = this.scx1 - this.scx0;
-            this.sdy = this.scy1 - this.scy0;
-            this.t =
-                Math.sqrt(this.sdx * this.sdx + this.sdy * this.sdy) / SHEEP_SPEED;
+            this.startX = this.x;
+            this.startY = this.y;
+            this.dx = finishX - this.x;
+            this.dy = finishY - this.y;
+            this.t = Math.sqrt(this.dx * this.dx + this.dy * this.dy) / SHEEP_SPEED;
         }
         else {
             //previous move completed, time to start new move. Our sheep is not staying in one place
@@ -162,26 +152,24 @@ export default class Sheep {
     constructor(x, y, demonized, direction) {
         this.width = SHEEP_SIZE;
         this.height = SHEEP_SIZE;
-        /**direction of sheep moving. 1 - positive X, 2 - positive Y, 3 - negative X, 4 - negative Y */
-        this.direction = 0;
         this.speedX = 0;
         this.speedY = 0;
-        this.scx = 0;
-        this.scy = 0;
-        this.scx0 = 0;
-        this.scy0 = 0;
-        this.sdx = 0;
-        this.sdy = 0;
+        /** position of sheep in cell, along x axis , at the beginning of moving*/
+        this.startX = 0;
+        /** position of sheep in cell, along y axis , at the beginning of moving*/
+        this.startY = 0;
+        /** distance to move along x axis*/
+        this.dx = 0;
+        /** distance to move along y axis*/
+        this.dy = 0;
+        /** time elapsed from the previous moment of moving*/
         this.dt = 0;
+        /** time to move between two cells*/
         this.t = 0;
-        this.cx = 0;
-        this.cy = 0;
-        this.scx1 = 0;
-        this.scy1 = 0;
-        /** character moving along x axis*/
-        this.moveX = () => (this.x = this.scx0 + (this.sdx * this.dt) / this.t);
-        /** character moving along y axis*/
-        this.moveY = () => (this.y = this.scy0 + (this.sdy * this.dt) / this.t);
+        /** moving along x axis*/
+        this.moveX = () => (this.x = this.startX + (this.dx * this.dt) / this.t);
+        /** moving along y axis*/
+        this.moveY = () => (this.y = this.startY + (this.dy * this.dt) / this.t);
         this.majorMultiplier = 40; // increase chances to move in some major direction
         this.minorMultiplier = 20; // increase chances to move in some direction
         this.backMultiplier = 1; // not increase chances to move back(but still possible), so it is 1
@@ -195,11 +183,11 @@ export default class Sheep {
         else {
             this.element.style.fill = "orange";
         }
-        this.element.id = "sheep";
-        this.element.x.baseVal.value = x;
-        this.element.y.baseVal.value = y;
         this.x = x;
         this.y = y;
-        this.direction = direction || 1;
+        this.element.id = "sheep";
+        this.element.x.baseVal.value = x * CELL_SIZE;
+        this.element.y.baseVal.value = y * CELL_SIZE;
+        this.direction = direction;
     }
 }
