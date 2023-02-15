@@ -1,4 +1,4 @@
-import { Cell, CELL_SIZE } from "./board.js"
+import { Cell, CELL_SIZE, NeighbourCells } from "./board.js"
 import Cloud from "./cloud.js"
 import Fung from "./fung.js"
 import { svg, board } from "./game.js"
@@ -10,10 +10,14 @@ const DIAGONAL_SPEED = HERO_SPEED * (Math.sqrt(2) / 2)
 
 export default class Hero {
   element: SVGRectElement
+  /**
+   * Hero's x coordinate in svg coordinates.
+   */
   x: number
+  /**
+   * Hero's y coordinate in svg coordinates.
+   */
   y: number
-  width = HERO_SIZE
-  height = HERO_SIZE
 
   speedX = 0
   speedY = 0
@@ -21,6 +25,7 @@ export default class Hero {
   fungi: Fung[] = []
 
   cloudsXYCoords(cells: Cell[][], x: number, y: number) {
+    // TODO: refactor this
     const fungCellX = Math.floor((x + CELL_SIZE / 2) / CELL_SIZE)
     const fungCellY = Math.floor((y + CELL_SIZE / 2) / CELL_SIZE)
 
@@ -58,59 +63,49 @@ export default class Hero {
     return cloudsCoords
   }
 
-  render(frameTimeDiff: number, cells: Cell[][]) {
-    const heroCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE)
-    const heroCellY = Math.floor((this.y + this.width / 2) / CELL_SIZE)
-
-    const heroCells = {
-      right: cells[heroCellY][heroCellX + 1],
-      left: cells[heroCellY][heroCellX - 1],
-      bottom: cells[heroCellY + 1][heroCellX],
-      top: cells[heroCellY - 1][heroCellX],
-      bottomRight: cells[heroCellY + 1][heroCellX + 1],
-      topLeft: cells[heroCellY - 1][heroCellX - 1],
-      topRight: cells[heroCellY - 1][heroCellX + 1],
-      bottomLeft: cells[heroCellY + 1][heroCellX - 1],
-    }
-
+  render(frameTimeDiff: number, neighbourCells: NeighbourCells) {
     const heroRect = {
-      top: this.y,
-      bottom: this.y + this.height,
       left: this.x,
-      right: this.x + this.width,
+      right: this.x + HERO_SIZE,
+      top: this.y,
+      bottom: this.y + HERO_SIZE,
     }
 
     this.x += this.speedX * frameTimeDiff
     this.y += this.speedY * frameTimeDiff
 
     if (
-      heroCells.right.type !== "empty" &&
+      neighbourCells.right &&
+      neighbourCells.right.type !== "empty" &&
       this.speedX > 0 &&
-      heroRect.right >= heroCells.right.element.x.baseVal.value
+      heroRect.right >= neighbourCells.right.element.x.baseVal.value
     ) {
       this.x -= this.speedX * frameTimeDiff
     }
 
     if (
-      heroCells.left.type !== "empty" &&
+      neighbourCells.left &&
+      neighbourCells.left.type !== "empty" &&
       this.speedX < 0 &&
-      heroRect.left <= heroCells.left.element.x.baseVal.value + CELL_SIZE
+      heroRect.left <= neighbourCells.left.element.x.baseVal.value + CELL_SIZE
     ) {
       this.x -= this.speedX * frameTimeDiff
     }
 
     if (
-      heroCells.bottom.type !== "empty" &&
+      neighbourCells.bottom &&
+      neighbourCells.bottom.type !== "empty" &&
       this.speedY > 0 &&
-      heroRect.bottom >= heroCells.bottom.element.y.baseVal.value
+      heroRect.bottom >= neighbourCells.bottom.element.y.baseVal.value
     ) {
       this.y -= this.speedY * frameTimeDiff
     }
 
     if (
-      heroCells.top.type !== "empty" &&
+      neighbourCells.top &&
+      neighbourCells.top.type !== "empty" &&
       this.speedY < 0 &&
-      heroRect.top <= heroCells.top.element.y.baseVal.value + CELL_SIZE
+      heroRect.top <= neighbourCells.top.element.y.baseVal.value + CELL_SIZE
     ) {
       this.y -= this.speedY * frameTimeDiff
     }

@@ -21,42 +21,51 @@ export class Cell {
 export class Board {
     // sheeps: Sheep[]
     render(frameTimeDiff) {
-        this.hero.render(frameTimeDiff, this.cells);
-        // this.sheeps.forEach((sheep) => sheep.render(frameTimeDiff, this.cells))
+        const heroCell = this.getCell(this.hero.x, this.hero.y);
+        if (!heroCell) {
+            throw new Error("Hero is out of bounds");
+        }
+        const heroNeighbours = this.getNeighbors(heroCell);
+        this.hero.render(frameTimeDiff, heroNeighbours);
     }
+    /**
+     * Returns the cell at the given coordinates
+     * @param x - x (column) coordinate in svg coordinates
+     * @param y - y (row) coordinate in svg coordinates
+     */
+    getCell(x, y) {
+        var _a;
+        const cellX = Math.floor((x + CELL_SIZE / 2) / CELL_SIZE);
+        const cellY = Math.floor((y + CELL_SIZE / 2) / CELL_SIZE);
+        return ((_a = this.cells[cellY]) === null || _a === void 0 ? void 0 : _a[cellX]) || null;
+    }
+    /**
+     * Returns the neighbours of the given cell
+     * @param cell - the cell to get the neighbours of
+     */
     getNeighbors(cell) {
-        const neighbors = {
-            right: this.cells[cell.y][cell.x + 1],
-            left: this.cells[cell.y][cell.x - 1],
-            bottom: this.cells[cell.y + 1][cell.x],
-            top: this.cells[cell.y - 1][cell.x],
-            bottomRight: this.cells[cell.y + 1][cell.x + 1],
-            topLeft: this.cells[cell.y - 1][cell.x - 1],
-            topRight: this.cells[cell.y - 1][cell.x + 1],
-            bottomLeft: this.cells[cell.y + 1][cell.x - 1],
+        var _a, _b, _c, _d, _e, _f, _g, _h;
+        return {
+            right: ((_a = this.cells[cell.y]) === null || _a === void 0 ? void 0 : _a[cell.x + 1]) || null,
+            left: ((_b = this.cells[cell.y]) === null || _b === void 0 ? void 0 : _b[cell.x - 1]) || null,
+            bottom: ((_c = this.cells[cell.y + 1]) === null || _c === void 0 ? void 0 : _c[cell.x]) || null,
+            top: ((_d = this.cells[cell.y - 1]) === null || _d === void 0 ? void 0 : _d[cell.x]) || null,
+            bottomRight: ((_e = this.cells[cell.y + 1]) === null || _e === void 0 ? void 0 : _e[cell.x + 1]) || null,
+            topLeft: ((_f = this.cells[cell.y - 1]) === null || _f === void 0 ? void 0 : _f[cell.x - 1]) || null,
+            topRight: ((_g = this.cells[cell.y - 1]) === null || _g === void 0 ? void 0 : _g[cell.x + 1]) || null,
+            bottomLeft: ((_h = this.cells[cell.y + 1]) === null || _h === void 0 ? void 0 : _h[cell.x - 1]) || null,
         };
-        for (const key in neighbors) {
-            if (!neighbors[key]) {
-                return null;
-            }
-        }
-        return neighbors;
     }
+    /**
+     * Returns an array of unique random empty cells with the given length
+     * @param count - the number of empty cells to find
+     */
     getRandomEmptyCells(count) {
-        const takenCells = new Set();
-        const getRandomEmptyCell = () => {
-            const x = Math.floor(Math.random() * this.cells[0].length);
-            const y = Math.floor(Math.random() * this.cells.length);
-            const cell = this.cells[y][x];
-            if (cell.type === "empty" && !takenCells.has(cell)) {
-                return cell;
-            }
-            return getRandomEmptyCell();
-        };
-        for (let i = 0; i < count; i++) {
-            takenCells.add(getRandomEmptyCell());
-        }
-        return [...takenCells];
+        return this.cells
+            .flat()
+            .filter((cell) => cell.type === "empty")
+            .sort(() => Math.random() - 0.5)
+            .slice(0, count);
     }
     constructor(svg, hero, level) {
         this.hero = hero;
@@ -75,18 +84,14 @@ export class Board {
             return cell;
         }));
         const emptyCells = this.getRandomEmptyCells(level.sheepCount + 1);
-        const heroCell = emptyCells[0];
-        const sheeps = emptyCells
-            .slice(1)
-            .map((cell) => new Sheep(cell.x, cell.y, false, 0));
-        const sheepsGroup = svg.querySelector("#sheeps");
-        sheeps.forEach((sheep) => {
-            sheepsGroup.appendChild(sheep.element);
+        const [heroCell, ...sheepCells] = emptyCells;
+        const sheep = sheepCells.map((cell) => new Sheep(cell.x, cell.y, false, 0));
+        const sheepGroup = svg.querySelector("#sheep");
+        sheep.forEach((sheep) => {
+            sheepGroup.appendChild(sheep.element);
         });
-        this.hero.x =
-            heroCell.element.x.baseVal.value + (CELL_SIZE - this.hero.width) / 2;
-        this.hero.y =
-            heroCell.element.y.baseVal.value + (CELL_SIZE - this.hero.height) / 2;
+        this.hero.x = heroCell.element.x.baseVal.value;
+        this.hero.y = heroCell.element.y.baseVal.value;
         this.width = this.cells[0].length * CELL_SIZE;
         this.height = this.cells.length * CELL_SIZE;
         svg.viewBox.baseVal.width = this.width;

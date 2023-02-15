@@ -8,6 +8,7 @@ const HERO_SIZE = CELL_SIZE;
 const DIAGONAL_SPEED = HERO_SPEED * (Math.sqrt(2) / 2);
 export default class Hero {
     cloudsXYCoords(cells, x, y) {
+        // TODO: refactor this
         const fungCellX = Math.floor((x + CELL_SIZE / 2) / CELL_SIZE);
         const fungCellY = Math.floor((y + CELL_SIZE / 2) / CELL_SIZE);
         const cloudsCells = {
@@ -42,45 +43,37 @@ export default class Hero {
         }
         return cloudsCoords;
     }
-    render(frameTimeDiff, cells) {
-        const heroCellX = Math.floor((this.x + this.height / 2) / CELL_SIZE);
-        const heroCellY = Math.floor((this.y + this.width / 2) / CELL_SIZE);
-        const heroCells = {
-            right: cells[heroCellY][heroCellX + 1],
-            left: cells[heroCellY][heroCellX - 1],
-            bottom: cells[heroCellY + 1][heroCellX],
-            top: cells[heroCellY - 1][heroCellX],
-            bottomRight: cells[heroCellY + 1][heroCellX + 1],
-            topLeft: cells[heroCellY - 1][heroCellX - 1],
-            topRight: cells[heroCellY - 1][heroCellX + 1],
-            bottomLeft: cells[heroCellY + 1][heroCellX - 1],
-        };
+    render(frameTimeDiff, neighbourCells) {
         const heroRect = {
-            top: this.y,
-            bottom: this.y + this.height,
             left: this.x,
-            right: this.x + this.width,
+            right: this.x + HERO_SIZE,
+            top: this.y,
+            bottom: this.y + HERO_SIZE,
         };
         this.x += this.speedX * frameTimeDiff;
         this.y += this.speedY * frameTimeDiff;
-        if (heroCells.right.type !== "empty" &&
+        if (neighbourCells.right &&
+            neighbourCells.right.type !== "empty" &&
             this.speedX > 0 &&
-            heroRect.right >= heroCells.right.element.x.baseVal.value) {
+            heroRect.right >= neighbourCells.right.element.x.baseVal.value) {
             this.x -= this.speedX * frameTimeDiff;
         }
-        if (heroCells.left.type !== "empty" &&
+        if (neighbourCells.left &&
+            neighbourCells.left.type !== "empty" &&
             this.speedX < 0 &&
-            heroRect.left <= heroCells.left.element.x.baseVal.value + CELL_SIZE) {
+            heroRect.left <= neighbourCells.left.element.x.baseVal.value + CELL_SIZE) {
             this.x -= this.speedX * frameTimeDiff;
         }
-        if (heroCells.bottom.type !== "empty" &&
+        if (neighbourCells.bottom &&
+            neighbourCells.bottom.type !== "empty" &&
             this.speedY > 0 &&
-            heroRect.bottom >= heroCells.bottom.element.y.baseVal.value) {
+            heroRect.bottom >= neighbourCells.bottom.element.y.baseVal.value) {
             this.y -= this.speedY * frameTimeDiff;
         }
-        if (heroCells.top.type !== "empty" &&
+        if (neighbourCells.top &&
+            neighbourCells.top.type !== "empty" &&
             this.speedY < 0 &&
-            heroRect.top <= heroCells.top.element.y.baseVal.value + CELL_SIZE) {
+            heroRect.top <= neighbourCells.top.element.y.baseVal.value + CELL_SIZE) {
             this.y -= this.speedY * frameTimeDiff;
         }
         this.element.x.baseVal.value = this.x;
@@ -137,8 +130,6 @@ export default class Hero {
         } // TODO terminate fungi
     }
     constructor(x, y) {
-        this.width = HERO_SIZE;
-        this.height = HERO_SIZE;
         this.speedX = 0;
         this.speedY = 0;
         this.fungi = [];
