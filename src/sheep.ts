@@ -10,7 +10,7 @@ export default class Sheep {
   demonized: boolean
 
   /**
-   * 1 - positive X, 2 - positive Y, 3 - negative X, 4 - negative Y
+   * 1 - positive X(right), 2 - positive Y(down), 3 - negative X(left), 4 - negative Y(up)
    */
   direction: 1 | 2 | 3 | 4
 
@@ -34,10 +34,10 @@ export default class Sheep {
   t = 0
 
   /** moving along x axis*/
-  private moveX = () => (this.x = this.startX + (this.dx * this.dt) / this.t)
+  // private moveX = () => (this.x = this.startX + (this.dx * this.dt) / this.t)
 
   /** moving along y axis*/
-  private moveY = () => (this.y = this.startY + (this.dy * this.dt) / this.t)
+  // private moveY = () => (this.y = this.startY + (this.dy * this.dt) / this.t)
 
   // TODO: with high chance can be problems at least with speed of sheep
   /**
@@ -50,8 +50,8 @@ export default class Sheep {
     if (dt > 0 && this.dt < this.t) {
       //continue previous move
       this.dt += dt
-      this.moveX()
-      this.moveY()
+      this.x = this.startX + (this.dx * this.dt) / this.t
+      this.y = this.startY + (this.dy * this.dt) / this.t
     } else if (dt === 0) {
       //abort not completion move and/or start new move
       this.dt = 0
@@ -163,7 +163,7 @@ export default class Sheep {
       x4 = 1
     }
 
-    // add directions to array adi, if they are not obstacles
+    // add directions to array adi, if they are not include obstacles in the nearest cell
 
     if (obstacles.indexOf(sheepCells.right.type) === -1) {
       adi = adi.concat(this.bigChanceX(1, x1)) //more chance to do not go back
