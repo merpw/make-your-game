@@ -9,7 +9,7 @@ export class Board {
   public height: number
   public hero: Hero
 
-  // sheep: Sheep[]
+  sheep: Sheep[]
 
   render(frameTimeDiff: number) {
     const heroCell = this.getCell(this.hero.x, this.hero.y)
@@ -18,6 +18,21 @@ export class Board {
     }
     const heroNeighbours = this.getNeighbors(heroCell)
     this.hero.render(frameTimeDiff, heroNeighbours)
+
+    this.sheep.forEach((sheep) => {
+      if (!sheep.targetCell) {
+        const sheepCell = this.getCell(sheep.x, sheep.y)
+        if (!sheepCell) {
+          throw new Error("Sheep is out of bounds")
+        }
+        if (sheepCell.type === "bush") {
+          sheepCell.type = "empty"
+        }
+        const sheepNeighbours = this.getNeighbors(sheepCell)
+        sheep.setRandomDirection(sheepNeighbours)
+      }
+      sheep.render(frameTimeDiff)
+    })
   }
 
   /**
@@ -81,13 +96,11 @@ export class Board {
     const emptyCells = this.getRandomEmptyCells(level.sheepCount + 1)
     const [heroCell, ...sheepCells] = emptyCells
 
-    const sheep = sheepCells.map(
-      (cell) => new Sheep(cell.col, cell.row, false, 0)
-    )
-
     const sheepGroup = svg.querySelector("#sheep") as SVGGElement
-    sheep.forEach((sheep) => {
+    this.sheep = sheepCells.map((cell) => {
+      const sheep = new Sheep(cell, this.getNeighbors(cell))
       sheepGroup.appendChild(sheep.element)
+      return sheep
     })
 
     this.hero = new Hero(heroCell)
@@ -95,7 +108,7 @@ export class Board {
 
     this.width = this.cells[0].length * CELL_SIZE
     this.height = this.cells.length * CELL_SIZE
-
+    console.log(this.sheep)
     svg.viewBox.baseVal.width = this.width
     svg.viewBox.baseVal.height = this.height
   }
