@@ -4,7 +4,8 @@ import { svg, board } from "./game.js";
 import KeyState from "./keys.js";
 import { CELL_SIZE } from "./cell.js";
 const HERO_SPEED = 0.2;
-const HERO_SIZE = CELL_SIZE;
+const HERO_WIDTH = CELL_SIZE * 0.75;
+const HERO_HEIGHT = CELL_SIZE;
 const DIAGONAL_SPEED = HERO_SPEED * (Math.sqrt(2) / 2);
 export default class Hero {
     cloudsXYCoords(cells, x, y) {
@@ -48,54 +49,72 @@ export default class Hero {
             return;
         const heroRect = {
             left: this.x,
-            right: this.x + HERO_SIZE,
+            right: this.x + HERO_WIDTH,
             top: this.y,
-            bottom: this.y + HERO_SIZE,
+            bottom: this.y + HERO_HEIGHT,
         };
-        let dx = this.speedX * frameTimeDiff;
-        let dy = this.speedY * frameTimeDiff;
-        if (neighbourCells.right &&
-            neighbourCells.right.type !== "empty" &&
-            this.speedX > 0 &&
-            heroRect.right >= neighbourCells.right.element.x.baseVal.value) {
-            dx = 0;
-        }
-        if (neighbourCells.left &&
-            neighbourCells.left.type !== "empty" &&
-            this.speedX < 0 &&
-            heroRect.left <= neighbourCells.left.element.x.baseVal.value + CELL_SIZE) {
-            dx = 0;
-        }
-        if (neighbourCells.bottom &&
-            neighbourCells.bottom.type !== "empty" &&
-            this.speedY > 0 &&
-            heroRect.bottom >= neighbourCells.bottom.element.y.baseVal.value) {
-            dy = 0;
-        }
-        if (neighbourCells.top &&
-            neighbourCells.top.type !== "empty" &&
-            this.speedY < 0 &&
-            heroRect.top <= neighbourCells.top.element.y.baseVal.value + CELL_SIZE) {
-            dy = 0;
-        }
-        // TODO: refactor collision detection
-        // for (const ways in neighbourCells) {
-        //   const cell = neighbourCells[ways as keyof NeighbourCells]
-        //   if (!cell) continue
-        //   const cellRect = {
-        //     left: cell.x,
-        //     right: cell.x + CELL_SIZE,
-        //     top: cell.y,
-        //     bottom: cell.y + CELL_SIZE,
-        //   }
-        //   if (isColliding(heroRect, cellRect)) {
-        //     dx = 0
-        //     dy = 0
-        //     break
-        //   }
-        // }
+        const dx = this.speedX * frameTimeDiff;
+        const dy = this.speedY * frameTimeDiff;
         this.x += dx;
         this.y += dy;
+        const collisions = Object.entries(neighbourCells).filter(([, cell]) => cell &&
+            cell.type !== "empty" &&
+            isColliding(heroRect, {
+                left: cell.element.x.baseVal.value,
+                right: cell.element.x.baseVal.value + CELL_SIZE,
+                top: cell.element.y.baseVal.value,
+                bottom: cell.element.y.baseVal.value + CELL_SIZE,
+            }));
+        const basicCollisions = collisions.filter(([way]) => way === "right" || way === "left" || way === "bottom" || way === "top");
+        const diagonalCollision = collisions.find(([way]) => way === "bottomRight" ||
+            way === "bottomLeft" ||
+            way === "topRight" ||
+            way === "topLeft");
+        basicCollisions.forEach(([way, cell]) => {
+            switch (way) {
+                case "right":
+                    this.x = cell.element.x.baseVal.value - HERO_WIDTH;
+                    break;
+                case "left":
+                    this.x = cell.element.x.baseVal.value + CELL_SIZE;
+                    break;
+                case "bottom":
+                    this.y = cell.element.y.baseVal.value - HERO_HEIGHT;
+                    break;
+                case "top":
+                    this.y = cell.element.y.baseVal.value + CELL_SIZE;
+                    break;
+            }
+        });
+        if (basicCollisions.length === 0 && diagonalCollision) {
+            const [way] = diagonalCollision;
+            switch (way) {
+                case "bottomRight":
+                    if (dx > 0)
+                        this.y -= dx;
+                    if (dy > 0)
+                        this.x -= dy;
+                    break;
+                case "bottomLeft":
+                    if (dx < 0)
+                        this.y += dx;
+                    if (dy > 0)
+                        this.x += dy;
+                    break;
+                case "topRight":
+                    if (dx > 0)
+                        this.y += dx;
+                    if (dy < 0)
+                        this.x += dy;
+                    break;
+                case "topLeft":
+                    if (dx < 0)
+                        this.y -= dx;
+                    if (dy < 0)
+                        this.x -= dy;
+                    break;
+            }
+        }
         this.element.x.baseVal.value = this.x;
         this.element.y.baseVal.value = this.y;
     }
