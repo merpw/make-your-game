@@ -84,10 +84,10 @@ export default class Hero {
         cell &&
         cell.type !== "empty" &&
         isColliding(heroRect, {
-          left: cell.element.x.baseVal.value,
-          right: cell.element.x.baseVal.value + CELL_SIZE,
-          top: cell.element.y.baseVal.value,
-          bottom: cell.element.y.baseVal.value + CELL_SIZE,
+          left: cell.x,
+          right: cell.x + CELL_SIZE,
+          top: cell.y,
+          bottom: cell.y + CELL_SIZE,
         })
     ) as [keyof typeof neighbourCells, Cell][]
 
@@ -107,16 +107,16 @@ export default class Hero {
     basicCollisions.forEach(([way, cell]) => {
       switch (way) {
         case "right":
-          this.x = cell.element.x.baseVal.value - HERO_WIDTH
+          this.x = cell.x - HERO_WIDTH
           break
         case "left":
-          this.x = cell.element.x.baseVal.value + CELL_SIZE
+          this.x = cell.x + CELL_SIZE
           break
         case "bottom":
-          this.y = cell.element.y.baseVal.value - HERO_HEIGHT
+          this.y = cell.y - HERO_HEIGHT
           break
         case "top":
-          this.y = cell.element.y.baseVal.value + CELL_SIZE
+          this.y = cell.y + CELL_SIZE
           break
       }
     })
