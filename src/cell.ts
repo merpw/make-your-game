@@ -32,3 +32,14 @@ export class Cell {
     this.element.style.fill = CELL_TYPES[typeCode].color
   }
 }
+
+export type NeighbourCells = {
+  top: Cell | null
+  right: Cell | null
+  bottom: Cell | null
+  left: Cell | null
+  topLeft: Cell | null
+  topRight: Cell | null
+  bottomLeft: Cell | null
+  bottomRight: Cell | null
+}

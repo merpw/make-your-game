@@ -1,18 +1,7 @@
 import Hero from "./hero.js"
 import { Level } from "./levels"
 import Sheep from "./sheep.js"
-import { Cell, CELL_SIZE } from "./cell.js"
-
-export type NeighbourCells = {
-  top: Cell | null
-  right: Cell | null
-  bottom: Cell | null
-  left: Cell | null
-  topLeft: Cell | null
-  topRight: Cell | null
-  bottomLeft: Cell | null
-  bottomRight: Cell | null
-}
+import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
 
 export class Board {
   public cells: Cell[][]
@@ -46,7 +35,7 @@ export class Board {
    * Returns the neighbours of the given cell
    * @param cell - the cell to get the neighbours of
    */
-  getNeighbors(cell: Cell) {
+  getNeighbors(cell: Cell): NeighbourCells {
     return {
       right: this.cells[cell.row]?.[cell.col + 1] || null,
       left: this.cells[cell.row]?.[cell.col - 1] || null,
