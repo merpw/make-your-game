@@ -11,20 +11,20 @@ type CellType = (typeof CELL_TYPES)[number]["type"]
 export class Cell {
   type: CellType
   element: SVGRectElement
-  x: number
-  y: number
+  col: number
+  row: number
 
-  constructor(typeCode: number, x: number, y: number) {
+  constructor(typeCode: number, col: number, row: number) {
     this.type = CELL_TYPES[typeCode].type
     this.element = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "rect"
     )
-    this.x = x
-    this.y = y
+    this.col = col
+    this.row = row
 
-    this.element.x.baseVal.value = this.x * CELL_SIZE
-    this.element.y.baseVal.value = this.y * CELL_SIZE
+    this.element.x.baseVal.value = this.col * CELL_SIZE
+    this.element.y.baseVal.value = this.row * CELL_SIZE
 
     this.element.width.baseVal.value = CELL_SIZE
     this.element.height.baseVal.value = CELL_SIZE

@@ -48,14 +48,14 @@ export class Board {
    */
   getNeighbors(cell: Cell) {
     return {
-      right: this.cells[cell.y]?.[cell.x + 1] || null,
-      left: this.cells[cell.y]?.[cell.x - 1] || null,
-      bottom: this.cells[cell.y + 1]?.[cell.x] || null,
-      top: this.cells[cell.y - 1]?.[cell.x] || null,
-      bottomRight: this.cells[cell.y + 1]?.[cell.x + 1] || null,
-      topLeft: this.cells[cell.y - 1]?.[cell.x - 1] || null,
-      topRight: this.cells[cell.y - 1]?.[cell.x + 1] || null,
-      bottomLeft: this.cells[cell.y + 1]?.[cell.x - 1] || null,
+      right: this.cells[cell.row]?.[cell.col + 1] || null,
+      left: this.cells[cell.row]?.[cell.col - 1] || null,
+      bottom: this.cells[cell.row + 1]?.[cell.col] || null,
+      top: this.cells[cell.row - 1]?.[cell.col] || null,
+      bottomRight: this.cells[cell.row + 1]?.[cell.col + 1] || null,
+      topLeft: this.cells[cell.row - 1]?.[cell.col - 1] || null,
+      topRight: this.cells[cell.row - 1]?.[cell.col + 1] || null,
+      bottomLeft: this.cells[cell.row + 1]?.[cell.col - 1] || null,
     }
   }
 
@@ -92,7 +92,9 @@ export class Board {
     const emptyCells = this.getRandomEmptyCells(level.sheepCount + 1)
     const [heroCell, ...sheepCells] = emptyCells
 
-    const sheep = sheepCells.map((cell) => new Sheep(cell.x, cell.y, false, 0))
+    const sheep = sheepCells.map(
+      (cell) => new Sheep(cell.col, cell.row, false, 0)
+    )
 
     const sheepGroup = svg.querySelector("#sheep") as SVGGElement
     sheep.forEach((sheep) => {

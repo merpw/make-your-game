@@ -159,12 +159,12 @@ export default class Hero {
         this.speedY = 0;
         this.fungi = [];
         this.element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        this.element.height.baseVal.value = HERO_SIZE;
-        this.element.width.baseVal.value = HERO_SIZE;
+        this.element.width.baseVal.value = HERO_WIDTH;
+        this.element.height.baseVal.value = HERO_HEIGHT;
         this.element.style.fill = "rebeccapurple";
         this.element.id = "mainHero";
-        this.x = cell.x * CELL_SIZE;
-        this.y = cell.y * CELL_SIZE;
+        this.x = cell.col * CELL_SIZE + (CELL_SIZE - HERO_WIDTH) / 2;
+        this.y = cell.row * CELL_SIZE + (CELL_SIZE - HERO_HEIGHT) / 2;
         this.element.x.baseVal.value = this.x;
         this.element.y.baseVal.value = this.y;
     }

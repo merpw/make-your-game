@@ -29,14 +29,14 @@ export class Board {
     getNeighbors(cell) {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         return {
-            right: ((_a = this.cells[cell.y]) === null || _a === void 0 ? void 0 : _a[cell.x + 1]) || null,
-            left: ((_b = this.cells[cell.y]) === null || _b === void 0 ? void 0 : _b[cell.x - 1]) || null,
-            bottom: ((_c = this.cells[cell.y + 1]) === null || _c === void 0 ? void 0 : _c[cell.x]) || null,
-            top: ((_d = this.cells[cell.y - 1]) === null || _d === void 0 ? void 0 : _d[cell.x]) || null,
-            bottomRight: ((_e = this.cells[cell.y + 1]) === null || _e === void 0 ? void 0 : _e[cell.x + 1]) || null,
-            topLeft: ((_f = this.cells[cell.y - 1]) === null || _f === void 0 ? void 0 : _f[cell.x - 1]) || null,
-            topRight: ((_g = this.cells[cell.y - 1]) === null || _g === void 0 ? void 0 : _g[cell.x + 1]) || null,
-            bottomLeft: ((_h = this.cells[cell.y + 1]) === null || _h === void 0 ? void 0 : _h[cell.x - 1]) || null,
+            right: ((_a = this.cells[cell.row]) === null || _a === void 0 ? void 0 : _a[cell.col + 1]) || null,
+            left: ((_b = this.cells[cell.row]) === null || _b === void 0 ? void 0 : _b[cell.col - 1]) || null,
+            bottom: ((_c = this.cells[cell.row + 1]) === null || _c === void 0 ? void 0 : _c[cell.col]) || null,
+            top: ((_d = this.cells[cell.row - 1]) === null || _d === void 0 ? void 0 : _d[cell.col]) || null,
+            bottomRight: ((_e = this.cells[cell.row + 1]) === null || _e === void 0 ? void 0 : _e[cell.col + 1]) || null,
+            topLeft: ((_f = this.cells[cell.row - 1]) === null || _f === void 0 ? void 0 : _f[cell.col - 1]) || null,
+            topRight: ((_g = this.cells[cell.row - 1]) === null || _g === void 0 ? void 0 : _g[cell.col + 1]) || null,
+            bottomLeft: ((_h = this.cells[cell.row + 1]) === null || _h === void 0 ? void 0 : _h[cell.col - 1]) || null,
         };
     }
     /**
@@ -66,7 +66,7 @@ export class Board {
         }));
         const emptyCells = this.getRandomEmptyCells(level.sheepCount + 1);
         const [heroCell, ...sheepCells] = emptyCells;
-        const sheep = sheepCells.map((cell) => new Sheep(cell.x, cell.y, false, 0));
+        const sheep = sheepCells.map((cell) => new Sheep(cell.col, cell.row, false, 0));
         const sheepGroup = svg.querySelector("#sheep");
         sheep.forEach((sheep) => {
             sheepGroup.appendChild(sheep.element);
