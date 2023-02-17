@@ -12,12 +12,18 @@ export const board = new Board(svg, level1)
 takeControl(board)
 
 let lastTime = 0
+let lastFrameTime = 1000 / FPS
 const step: FrameRequestCallback = (timestamp: number) => {
   const frameTime = timestamp - lastTime
   lastTime = timestamp
 
-  board.render(frameTime / NORMAL_FRAME_TIME)
+  if (frameTime < 2 * lastFrameTime) {
+    // limit the frame time to 2x the last frame time
+    // to avoid huge jumps in the game state
+    board.render(frameTime / NORMAL_FRAME_TIME)
+  }
 
+  lastFrameTime = frameTime
   window.requestAnimationFrame(step)
 }
 
