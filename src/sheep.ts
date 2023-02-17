@@ -96,7 +96,7 @@ export default class Sheep {
     this.targetCell = targetCell
   }
 
-  constructor(cell: Cell, neighbours: NeighbourCells, demonized = false) {
+  constructor(cell: Cell, neighbours: NeighbourCells, demonized = true) {
     this.element = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "rect"
