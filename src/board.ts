@@ -7,10 +7,23 @@ export class Board {
   public cells: Cell[][]
   svg: SVGSVGElement
   public hero: Hero
+  sheep: Sheep[] = []
 
-  sheep: Sheep[]
+  get isPaused() {
+    return this._isPaused
+  }
+
+  set isPaused(value: boolean) {
+    this._isPaused = value
+    value
+      ? this.svg.classList.add("paused")
+      : this.svg.classList.remove("paused")
+  }
+
+  _isPaused = false
 
   render(frameTimeDiff: number) {
+    if (this.isPaused) return
     const heroCell = this.getCell(this.hero.x, this.hero.y)
     if (!heroCell) {
       throw new Error("Hero is out of bounds")

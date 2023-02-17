@@ -11,17 +11,8 @@ const CONTROLS = {
   PlaceFungi: "f",
   TerminateFungi: "t",
 
-const KeyState = {
-  ArrowRight: false,
-  ArrowLeft: false,
-  ArrowUp: false,
-  ArrowDown: false,
-  d: false, // second right key
-  a: false, // second left key
-  w: false, // second up key
-  s: false, // second down key
-  o: false, // fung mount key
-  p: false, // fung terminate key
+  Restart: "r",
+  Pause: "p",
 }
 
 const MoveInputState = new Map<string, boolean>(
@@ -47,6 +38,16 @@ const takeControl = (board: Board) => {
       MoveInputState.set(key, true)
       board.hero.way = getWay()
       return
+    }
+    if (key === CONTROLS.Pause) {
+      board.isPaused = !board.isPaused
+      return
+    }
+    if (board.isPaused) {
+      if (key === CONTROLS.Restart) {
+        console.log("not implemented yet")
+        return
+      }
     }
   })
 

@@ -28,6 +28,18 @@ main {
   border-radius: 10px;
 }
 
+#pause {
+  border-radius: 1px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  margin: 6px;
+}
+
+svg.paused #pause {
+  display: block;
+  backdrop-filter: blur(3px);
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
