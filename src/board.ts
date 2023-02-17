@@ -5,8 +5,7 @@ import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
 
 export class Board {
   public cells: Cell[][]
-  public width: number
-  public height: number
+  svg: SVGSVGElement
   public hero: Hero
 
   sheep: Sheep[]
@@ -30,6 +29,19 @@ export class Board {
         }
         const sheepNeighbours = this.getNeighbors(sheepCell)
         sheep.setRandomDirection(sheepNeighbours)
+      }
+      if (
+        sheep.demonized &&
+        (heroCell === sheep.targetCell ||
+          Object.values(heroNeighbours).includes(sheep.targetCell)) &&
+        this.hero.isColliding({
+          left: sheep.x,
+          right: sheep.x + CELL_SIZE,
+          top: sheep.y,
+          bottom: sheep.y + CELL_SIZE,
+        })
+      ) {
+        this.hero.spawn(this.getRandomEmptyCell())
       }
       sheep.render(frameTimeDiff)
     })
@@ -63,17 +75,29 @@ export class Board {
     }
   }
 
+  /** Returns true if the given cell is empty and safe */
+  isCellEmpty = (cell: Cell) =>
+    cell.type === "empty" &&
+    !this.sheep.some(
+      (sheep) =>
+        sheep.demonized &&
+        (sheep.targetCell === cell || this.getCell(sheep.x, sheep.y) === cell)
+    )
+
   /**
-   * Returns an array of unique random empty cells with the given length
+   * Returns an array of unique random empty and safe cells with the given length
    * @param count - the number of empty cells to find
    */
   getRandomEmptyCells(count: number): Cell[] {
     return this.cells
       .flat()
-      .filter((cell) => cell.type === "empty")
+      .filter((cell) => this.isCellEmpty(cell))
       .sort(() => Math.random() - 0.5)
       .slice(0, count)
   }
+
+  /** Returns a random empty and safe cell */
+  getRandomEmptyCell = () => this.getRandomEmptyCells(1)[0]
 
   constructor(svg: SVGSVGElement, level: Level) {
     const board = level.board
@@ -93,23 +117,20 @@ export class Board {
       })
     )
 
-    const emptyCells = this.getRandomEmptyCells(level.sheepCount + 1)
-    const [heroCell, ...sheepCells] = emptyCells
-
+    const sheepCells = this.getRandomEmptyCells(level.sheepCount)
     const sheepGroup = svg.querySelector("#sheep") as SVGGElement
     this.sheep = sheepCells.map((cell) => {
       const sheep = new Sheep(cell, this.getNeighbors(cell))
       sheepGroup.appendChild(sheep.element)
       return sheep
     })
-
+    const heroCell = this.getRandomEmptyCell()
     this.hero = new Hero(heroCell)
+
     svg.getElementById("players").appendChild(this.hero.element)
 
-    this.width = this.cells[0].length * CELL_SIZE
-    this.height = this.cells.length * CELL_SIZE
-    console.log(this.sheep)
-    svg.viewBox.baseVal.width = this.width
-    svg.viewBox.baseVal.height = this.height
+    svg.viewBox.baseVal.width = this.cells[0].length * CELL_SIZE
+    svg.viewBox.baseVal.height = this.cells.length * CELL_SIZE
+    this.svg = svg
   }
 }
