@@ -1,12 +1,27 @@
 export const CELL_SIZE = 5
 
-const CELL_TYPES = [
-  { type: "empty", color: "white" },
-  { type: "wall", color: "black" },
-  { type: "bush", color: "green" },
-] as const
+const CELL_CODES = {
+  0: "empty",
+  1: "wall",
+  2: "bush",
+} as const
 
-type CellType = (typeof CELL_TYPES)[number]["type"]
+/** Cell codes defined in {@link CELL_CODES} */
+export type CellCode = keyof typeof CELL_CODES
+
+type CellType = (typeof CELL_CODES)[CellCode]
+
+const TYPE_STYLES = {
+  empty: {
+    color: "white",
+  },
+  wall: {
+    color: "black",
+  },
+  bush: {
+    color: "green",
+  },
+} as const
 
 export class Cell {
   get type(): CellType {
@@ -14,8 +29,7 @@ export class Cell {
   }
 
   set type(value: CellType) {
-    const type = CELL_TYPES.find((t) => t.type === value)
-    this.element.style.fill = type?.color || "white"
+    this.element.style.fill = TYPE_STYLES[value].color
     this._type = value
   }
 
@@ -28,12 +42,12 @@ export class Cell {
   /** y coordinate in svg coordinates */
   public y: number
 
-  constructor(typeCode: number, col: number, row: number) {
+  constructor(typeCode: CellCode, col: number, row: number) {
     this.element = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "rect"
     )
-    this.type = CELL_TYPES[typeCode].type
+    this.type = CELL_CODES[typeCode]
 
     this.col = col
     this.row = row

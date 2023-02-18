@@ -1,8 +1,7 @@
+import { CellCode } from "./cell"
+
 export type Level = {
-  /**
-   * 0: empty, 1: wall, 2: bush
-   */
-  board: (0 | 1 | 2)[][]
+  board: CellCode[][]
   sheepCount: number
 }
 
