@@ -39,10 +39,10 @@ export default class Hero {
   public set way({ up, down, left, right }: Way) {
     this.speedX = 0
     this.speedY = 0
-    if (up) this.speedY = -HERO_SPEED
-    if (down) this.speedY = HERO_SPEED
-    if (left) this.speedX = -HERO_SPEED
-    if (right) this.speedX = HERO_SPEED
+    if (up) this.speedY -= HERO_SPEED
+    if (down) this.speedY += HERO_SPEED
+    if (left) this.speedX -= HERO_SPEED
+    if (right) this.speedX += HERO_SPEED
 
     if (this.speedX !== 0 && this.speedY !== 0) {
       this.speedX *= DIAGONAL_SPEED / HERO_SPEED
