@@ -67,6 +67,9 @@ const takeControl = (board: Board) => {
       return
     }
   })
+  window.addEventListener("blur", () => {
+    board.isPaused = true
+  })
 }
 
 export default takeControl
