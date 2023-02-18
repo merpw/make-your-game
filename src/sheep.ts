@@ -15,7 +15,8 @@ const oppositeDirections: Record<Direction, Direction> = {
   top: "bottom",
 }
 export default class Sheep {
-  element: SVGRectElement
+  public element: SVGRectElement
+
   /** x coordinate in svg coordinates. */
   x: number
   /** y coordinate in svg coordinates. */
@@ -62,8 +63,8 @@ export default class Sheep {
   }
 
   /**
-   * Sets random {direction} and {targetCell} from one of the available directions
-   * @param neighbours - object with neighbor cells
+   * Sets random {@link direction} and {@link targetCell} from one of the available directions
+   * @param neighbours - object with {@link NeighbourCells| neighbour cells}
    */
   setRandomDirection(neighbours: NeighbourCells) {
     if (this.direction && Math.random() - (1 - BACK_PROBABILITY) >= 0) {

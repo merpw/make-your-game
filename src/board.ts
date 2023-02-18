@@ -4,26 +4,27 @@ import Sheep from "./sheep.js"
 import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
 
 export class Board {
-  public cells: Cell[][]
-  svg: SVGSVGElement
   public hero: Hero
-  sheep: Sheep[] = []
+  private readonly cells: Cell[][]
+  private svg: SVGSVGElement
+  private sheep: Sheep[] = []
 
-  get isPaused() {
+  public get isPaused() {
     return this._isPaused
   }
 
-  set isPaused(value: boolean) {
+  public set isPaused(value: boolean) {
     this._isPaused = value
     value
       ? this.svg.classList.add("paused")
       : this.svg.classList.remove("paused")
   }
 
-  _isPaused = false
+  private _isPaused = false
 
-  render(frameTimeDiff: number) {
+  public render(frameTimeDiff: number) {
     if (this.isPaused) return
+
     const heroCell = this.getCell(this.hero.x, this.hero.y)
     if (!heroCell) {
       throw new Error("Hero is out of bounds")
@@ -62,10 +63,10 @@ export class Board {
 
   /**
    * Returns the cell at the given coordinates
-   * @param x - x (column) coordinate in svg coordinates
-   * @param y - y (row) coordinate in svg coordinates
+   * @param x - horizontal coordinate in svg coordinates
+   * @param y - vertical coordinate in svg coordinates
    */
-  getCell(x: number, y: number): Cell | null {
+  private getCell(x: number, y: number): Cell | null {
     const cellX = Math.floor((x + CELL_SIZE / 2) / CELL_SIZE)
     const cellY = Math.floor((y + CELL_SIZE / 2) / CELL_SIZE)
     return this.cells[cellY]?.[cellX] || null
@@ -73,9 +74,9 @@ export class Board {
 
   /**
    * Returns the neighbours of the given cell
-   * @param cell - the cell to get the neighbours of
+   * @param cell - the {@link Cell} to get the neighbours of
    */
-  getNeighbors(cell: Cell): NeighbourCells {
+  private getNeighbors(cell: Cell): NeighbourCells {
     return {
       right: this.cells[cell.row]?.[cell.col + 1] || null,
       left: this.cells[cell.row]?.[cell.col - 1] || null,
@@ -89,7 +90,7 @@ export class Board {
   }
 
   /** Returns true if the given cell is empty and safe */
-  isCellEmpty = (cell: Cell) =>
+  private isCellEmpty = (cell: Cell) =>
     cell.type === "empty" &&
     !this.sheep.some(
       (sheep) =>
@@ -101,7 +102,7 @@ export class Board {
    * Returns an array of unique random empty and safe cells with the given length
    * @param count - the number of empty cells to find
    */
-  getRandomEmptyCells(count: number): Cell[] {
+  private getRandomEmptyCells(count: number): Cell[] {
     return this.cells
       .flat()
       .filter((cell) => this.isCellEmpty(cell))
@@ -110,7 +111,7 @@ export class Board {
   }
 
   /** Returns a random empty and safe cell */
-  getRandomEmptyCell = () => this.getRandomEmptyCells(1)[0]
+  private getRandomEmptyCell = () => this.getRandomEmptyCells(1)[0]
 
   constructor(svg: SVGSVGElement, level: Level) {
     const board = level.board

@@ -20,13 +20,13 @@ export class Cell {
   }
 
   private _type!: CellType
-  element: SVGRectElement
-  col: number
-  row: number
+  public element: SVGRectElement
+  public col: number
+  public row: number
   /** x coordinate in svg coordinates */
-  x: number
+  public x: number
   /** y coordinate in svg coordinates */
-  y: number
+  public y: number
 
   constructor(typeCode: number, col: number, row: number) {
     this.element = document.createElementNS(

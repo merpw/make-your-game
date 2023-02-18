@@ -1,6 +1,7 @@
 import { Way } from "./hero"
 import { Board } from "./board"
 
+/** Configuration of the control keys. */
 const CONTROLS = {
   move: {
     Up: ["w", "ArrowUp"],
@@ -15,14 +16,19 @@ const CONTROLS = {
   Pause: "p",
 }
 
-const MoveInputState = new Map<string, boolean>(
+/**
+ * The state of the keys that control the game.
+ * @example
+ * MoveInputState.get("w")
+ * // false
+ * */
+export const MoveInputState = new Map<string, boolean>(
   Object.values(CONTROLS.move).flatMap((keys) =>
     keys.map((key) => [key, false])
   )
 )
 
-MoveInputState.get("ArrayExpression")
-
+/** Get the current way of the Hero according to the {@link MoveInputState| state of the control keys} */
 const getWay = (): Way => ({
   up: CONTROLS.move.Up.some((key) => MoveInputState.get(key)),
   down: CONTROLS.move.Down.some((key) => MoveInputState.get(key)),
@@ -30,6 +36,7 @@ const getWay = (): Way => ({
   right: CONTROLS.move.Right.some((key) => MoveInputState.get(key)),
 })
 
+/** Take control of the {@link Board} using the keyboard. */
 const takeControl = (board: Board) => {
   window.addEventListener("keydown", (event: KeyboardEvent) => {
     const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key

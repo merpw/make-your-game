@@ -1,6 +1,5 @@
-import Cloud from "./cloud.js"
 import Fung from "./fung.js"
-import { svg, board } from "./game.js"
+import { svg } from "./game.js"
 import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
 
 const HERO_SPEED = 0.2
@@ -10,14 +9,14 @@ const HERO_HEIGHT = CELL_SIZE
 const DIAGONAL_SPEED = HERO_SPEED * (Math.sqrt(2) / 2)
 
 export default class Hero {
-  element: SVGRectElement
+  public element: SVGRectElement
 
   /** Hero's x coordinate in svg coordinates. */
-  get x(): number {
+  public get x(): number {
     return this._x
   }
 
-  set x(value: number) {
+  public set x(value: number) {
     this.element.x.baseVal.value = value
     this._x = value
   }
@@ -25,20 +24,19 @@ export default class Hero {
   private _x!: number
 
   /** Hero's y coordinate in svg coordinates. */
-  get y() {
+  public get y() {
     return this._y
   }
 
-  set y(value: number) {
+  public set y(value: number) {
     this.element.y.baseVal.value = value
     this._y = value
   }
 
   private _y!: number
 
-  set way(value: Way) {
-    const { up, down, left, right } = value
-
+  /** Hero's {@link Way}. */
+  public set way({ up, down, left, right }: Way) {
     this.speedX = 0
     this.speedY = 0
     if (up) this.speedY = -HERO_SPEED
@@ -52,8 +50,8 @@ export default class Hero {
     }
   }
 
-  speedX = 0
-  speedY = 0
+  private speedX = 0
+  private speedY = 0
 
   fungi: Fung[] = []
 
@@ -203,12 +201,13 @@ export default class Hero {
       const x = fung.element.x.baseVal.value
       const y = fung.element.y.baseVal.value
       fung.element.remove()
-      const cloudsXY = this.cloudsXYCoords(board.cells, x, y)
-      cloudsXY.forEach((c) => {
-        const cloud = new Cloud(c.x, c.y)
-        clouds.appendChild(cloud.element)
-        cloud.boom()
-      })
+      // const cloudsXY = this.cloudsXYCoords(board.cells, x, y)
+      // cloudsXY.forEach((c) => {
+      //   const cloud = new Cloud(c.x, c.y)
+      //   clouds.appendChild(cloud.element)
+      //   cloud.boom()
+      // })
+      // TODO: change to prevent private board.cells usage
     })
     this.fungi = []
   }
@@ -220,9 +219,9 @@ export default class Hero {
   }
 
   /**
-   * Create a new Hero in the given cell
+   * Create a new {@link Hero} in the given cell
    *
-   * @param cell the cell where the hero will be created
+   * @param cell - the cell where the hero will be created
    */
   constructor(cell: Cell) {
     this.element = document.createElementNS(
