@@ -95,7 +95,13 @@ export default class Sheep {
    * @param neighbours - object with {@link NeighbourCells| neighbour cells}
    */
   setRandomDirection(neighbours: NeighbourCells) {
-    if (this.direction && Math.random() - (1 - BACK_PROBABILITY) >= 0) {
+    const backDirection = oppositeDirections[this.direction]
+    const backCell = neighbours[backDirection]
+
+    if (
+      backCell?.type === "empty" &&
+      Math.random() - (1 - BACK_PROBABILITY) >= 0
+    ) {
       this.direction = oppositeDirections[this.direction]
       this.targetCell = neighbours[this.direction]
       return
@@ -105,8 +111,8 @@ export default class Sheep {
       .filter(
         ([way, cell]) =>
           cell &&
-          cell.type !== "wall" &&
-          (this.demonized ? cell.type !== "bush" : true) &&
+          (cell.type === "empty" ||
+            (!this.demonized && cell.type === "bush")) &&
           (way === "right" ||
             way === "bottom" ||
             way === "left" ||
@@ -116,10 +122,16 @@ export default class Sheep {
 
     availableDirections.sort(() => Math.random() - 0.5)
 
-    const [direction, targetCell] =
-      availableDirections.find(
-        ([way]) => way !== oppositeDirections[this.direction]
-      ) || availableDirections[0]
+    if (availableDirections.length === 0) {
+      this.targetCell = null
+      this.direction = backDirection
+      // TODO: maybe add some animation for locked sheep
+      return
+    }
+
+    const [direction, targetCell] = availableDirections.find(
+      ([way]) => way !== oppositeDirections[this.direction]
+    ) || [backDirection, backCell]
 
     this.direction = direction
     this.targetCell = targetCell

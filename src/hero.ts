@@ -1,15 +1,16 @@
-import Fung from "./fung.js"
-import { svg } from "./game.js"
 import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
 
 const HERO_SPEED = 0.2
 const HERO_WIDTH = CELL_SIZE * 0.75
 const HERO_HEIGHT = CELL_SIZE
 
+const MAX_FUNGI = 4
+
 const DIAGONAL_SPEED = HERO_SPEED * (Math.sqrt(2) / 2)
 
 export default class Hero {
   public element: SVGRectElement
+  public cell!: Cell // there's ! because it's set in spawn()
 
   /** Hero's x coordinate in svg coordinates. */
   public get x(): number {
@@ -53,7 +54,7 @@ export default class Hero {
   private speedX = 0
   private speedY = 0
 
-  fungi: Fung[] = []
+  fungiCells: Cell[] = []
 
   cloudsXYCoords(cells: Cell[][], x: number, y: number) {
     // TODO: refactor this
@@ -94,9 +95,14 @@ export default class Hero {
     return cloudsCoords
   }
 
-  render(frameTimeDiff: number, neighbourCells: NeighbourCells) {
+  render(
+    frameTimeDiff: number,
+    currentCell: Cell,
+    neighbourCells: NeighbourCells
+  ) {
     if (this.speedX === 0 && this.speedY === 0) return
 
+    this.cell = currentCell
     const dx = this.speedX * frameTimeDiff
     const dy = this.speedY * frameTimeDiff
 
@@ -171,49 +177,22 @@ export default class Hero {
     this.y = newY
   }
 
-  placeFungi = () => {
-    if (this.fungi.length < 4) {
-      // TODO HARDCODED constant for the max number of fungi
-      const fungibox = svg.querySelector("#fungi") as SVGGElement
-      // determine the position of the new fung, it should be in the center of the cell
-      const nearCellCenterX =
-        Math.floor((this.x + CELL_SIZE / 2) / CELL_SIZE) * CELL_SIZE
-      const nearCellCenterY =
-        Math.floor((this.y + CELL_SIZE / 2) / CELL_SIZE) * CELL_SIZE
-      if (
-        !this.fungi.some(
-          (fung) =>
-            fung.element.x.baseVal.value === nearCellCenterX &&
-            fung.element.y.baseVal.value === nearCellCenterY
-        )
-      ) {
-        // the cell is not already occupied by a fung
-        const fung = new Fung(nearCellCenterX, nearCellCenterY)
-        this.fungi.push(fung)
-        fungibox.appendChild(fung.element)
-      }
-    }
+  public placeFungi = () => {
+    if (this.fungiCells.length == MAX_FUNGI || this.cell.type === "fungi")
+      return
+    this.cell.type = "fungi"
+    this.fungiCells.push(this.cell)
   }
 
-  terminateFungi() {
-    const clouds = svg.querySelector("#clouds") as SVGGElement
-    this.fungi.forEach((fung) => {
-      const x = fung.element.x.baseVal.value
-      const y = fung.element.y.baseVal.value
-      fung.element.remove()
-      // const cloudsXY = this.cloudsXYCoords(board.cells, x, y)
-      // cloudsXY.forEach((c) => {
-      //   const cloud = new Cloud(c.x, c.y)
-      //   clouds.appendChild(cloud.element)
-      //   cloud.boom()
-      // })
-      // TODO: change to prevent private board.cells usage
-    })
-    this.fungi = []
+  public terminateFungi() {
+    const fungiCell = this.fungiCells.shift()
+    if (!fungiCell) return
+    fungiCell.type = "empty"
   }
 
   /** Spawn the hero in the given cell */
-  spawn = (cell: Cell) => {
+  public spawn(cell: Cell) {
+    this.cell = cell
     this.x = cell.col * CELL_SIZE + (CELL_SIZE - HERO_WIDTH) / 2
     this.y = cell.row * CELL_SIZE + (CELL_SIZE - HERO_HEIGHT) / 2
   }
@@ -237,7 +216,7 @@ export default class Hero {
     this.spawn(cell)
   }
 
-  isColliding(rect: Rect) {
+  public isColliding(rect: Rect) {
     const heroRect = {
       left: this.x,
       right: this.x + HERO_WIDTH,

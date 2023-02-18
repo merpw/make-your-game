@@ -55,6 +55,15 @@ const takeControl = (board: Board) => {
         console.log("not implemented yet")
         return
       }
+      return
+    }
+    if (key === CONTROLS.PlaceFungi) {
+      board.hero.placeFungi()
+      return
+    }
+    if (key === CONTROLS.TerminateFungi) {
+      board.hero.terminateFungi()
+      return
     }
   })
 

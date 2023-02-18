@@ -9,7 +9,7 @@ const CELL_CODES = {
 /** Cell codes defined in {@link CELL_CODES} */
 export type CellCode = keyof typeof CELL_CODES
 
-type CellType = (typeof CELL_CODES)[CellCode]
+type CellType = (typeof CELL_CODES)[CellCode] | "fungi"
 
 const TYPE_STYLES = {
   empty: {
@@ -20,6 +20,9 @@ const TYPE_STYLES = {
   },
   bush: {
     color: "green",
+  },
+  fungi: {
+    color: "#9B0099",
   },
 } as const
 

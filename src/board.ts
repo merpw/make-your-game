@@ -30,7 +30,7 @@ export class Board {
       throw new Error("Hero is out of bounds")
     }
     const heroNeighbours = this.getNeighbors(heroCell)
-    this.hero.render(frameTimeDiff, heroNeighbours)
+    this.hero.render(frameTimeDiff, heroCell, heroNeighbours)
 
     this.sheep.forEach((sheep) => {
       if (!sheep.targetCell) {
@@ -50,8 +50,6 @@ export class Board {
       this.sheep.some(
         (sheep) =>
           sheep.demonized &&
-          (heroCell === sheep.targetCell ||
-            Object.values(heroNeighbours).includes(sheep.targetCell)) &&
           this.hero.isColliding({
             left: sheep.x,
             right: sheep.x + CELL_SIZE,
