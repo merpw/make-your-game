@@ -44,21 +44,24 @@ export class Board {
         const sheepNeighbours = this.getNeighbors(sheepCell)
         sheep.setRandomDirection(sheepNeighbours)
       }
-      if (
-        sheep.demonized &&
-        (heroCell === sheep.targetCell ||
-          Object.values(heroNeighbours).includes(sheep.targetCell)) &&
-        this.hero.isColliding({
-          left: sheep.x,
-          right: sheep.x + CELL_SIZE,
-          top: sheep.y,
-          bottom: sheep.y + CELL_SIZE,
-        })
-      ) {
-        this.hero.spawn(this.getRandomEmptyCell())
-      }
       sheep.render(frameTimeDiff)
     })
+    if (
+      this.sheep.some(
+        (sheep) =>
+          sheep.demonized &&
+          (heroCell === sheep.targetCell ||
+            Object.values(heroNeighbours).includes(sheep.targetCell)) &&
+          this.hero.isColliding({
+            left: sheep.x,
+            right: sheep.x + CELL_SIZE,
+            top: sheep.y,
+            bottom: sheep.y + CELL_SIZE,
+          })
+      )
+    ) {
+      this.hero.spawn(this.getRandomEmptyCell())
+    }
   }
 
   /**
