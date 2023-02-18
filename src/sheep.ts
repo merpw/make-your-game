@@ -53,10 +53,23 @@ export default class Sheep {
 
   private _demonized!: boolean
   private direction!: Direction // there's ! because it's set in constructor using setRandomDirection()
+  public fromCell: Cell
 
-  public targetCell!: Cell | null // there's ! because it's set in constructor using setRandomDirection()
+  public get targetCell() {
+    return this._targetCell
+  }
+
+  public set targetCell(value: Cell | null) {
+    this.fromCell = this.targetCell || this.fromCell
+    this._targetCell = value
+  }
+
+  private _targetCell!: Cell | null
 
   render(frameTimeDiff: number) {
+    if (this.fromCell.type === "cloud" || this.targetCell?.type === "cloud") {
+      this.demonized = false
+    }
     if (!this.targetCell) return
 
     switch (this.direction) {
@@ -150,6 +163,7 @@ export default class Sheep {
     this.x = cell.x
     this.y = cell.y
 
+    this.fromCell = cell
     this.setRandomDirection(neighbours)
   }
 }

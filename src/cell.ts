@@ -1,5 +1,7 @@
 export const CELL_SIZE = 5
 
+const CLOUD_TIME = 500
+
 const CELL_CODES = {
   0: "empty",
   1: "wall",
@@ -9,7 +11,7 @@ const CELL_CODES = {
 /** Cell codes defined in {@link CELL_CODES} */
 export type CellCode = keyof typeof CELL_CODES
 
-type CellType = (typeof CELL_CODES)[CellCode] | "fungi"
+type CellType = (typeof CELL_CODES)[CellCode] | "fungi" | "cloud"
 
 const TYPE_STYLES = {
   empty: {
@@ -24,6 +26,9 @@ const TYPE_STYLES = {
   fungi: {
     color: "#9B0099",
   },
+  cloud: {
+    color: "#00FFFF",
+  },
 } as const
 
 export class Cell {
@@ -32,10 +37,17 @@ export class Cell {
   }
 
   set type(value: CellType) {
+    if (value === "cloud") {
+      this.timer = setTimeout(() => {
+        this.type = "empty"
+      }, CLOUD_TIME)
+    }
     this.element.style.fill = TYPE_STYLES[value].color
     this._type = value
   }
 
+  // TODO: add pause handling
+  private timer: number | null = null
   private _type!: CellType
   public element: SVGRectElement
   public col: number

@@ -4,13 +4,19 @@ const HERO_SPEED = 0.2
 const HERO_WIDTH = CELL_SIZE * 0.75
 const HERO_HEIGHT = CELL_SIZE
 
+const SICK_TIME = 5000
+const SICK_SPEED = HERO_SPEED / 3
+
 const MAX_FUNGI = 4
 
-const DIAGONAL_SPEED = HERO_SPEED * (Math.sqrt(2) / 2)
+const DIAGONAL_SPEED = Math.sqrt(2) / 2
 
 export default class Hero {
   public element: SVGRectElement
   public cell!: Cell // there's ! because it's set in spawn()
+
+  /** @remarks It's set on first render */
+  private neighbourCells = {} as NeighbourCells
 
   /** Hero's x coordinate in svg coordinates. */
   public get x(): number {
@@ -38,71 +44,65 @@ export default class Hero {
 
   /** Hero's {@link Way}. */
   public set way({ up, down, left, right }: Way) {
+    this._way = { up, down, left, right }
     this.speedX = 0
     this.speedY = 0
-    if (up) this.speedY -= HERO_SPEED
-    if (down) this.speedY += HERO_SPEED
-    if (left) this.speedX -= HERO_SPEED
-    if (right) this.speedX += HERO_SPEED
+    if (up) this.speedY -= this.speed
+    if (down) this.speedY += this.speed
+    if (left) this.speedX -= this.speed
+    if (right) this.speedX += this.speed
 
     if (this.speedX !== 0 && this.speedY !== 0) {
-      this.speedX *= DIAGONAL_SPEED / HERO_SPEED
-      this.speedY *= DIAGONAL_SPEED / HERO_SPEED
+      this.speedX *= DIAGONAL_SPEED
+      this.speedY *= DIAGONAL_SPEED
     }
   }
 
+  private _way: Way = { up: false, down: false, left: false, right: false }
+  private speed = HERO_SPEED
   private speedX = 0
   private speedY = 0
 
-  fungiCells: Cell[] = []
+  // TODO: add pause handling
+  private timer: number | null = null
 
-  cloudsXYCoords(cells: Cell[][], x: number, y: number) {
-    // TODO: refactor this
-    const fungCellX = Math.floor((x + CELL_SIZE / 2) / CELL_SIZE)
-    const fungCellY = Math.floor((y + CELL_SIZE / 2) / CELL_SIZE)
+  private set isSick(value: boolean) {
+    this._isSick = value
 
-    const cloudsCells = {
-      right: cells[fungCellY][fungCellX + 1],
-      left: cells[fungCellY][fungCellX - 1],
-      bottom: cells[fungCellY + 1][fungCellX],
-      top: cells[fungCellY - 1][fungCellX],
-    }
+    if (value) {
+      this.element.style.opacity = "0.5"
+      this.speed = SICK_SPEED
 
-    // collect new clouds coordinates, for 5 clouds include: center, top, bottom, left, right clouds
-    const cloudsCoords = []
-    // center
-    cloudsCoords.push({ x: x, y: y })
-    // top
-    if (cloudsCells.top.type === "empty") {
-      cloudsCoords.push({ x: x, y: y - CELL_SIZE / 2 }) // entermediate cloud, to smooth the borders
-      cloudsCoords.push({ x: x, y: y - CELL_SIZE })
+      clearTimeout(this.timer || undefined)
+      this.timer = setTimeout(() => {
+        this.isSick = false
+      }, SICK_TIME)
+    } else {
+      this.element.style.opacity = "1"
+      this.speed = HERO_SPEED
     }
-    // bottom
-    if (cloudsCells.bottom.type === "empty") {
-      cloudsCoords.push({ x: x, y: y + CELL_SIZE / 2 }) // entermediate cloud, to smooth the borders
-      cloudsCoords.push({ x: x, y: y + CELL_SIZE })
-    }
-    // left
-    if (cloudsCells.left.type === "empty") {
-      cloudsCoords.push({ x: x - CELL_SIZE / 2, y: y }) // entermediate cloud, to smooth the borders
-      cloudsCoords.push({ x: x - CELL_SIZE, y: y })
-    }
-    // right
-    if (cloudsCells.right.type === "empty") {
-      cloudsCoords.push({ x: x + CELL_SIZE / 2, y: y }) // entermediate cloud, to smooth the borders
-      cloudsCoords.push({ x: x + CELL_SIZE, y: y })
-    }
-    return cloudsCoords
+    this.way = this._way // update speed
   }
 
-  render(
+  private _isSick = false
+  private fungi: {
+    cell: Cell
+    neighbourCells: Pick<NeighbourCells, "top" | "left" | "right" | "bottom">
+  }[] = []
+
+  public render(
     frameTimeDiff: number,
     currentCell: Cell,
     neighbourCells: NeighbourCells
   ) {
+    if (this.cell.type === "cloud") {
+      this.isSick = true
+    }
+    this.cell = currentCell
+    this.neighbourCells = neighbourCells
+
     if (this.speedX === 0 && this.speedY === 0) return
 
-    this.cell = currentCell
     const dx = this.speedX * frameTimeDiff
     const dy = this.speedY * frameTimeDiff
 
@@ -178,16 +178,32 @@ export default class Hero {
   }
 
   public placeFungi = () => {
-    if (this.fungiCells.length == MAX_FUNGI || this.cell.type === "fungi")
-      return
+    if (this.fungi.length == MAX_FUNGI || this.cell.type === "fungi") return
     this.cell.type = "fungi"
-    this.fungiCells.push(this.cell)
+    this.fungi.push({
+      cell: this.cell,
+      neighbourCells: {
+        top: this.neighbourCells.top,
+        bottom: this.neighbourCells.bottom,
+        right: this.neighbourCells.right,
+        left: this.neighbourCells.left,
+      },
+    })
   }
 
   public terminateFungi() {
-    const fungiCell = this.fungiCells.shift()
-    if (!fungiCell) return
-    fungiCell.type = "empty"
+    const fungus = this.fungi.shift()
+    if (!fungus) return
+    const { cell, neighbourCells } = fungus
+    cell.type = "cloud"
+    ;[
+      neighbourCells.top,
+      neighbourCells.bottom,
+      neighbourCells.right,
+      neighbourCells.left,
+    ].forEach((cell) => {
+      if (cell?.type === "empty") cell.type = "cloud"
+    })
   }
 
   /** Spawn the hero in the given cell */
