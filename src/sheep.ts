@@ -13,17 +13,48 @@ const oppositeDirections: Record<Direction, Direction> = {
   bottom: "top",
   left: "right",
   top: "bottom",
-}
+} as const
+
 export default class Sheep {
   public element: SVGRectElement
 
   /** x coordinate in svg coordinates. */
-  x: number
+  public get x() {
+    return this._x
+  }
+
+  public set x(value: number) {
+    this.element.x.baseVal.value = value
+    this._x = value
+  }
+
+  private _x!: number
+
   /** y coordinate in svg coordinates. */
-  y: number
-  demonized: boolean
-  direction!: Direction // there's ! because it's set in constructor using setRandomDirection()
-  targetCell!: Cell | null // there's ! because it's set in constructor using setRandomDirection()
+  public get y() {
+    return this._y
+  }
+
+  public set y(value: number) {
+    this.element.y.baseVal.value = value
+    this._y = value
+  }
+
+  private _y!: number
+
+  public get demonized() {
+    return this._demonized
+  }
+
+  public set demonized(value: boolean) {
+    this._demonized = value
+    this.element.style.fill = value ? "red" : "orange"
+  }
+
+  private _demonized!: boolean
+  private direction!: Direction // there's ! because it's set in constructor using setRandomDirection()
+
+  public targetCell!: Cell | null // there's ! because it's set in constructor using setRandomDirection()
 
   render(frameTimeDiff: number) {
     if (!this.targetCell) return
@@ -57,9 +88,6 @@ export default class Sheep {
           this.targetCell = null
         }
     }
-
-    this.element.x.baseVal.value = this.x
-    this.element.y.baseVal.value = this.y
   }
 
   /**
@@ -102,22 +130,13 @@ export default class Sheep {
       "http://www.w3.org/2000/svg",
       "rect"
     )
+    this.element.id = "sheep"
     this.element.height.baseVal.value = SHEEP_SIZE
     this.element.width.baseVal.value = SHEEP_SIZE
 
     this.demonized = demonized
-    if (this.demonized) {
-      this.element.style.fill = "red"
-    } else {
-      this.element.style.fill = "orange"
-    }
-
     this.x = cell.x
     this.y = cell.y
-
-    this.element.id = "sheep"
-    this.element.x.baseVal.value = this.x
-    this.element.y.baseVal.value = this.y
 
     this.setRandomDirection(neighbours)
   }
