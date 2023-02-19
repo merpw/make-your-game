@@ -15,9 +15,15 @@ export class Board {
 
   public set isPaused(value: boolean) {
     this._isPaused = value
-    value
-      ? this.svg.classList.add("paused")
-      : this.svg.classList.remove("paused")
+    if (value) {
+      this.svg.classList.add("paused")
+      this.hero.pause()
+      this.cells.flat().forEach((cell) => cell.pause())
+    } else {
+      this.svg.classList.remove("paused")
+      this.hero.resume()
+      this.cells.flat().forEach((cell) => cell.resume())
+    }
   }
 
   private _isPaused = false

@@ -1,4 +1,5 @@
 import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
+import Creature from "./base.js"
 
 const HERO_SPEED = 0.2
 const HERO_WIDTH = CELL_SIZE * 0.75
@@ -11,7 +12,7 @@ const MAX_FUNGI = 4
 
 const DIAGONAL_SPEED = Math.sqrt(2) / 2
 
-export default class Hero {
+export default class Hero extends Creature {
   public element: SVGRectElement
   public cell!: Cell // there's ! because it's set in spawn()
 
@@ -63,9 +64,6 @@ export default class Hero {
   private speedX = 0
   private speedY = 0
 
-  // TODO: add pause handling
-  private timer: number | null = null
-
   private set isSick(value: boolean) {
     this._isSick = value
 
@@ -73,8 +71,7 @@ export default class Hero {
       this.element.style.opacity = "0.5"
       this.speed = SICK_SPEED
 
-      clearTimeout(this.timer || undefined)
-      this.timer = setTimeout(() => {
+      this.addTimer(() => {
         this.isSick = false
       }, SICK_TIME)
     } else {
@@ -100,8 +97,6 @@ export default class Hero {
     }
     this.cell = currentCell
     this.neighbourCells = neighbourCells
-
-    if (this.speedX === 0 && this.speedY === 0) return
 
     const dx = this.speedX * frameTimeDiff
     const dy = this.speedY * frameTimeDiff
@@ -135,6 +130,10 @@ export default class Hero {
     )
 
     basicCollisions.forEach(([way, cell]) => {
+      if (cell.type === "cloud") {
+        this.isSick = true
+        return
+      }
       switch (way) {
         case "right":
           newX = cell.x - HERO_WIDTH
@@ -219,6 +218,7 @@ export default class Hero {
    * @param cell - the cell where the hero will be created
    */
   constructor(cell: Cell) {
+    super()
     this.element = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "rect"
