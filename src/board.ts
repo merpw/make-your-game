@@ -1,7 +1,7 @@
 import Hero from "./hero.js"
 import { Level } from "./levels"
 import Sheep from "./sheep.js"
-import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
+import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 
 export class Board {
   public hero: Hero

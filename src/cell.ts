@@ -33,7 +33,7 @@ const TYPE_STYLES = {
   },
 } as const
 
-export class Cell extends Animated {
+export default class Cell extends Animated {
   get type(): CellType {
     return this._type
   }
@@ -50,32 +50,15 @@ export class Cell extends Animated {
 
   // TODO: add pause handling
   private _type!: CellType
-  public element: SVGRectElement
   public col: number
   public row: number
-  /** x coordinate in svg coordinates */
-  public x: number
-  /** y coordinate in svg coordinates */
-  public y: number
 
   constructor(typeCode: CellCode, col: number, row: number) {
-    super()
-    this.element = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    )
+    super(CELL_SIZE, CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE)
     this.type = CELL_CODES[typeCode]
 
     this.col = col
     this.row = row
-    this.x = col * CELL_SIZE
-    this.y = row * CELL_SIZE
-
-    this.element.x.baseVal.value = this.x
-    this.element.y.baseVal.value = this.y
-
-    this.element.width.baseVal.value = CELL_SIZE
-    this.element.height.baseVal.value = CELL_SIZE
   }
 }
 

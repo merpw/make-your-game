@@ -1,4 +1,4 @@
-import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
+import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 import Creature from "./base.js"
 
 const HERO_SPEED = 0.2
@@ -13,35 +13,10 @@ const MAX_FUNGI = 4
 const DIAGONAL_SPEED = Math.sqrt(2) / 2
 
 export default class Hero extends Creature {
-  public element: SVGRectElement
   public cell!: Cell // there's ! because it's set in spawn()
 
   /** @remarks It's set on first render */
   private neighbourCells = {} as NeighbourCells
-
-  /** Hero's x coordinate in svg coordinates. */
-  public get x(): number {
-    return this._x
-  }
-
-  public set x(value: number) {
-    this.element.x.baseVal.value = value
-    this._x = value
-  }
-
-  private _x!: number
-
-  /** Hero's y coordinate in svg coordinates. */
-  public get y() {
-    return this._y
-  }
-
-  public set y(value: number) {
-    this.element.y.baseVal.value = value
-    this._y = value
-  }
-
-  private _y!: number
 
   /** Hero's {@link Way}. */
   public set way({ up, down, left, right }: Way) {
@@ -218,33 +193,12 @@ export default class Hero extends Creature {
    * @param cell - the cell where the hero will be created
    */
   constructor(cell: Cell) {
-    super()
-    this.element = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    )
-    this.element.width.baseVal.value = HERO_WIDTH
-    this.element.height.baseVal.value = HERO_HEIGHT
+    super(HERO_HEIGHT, HERO_WIDTH, 0, 0)
+    // x and y will be set in spawn()
 
     this.element.style.fill = "rebeccapurple"
-    this.element.id = "mainHero"
 
     this.spawn(cell)
-  }
-
-  public isColliding(rect: Rect) {
-    const heroRect = {
-      left: this.x,
-      right: this.x + HERO_WIDTH,
-      top: this.y,
-      bottom: this.y + HERO_HEIGHT,
-    }
-    return (
-      rect.left < heroRect.right &&
-      rect.right > heroRect.left &&
-      rect.top < heroRect.bottom &&
-      rect.bottom > heroRect.top
-    )
   }
 }
 export type Way = {
@@ -252,11 +206,4 @@ export type Way = {
   down: boolean
   left: boolean
   right: boolean
-}
-
-type Rect = {
-  left: number
-  right: number
-  top: number
-  bottom: number
 }
