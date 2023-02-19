@@ -15,6 +15,8 @@ export class AnimateBitmapBasedSVGImageElement {
   private _currentFrameY = 0 // y coordinate of the frame in the atlas, left top corner
   private _currentFrameWidth = 0 // width of the frame in the atlas
   private _currentFrameHeight = 0 // height of the frame in the atlas
+  private _currentFrameFlipAlongX = false // flip the frame along x axis
+  private _currentFrameFlipAlongY = false // flip the frame along y axis
 
   /**
    * @param svg svg element to display on the screen
@@ -69,10 +71,31 @@ export class AnimateBitmapBasedSVGImageElement {
         this._currentFrameY = this._currentFrame.y
         this._currentFrameWidth = this._currentFrame.width
         this._currentFrameHeight = this._currentFrame.height
+        this._currentFrameFlipAlongX = this._currentFrame.flipAlongX
+        this._currentFrameFlipAlongY = this._currentFrame.flipAlongY
+
+        console.log(this._currentFrameFlipAlongX, this._currentFrameFlipAlongY)
+
+        // this._svg.setAttribute(
+        //   "transform",
+        //   `scale(${this._currentFrameFlipAlongX ? -1 : 1}, 1)`
+        // )
+
+        //TODO: Finally it works, but requires full refactoring(with adding flipY implementation too) . Transform above(implemented to _svg) do nothing in some purposes
+        this._element.setAttribute(
+          "transform",
+          `scale(${this._currentFrameFlipAlongX ? -1 : 1}, 1)`
+        )
 
         this._svg.setAttribute(
           "viewBox",
-          `${this._currentFrameX} ${this._currentFrameY} ${this._currentFrameWidth} ${this._currentFrameHeight}`
+          `${
+            this._currentFrameFlipAlongX
+              ? -this._currentFrameX - this._currentFrameWidth
+              : this._currentFrameX
+          } ${this._currentFrameY} ${this._currentFrameWidth} ${
+            this._currentFrameHeight
+          }`
         )
         this._lastFrameTime = time
       }
@@ -100,6 +123,15 @@ export class AnimateBitmapBasedSVGImageElement {
     this._currentFrameY = this._currentFrame.y
     this._currentFrameWidth = this._currentFrame.width
     this._currentFrameHeight = this._currentFrame.height
+    this._currentFrameFlipAlongX = this._currentFrame.flipAlongX
+    this._currentFrameFlipAlongY = this._currentFrame.flipAlongY
+
+    console.log(this._currentFrameFlipAlongX, this._currentFrameFlipAlongY)
+
+    this._svg.setAttribute(
+      "transform",
+      `scale(${this._currentFrameFlipAlongX ? -1 : 1}, 1)`
+    )
 
     this._svg.setAttribute(
       "viewBox",
@@ -146,6 +178,8 @@ export type MyFrame = {
   y: number
   width: number
   height: number
+  flipAlongX: boolean
+  flipAlongY: boolean
 }
 
 /**

@@ -28,6 +28,7 @@ export default class Hero {
   }
 
   public set x(value: number) {
+    this.animatedElement.x.baseVal.value = value
     this.element.x.baseVal.value = value
     this._x = value
   }
@@ -40,6 +41,7 @@ export default class Hero {
   }
 
   public set y(value: number) {
+    this.animatedElement.y.baseVal.value = value
     this.element.y.baseVal.value = value
     this._y = value
   }
@@ -227,8 +229,10 @@ export default class Hero {
       "http://www.w3.org/2000/svg",
       "svg"
     )
-    this.animatedElement.setAttribute("width", "16")
-    this.animatedElement.setAttribute("height", "16")
+
+    const frameSize = 8
+    this.animatedElement.setAttribute("width", frameSize.toString())
+    this.animatedElement.setAttribute("height", frameSize.toString())
     // this.animatedElement.setAttribute("viewBox", "0 0 16 16") // looks like ignored, and later too
 
     const frames = new Map<string, MyFrame>([
@@ -238,18 +242,22 @@ export default class Hero {
           name: "step1",
           x: 0,
           y: 0,
-          width: 16,
-          height: 16,
+          width: frameSize,
+          height: frameSize,
+          flipAlongX: true,
+          flipAlongY: false,
         },
       ],
       [
         "step2",
         {
           name: "step2",
-          x: 16,
+          x: frameSize,
           y: 0,
-          width: 16,
-          height: 16,
+          width: frameSize,
+          height: frameSize,
+          flipAlongX: true,
+          flipAlongY: false,
         },
       ],
       [
@@ -257,19 +265,23 @@ export default class Hero {
         {
           name: "step3",
           x: 0,
-          y: 16,
-          width: 16,
-          height: 16,
+          y: frameSize,
+          width: frameSize,
+          height: frameSize,
+          flipAlongX: false,
+          flipAlongY: false,
         },
       ],
       [
         "step4",
         {
           name: "step4",
-          x: 16,
-          y: 16,
-          width: 16,
-          height: 16,
+          x: frameSize,
+          y: frameSize,
+          width: frameSize,
+          height: frameSize,
+          flipAlongX: false,
+          flipAlongY: false,
         },
       ],
     ])
@@ -306,6 +318,9 @@ export default class Hero {
     )
     this.element.width.baseVal.value = HERO_WIDTH
     this.element.height.baseVal.value = HERO_HEIGHT
+
+    this.animatedElement.width.baseVal.value = HERO_WIDTH
+    this.animatedElement.height.baseVal.value = HERO_HEIGHT
 
     this.element.style.fill = "rebeccapurple"
     this.element.id = "mainHero"
