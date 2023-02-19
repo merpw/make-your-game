@@ -1,4 +1,6 @@
+import { AnimateBitmapBasedSVGImageElement } from "./animatedImage.js"
 import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
+import { MyAnimation, MyFrame } from "./animatedImage.js"
 
 const HERO_SPEED = 0.2
 const HERO_WIDTH = CELL_SIZE * 0.75
@@ -12,6 +14,8 @@ const MAX_FUNGI = 4
 const DIAGONAL_SPEED = Math.sqrt(2) / 2
 
 export default class Hero {
+  public animatedElement: SVGSVGElement
+  public animationManager: AnimateBitmapBasedSVGImageElement
   public element: SVGRectElement
   public cell!: Cell // there's ! because it's set in spawn()
 
@@ -219,6 +223,83 @@ export default class Hero {
    * @param cell - the cell where the hero will be created
    */
   constructor(cell: Cell) {
+    this.animatedElement = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    )
+    this.animatedElement.setAttribute("width", "16")
+    this.animatedElement.setAttribute("height", "16")
+    // this.animatedElement.setAttribute("viewBox", "0 0 16 16") // looks like ignored, and later too
+
+    const frames = new Map<string, MyFrame>([
+      [
+        "step1",
+        {
+          name: "step1",
+          x: 0,
+          y: 0,
+          width: 16,
+          height: 16,
+        },
+      ],
+      [
+        "step2",
+        {
+          name: "step2",
+          x: 16,
+          y: 0,
+          width: 16,
+          height: 16,
+        },
+      ],
+      [
+        "step3",
+        {
+          name: "step3",
+          x: 0,
+          y: 16,
+          width: 16,
+          height: 16,
+        },
+      ],
+      [
+        "step4",
+        {
+          name: "step4",
+          x: 16,
+          y: 16,
+          width: 16,
+          height: 16,
+        },
+      ],
+    ])
+
+    const namedAnimations = new Map<string, MyAnimation>([
+      [
+        "walk",
+        {
+          name: "walk",
+          sequenceOfFrameNames: [
+            "step1",
+            "step2",
+            "step3",
+            "step4",
+            "step3",
+            "step2",
+          ],
+        },
+      ],
+    ])
+
+    this.animationManager = new AnimateBitmapBasedSVGImageElement(
+      this.animatedElement,
+      "assets/atlas.png",
+      frames,
+      namedAnimations,
+      1
+    )
+    this.animationManager.play("walk")
+
     this.element = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "rect"

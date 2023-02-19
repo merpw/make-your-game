@@ -143,6 +143,7 @@ export class Board {
     this.hero = new Hero(heroCell)
 
     svg.getElementById("players").appendChild(this.hero.element)
+    svg.getElementById("players").appendChild(this.hero.animatedElement)
 
     svg.viewBox.baseVal.width = this.cells[0].length * CELL_SIZE
     svg.viewBox.baseVal.height = this.cells.length * CELL_SIZE
