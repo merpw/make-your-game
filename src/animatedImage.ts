@@ -17,7 +17,7 @@ export class AnimateBitmapBasedSVGImageElement {
   private _currentFrameHeight = 0 // height of the frame in the atlas
 
   /**
-   * @param element svg element to place on the screen
+   * @param svg svg element to display on the screen
    * @param pathToAtlas path to the atlas image, used to create the image element, and to get the frame width and height from the atlas
    * @param frames Map of the named frames in the atlas
    * @param namedAnimations named animations, used to play the animation
@@ -35,13 +35,12 @@ export class AnimateBitmapBasedSVGImageElement {
       "http://www.w3.org/2000/svg",
       "image"
     ) as SVGImageElement
-
-    this._svg.appendChild(this._element)
     this._pathToAtlas = pathToAtlas
     this._element.href.baseVal = this._pathToAtlas
     this._frames = frames
     this._namedAnimations = namedAnimations
     this._fps = fps
+    this._svg.appendChild(this._element)
   }
 
   /**
@@ -70,10 +69,7 @@ export class AnimateBitmapBasedSVGImageElement {
         this._currentFrameY = this._currentFrame.y
         this._currentFrameWidth = this._currentFrame.width
         this._currentFrameHeight = this._currentFrame.height
-        // this._element.x.baseVal.value = this._currentFrameX
-        // this._element.y.baseVal.value = this._currentFrameY
-        // this._element.width.baseVal.value = this._currentFrameWidth
-        // this._element.height.baseVal.value = this._currentFrameHeight
+
         this._svg.setAttribute(
           "viewBox",
           `${this._currentFrameX} ${this._currentFrameY} ${this._currentFrameWidth} ${this._currentFrameHeight}`
@@ -104,10 +100,6 @@ export class AnimateBitmapBasedSVGImageElement {
     this._currentFrameY = this._currentFrame.y
     this._currentFrameWidth = this._currentFrame.width
     this._currentFrameHeight = this._currentFrame.height
-    // this._element.x.baseVal.value = this._currentFrameX
-    // this._element.y.baseVal.value = this._currentFrameY
-    // this._element.width.baseVal.value = this._currentFrameWidth
-    // this._element.height.baseVal.value = this._currentFrameHeight
 
     this._svg.setAttribute(
       "viewBox",
