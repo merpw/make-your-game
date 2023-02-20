@@ -230,7 +230,7 @@ export default class Hero {
       "svg"
     )
 
-    const frameSize = 8
+    const frameSize = 16
     this.animatedElement.setAttribute("width", frameSize.toString())
     this.animatedElement.setAttribute("height", frameSize.toString())
     // this.animatedElement.setAttribute("viewBox", "0 0 16 16") // looks like ignored, and later too
@@ -244,7 +244,7 @@ export default class Hero {
           y: 0,
           width: frameSize,
           height: frameSize,
-          flipAlongX: true,
+          flipAlongX: false,
           flipAlongY: false,
         }),
       ],
@@ -257,7 +257,7 @@ export default class Hero {
           width: frameSize,
           height: frameSize,
           flipAlongX: false,
-          flipAlongY: true,
+          flipAlongY: false,
         }),
       ],
       [
@@ -280,8 +280,8 @@ export default class Hero {
           y: frameSize,
           width: frameSize,
           height: frameSize,
-          flipAlongX: true,
-          flipAlongY: true,
+          flipAlongX: false,
+          flipAlongY: false,
         }),
       ],
     ])
@@ -291,14 +291,7 @@ export default class Hero {
         "walk",
         {
           name: "walk",
-          sequenceOfFrameNames: [
-            "step1",
-            "step2",
-            "step3",
-            "step4",
-            "step3",
-            "step2",
-          ],
+          sequenceOfFrameNames: ["step1", "step2", "step3", "step4"],
         },
       ],
     ])
@@ -308,7 +301,7 @@ export default class Hero {
       "assets/atlas.png",
       frames,
       namedAnimations,
-      1
+      16
     )
     this.animationManager.play("walk")
 
