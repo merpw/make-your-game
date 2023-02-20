@@ -17,6 +17,8 @@ export class AnimateBitmapBasedSVGImageElement {
   private _currentFrameHeight = 0 // height of the frame in the atlas
   private _currentFrameFlipAlongX = false // flip the frame along x axis
   private _currentFrameFlipAlongY = false // flip the frame along y axis
+  private _currentFrameScaleX = 1 // scale the frame along x axis
+  private _currentFrameScaleY = 1 // scale the frame along y axis
 
   /**
    * @param svg svg element to display on the screen
@@ -73,8 +75,10 @@ export class AnimateBitmapBasedSVGImageElement {
         this._currentFrameHeight = this._currentFrame.height
         this._currentFrameFlipAlongX = this._currentFrame.flipAlongX
         this._currentFrameFlipAlongY = this._currentFrame.flipAlongY
+        this._currentFrameScaleX = this._currentFrame.scaleX
+        this._currentFrameScaleY = this._currentFrame.scaleY
 
-        console.log(this._currentFrameFlipAlongX, this._currentFrameFlipAlongY)
+        console.log(this._currentFrameFlipAlongX, this._currentFrameFlipAlongY) //TODO: remove this
 
         // this._svg.setAttribute(
         //   "transform",
@@ -84,18 +88,12 @@ export class AnimateBitmapBasedSVGImageElement {
         //TODO: Finally it works, but requires full refactoring(with adding flipY implementation too) . Transform above(implemented to _svg) do nothing in some purposes
         this._element.setAttribute(
           "transform",
-          `scale(${this._currentFrameFlipAlongX ? -1 : 1}, 1)`
+          `scale(${this._currentFrameScaleX} , ${this._currentFrameScaleY})`
         )
 
         this._svg.setAttribute(
           "viewBox",
-          `${
-            this._currentFrameFlipAlongX
-              ? -this._currentFrameX - this._currentFrameWidth
-              : this._currentFrameX
-          } ${this._currentFrameY} ${this._currentFrameWidth} ${
-            this._currentFrameHeight
-          }`
+          `${this._currentFrameX} ${this._currentFrameY} ${this._currentFrameWidth} ${this._currentFrameHeight}`
         )
         this._lastFrameTime = time
       }
@@ -125,12 +123,14 @@ export class AnimateBitmapBasedSVGImageElement {
     this._currentFrameHeight = this._currentFrame.height
     this._currentFrameFlipAlongX = this._currentFrame.flipAlongX
     this._currentFrameFlipAlongY = this._currentFrame.flipAlongY
+    this._currentFrameScaleX = this._currentFrame.scaleX
+    this._currentFrameScaleY = this._currentFrame.scaleY
 
     console.log(this._currentFrameFlipAlongX, this._currentFrameFlipAlongY)
 
     this._svg.setAttribute(
       "transform",
-      `scale(${this._currentFrameFlipAlongX ? -1 : 1}, 1)`
+      `scale(${this._currentFrameScaleX} , ${this._currentFrameScaleY})`
     )
 
     this._svg.setAttribute(
@@ -154,7 +154,7 @@ export class AnimateBitmapBasedSVGImageElement {
   }
 
   /**
-   * @param animationName name of the animation to play. Each animation name is unique and is same as key in {@link AnimatedImage._namedAnimations}
+   * @param animationName name of the animation to play. Each animation name is unique and is same as key in {@link AnimateBitmapBasedSVGImageElement._namedAnimations}
    * */
   public isPlaying(animationName: string) {
     return (
@@ -171,15 +171,49 @@ export class AnimateBitmapBasedSVGImageElement {
  * @param y y coordinate of the frame in the atlas, left top corner
  * @param width width of the frame in the atlas
  * @param height height of the frame in the atlas
+ * @param flipAlongX if true, the frame will be flipped along X axis
+ * @param flipAlongY if true, the frame will be flipped along Y axis
  * */
-export type MyFrame = {
-  name: string
-  x: number
-  y: number
-  width: number
-  height: number
-  flipAlongX: boolean
-  flipAlongY: boolean
+export class MyFrame {
+  readonly name: string
+  readonly x: number
+  readonly y: number
+  readonly width: number
+  readonly height: number
+  readonly flipAlongX: boolean
+  readonly flipAlongY: boolean
+  readonly scaleX: 1 | -1
+  readonly scaleY: 1 | -1
+
+  constructor(frameData: {
+    name: string
+    x: number
+    y: number
+    width: number
+    height: number
+    flipAlongX: boolean
+    flipAlongY: boolean
+  }) {
+    this.name = frameData.name
+    this.width = frameData.width
+    this.height = frameData.height
+    this.flipAlongX = frameData.flipAlongX
+    this.flipAlongY = frameData.flipAlongY
+    this.scaleX = this.flipAlongX ? -1 : 1
+    this.scaleY = this.flipAlongY ? -1 : 1
+
+    if (this.flipAlongX) {
+      this.x = -(frameData.x + frameData.width)
+    } else {
+      this.x = frameData.x
+    }
+
+    if (this.flipAlongY) {
+      this.y = -(frameData.y + frameData.height)
+    } else {
+      this.y = frameData.y
+    }
+  }
 }
 
 /**

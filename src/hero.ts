@@ -238,7 +238,7 @@ export default class Hero {
     const frames = new Map<string, MyFrame>([
       [
         "step1",
-        {
+        new MyFrame({
           name: "step1",
           x: 0,
           y: 0,
@@ -246,23 +246,23 @@ export default class Hero {
           height: frameSize,
           flipAlongX: true,
           flipAlongY: false,
-        },
+        }),
       ],
       [
         "step2",
-        {
+        new MyFrame({
           name: "step2",
           x: frameSize,
           y: 0,
           width: frameSize,
           height: frameSize,
-          flipAlongX: true,
-          flipAlongY: false,
-        },
+          flipAlongX: false,
+          flipAlongY: true,
+        }),
       ],
       [
         "step3",
-        {
+        new MyFrame({
           name: "step3",
           x: 0,
           y: frameSize,
@@ -270,19 +270,19 @@ export default class Hero {
           height: frameSize,
           flipAlongX: false,
           flipAlongY: false,
-        },
+        }),
       ],
       [
         "step4",
-        {
+        new MyFrame({
           name: "step4",
           x: frameSize,
           y: frameSize,
           width: frameSize,
           height: frameSize,
-          flipAlongX: false,
-          flipAlongY: false,
-        },
+          flipAlongX: true,
+          flipAlongY: true,
+        }),
       ],
     ])
 
