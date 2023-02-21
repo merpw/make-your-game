@@ -7,7 +7,7 @@ export class Board {
   public hero: Hero
   private readonly cells: Cell[][]
   private svg: SVGSVGElement
-  private sheep: Sheep[] = []
+  private readonly sheep: Sheep[] = []
 
   public get isPaused() {
     return this._isPaused
@@ -52,20 +52,21 @@ export class Board {
       }
       sheep.render(frameTimeDiff)
     })
-    if (
-      this.sheep.some(
-        (sheep) =>
-          sheep.demonized &&
-          this.hero.isColliding({
-            left: sheep.x,
-            right: sheep.x + CELL_SIZE,
-            top: sheep.y,
-            bottom: sheep.y + CELL_SIZE,
-          })
-      )
-    ) {
-      this.hero.spawn(this.getRandomEmptyCell())
-    }
+    const demons = this.sheep.filter((sheep) => sheep.demonized)
+    const basic = this.sheep.filter((sheep) => !sheep.demonized)
+
+    const heroRect = this.hero.getRect()
+
+    demons.forEach((demon) => {
+      if (demon.isColliding(heroRect)) {
+        this.hero.spawn(this.getRandomEmptyCell())
+      }
+      basic.forEach((sheep) => {
+        if (sheep != demon && demon.isColliding(sheep.getRect())) {
+          sheep.demonized = true
+        }
+      })
+    })
   }
 
   /**

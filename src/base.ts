@@ -63,13 +63,19 @@ export default class Creature extends Animated {
     this.element.y.baseVal.value = value
   }
 
-  public isColliding(rect: Rect) {
-    const thisRect = {
+  /** Returns a rectangle that represents the creature's position */
+  public getRect(): Rect {
+    return {
       left: this.x,
       right: this.x + this.width,
       top: this.y,
       bottom: this.y + this.height,
     }
+  }
+
+  /** Returns true if the creature is colliding with the given rectangle */
+  public isColliding(rect: Rect) {
+    const thisRect = this.getRect()
     return (
       rect.left < thisRect.right &&
       rect.right > thisRect.left &&
