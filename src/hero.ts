@@ -2,7 +2,7 @@ import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 import Creature from "./base.js"
 
 const HERO_SPEED = 0.2
-const HERO_WIDTH = CELL_SIZE * 0.75
+const HERO_WIDTH = CELL_SIZE
 const HERO_HEIGHT = CELL_SIZE
 
 const SICK_TIME = 5000
@@ -25,12 +25,19 @@ export default class Hero extends Creature {
     this.speedY = 0
     if (up) this.speedY -= this.speed
     if (down) this.speedY += this.speed
-    if (left) this.speedX -= this.speed
+    if (left) {
+      this.speedX -= this.speed
+    }
     if (right) this.speedX += this.speed
 
     if (this.speedX !== 0 && this.speedY !== 0) {
       this.speedX *= DIAGONAL_SPEED
       this.speedY *= DIAGONAL_SPEED
+    }
+    if (this.speedX === 0 && this.speedY === 0) {
+      this.animationManager?.pause()
+    } else {
+      this.animationManager?.resume()
     }
   }
 

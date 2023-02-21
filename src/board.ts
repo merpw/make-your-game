@@ -151,10 +151,6 @@ export class Board {
 
     svg.getElementById("players").appendChild(this.hero.element)
 
-    this.hero.animatedElement &&
-      svg.getElementById("players").appendChild(this.hero.animatedElement)
-    // TODO: refactor or remove
-
     svg.viewBox.baseVal.width = this.cells[0].length * CELL_SIZE
     svg.viewBox.baseVal.height = this.cells.length * CELL_SIZE
     this.svg = svg
