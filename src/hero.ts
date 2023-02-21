@@ -193,7 +193,7 @@ export default class Hero extends Creature {
    * @param cell - the cell where the hero will be created
    */
   constructor(cell: Cell) {
-    super(HERO_HEIGHT, HERO_WIDTH, 0, 0)
+    super(HERO_HEIGHT, HERO_WIDTH, 0, 0, "hero")
     // x and y will be set in spawn()
 
     this.element.style.fill = "rebeccapurple"

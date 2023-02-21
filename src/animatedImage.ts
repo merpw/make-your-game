@@ -1,31 +1,68 @@
 /**animated image implementation. Use svg element <image> with frames from bitmap atlas */
 export class AnimateBitmapBasedSVGImageElement {
-  private readonly _svg: SVGSVGElement // svg element to place on the screen
-  private readonly _element: SVGImageElement // svg element to place in the svg
-  private readonly _pathToAtlas: string // path to the atlas image, used to create the image element, and to get the frame width and height from the atlas
-  private readonly _frames: Map<string, MyFrame> // Map of the named frames in the atlas
-  private readonly _namedAnimations: Map<string, MyAnimation> // named animations, used to play the animation
-  private readonly _fps: number // frames per second
-  private _currentAnimation: MyAnimation | null = null // current animation to play in the loop
-  private _currentFrameIndex = 0 // current frame index in the animation sequence
-  private _lastFrameTime = 0 // last frame time in milliseconds
-  private _currentFrameName = "" // current frame name, used to get the frame from the atlas
-  private _currentFrame: MyFrame | null = null // current frame from the atlas
-  private _currentFrameX = 0 // x coordinate of the frame in the atlas, left top corner
-  private _currentFrameY = 0 // y coordinate of the frame in the atlas, left top corner
-  private _currentFrameWidth = 0 // width of the frame in the atlas
-  private _currentFrameHeight = 0 // height of the frame in the atlas
-  private _currentFrameFlipAlongX = false // flip the frame along x axis
-  private _currentFrameFlipAlongY = false // flip the frame along y axis
-  private _currentFrameScaleX = 1 // scale the frame along x axis
-  private _currentFrameScaleY = 1 // scale the frame along y axis
+  /** svg element to place on the screen */
+  private readonly svg: SVGSVGElement
+
+  /** svg element to place in the svg */
+  private readonly element: SVGImageElement
+
+  /** path to the atlas image, used to create the image element, and to get the frame width and height from the atlas */
+  private readonly pathToAtlas: string
+
+  /** Map of the named frames in the atlas */
+  private readonly frames: Map<string, MyFrame>
+
+  /** named animations, used to play the animation */
+  private readonly namedAnimations: Map<string, MyAnimation>
+
+  /** frames per second */
+  private readonly fps: number
+
+  /** current animation to play in the loop */
+  private currentAnimation: MyAnimation | null = null
+
+  /** current frame index in the animation sequence */
+  private currentFrameIndex = 0
+
+  /** last frame time in milliseconds */
+  private lastFrameTime = 0
+
+  /** current frame name, used to get the frame from the atlas */
+  private currentFrameName = ""
+
+  /** current frame from the atlas */
+  private currentFrame: MyFrame | null = null
+
+  /** x coordinate of the frame in the atlas, left top corner */
+  private currentFrameX = 0
+
+  /** y coordinate of the frame in the atlas, left top corner */
+  private currentFrameY = 0
+
+  /** width of the frame in the atlas */
+  private currentFrameWidth = 0
+
+  /** height of the frame in the atlas */
+  private currentFrameHeight = 0
+
+  /** flip the frame along x axis */
+  private currentFrameFlipAlongX = false
+
+  /** flip the frame along y axis */
+  private currentFrameFlipAlongY = false
+
+  /** scale the frame along x axis */
+  private currentFrameScaleX = 1
+
+  /** scale the frame along y axis */
+  private currentFrameScaleY = 1
 
   /**
-   * @param svg svg element to display on the screen
-   * @param pathToAtlas path to the atlas image, used to create the image element, and to get the frame width and height from the atlas
-   * @param frames Map of the named frames in the atlas
-   * @param namedAnimations named animations, used to play the animation
-   * @param fps frames per second
+   * @param svg - svg element to display on the screen
+   * @param pathToAtlas - path to the atlas image, used to create the image element, and to get the frame width and height from the atlas
+   * @param frames - Map of the named frames in the atlas
+   * @param namedAnimations - named animations, used to play the animation
+   * @param fps - frames per second
    * */
   constructor(
     svg: SVGSVGElement,
@@ -34,112 +71,112 @@ export class AnimateBitmapBasedSVGImageElement {
     namedAnimations: Map<string, MyAnimation>,
     fps: number
   ) {
-    this._svg = svg
-    this._element = document.createElementNS(
+    this.svg = svg
+    this.element = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "image"
     ) as SVGImageElement
-    this._pathToAtlas = pathToAtlas
-    this._element.href.baseVal = this._pathToAtlas
-    this._frames = frames
-    this._namedAnimations = namedAnimations
-    this._fps = fps
-    this._svg.appendChild(this._element)
+    this.pathToAtlas = pathToAtlas
+    this.element.href.baseVal = this.pathToAtlas
+    this.frames = frames
+    this.namedAnimations = namedAnimations
+    this.fps = fps
+    this.svg.appendChild(this.element)
   }
 
   /**
    * Animation loop. It's called by requestAnimationFrame.
    * */
-  _loop = (time: number) => {
-    if (this._currentAnimation) {
-      const frameTimeDiff = time - this._lastFrameTime
-      if (frameTimeDiff > 1000 / this._fps) {
+  loop = (time: number) => {
+    if (this.currentAnimation) {
+      const frameTimeDiff = time - this.lastFrameTime
+      if (frameTimeDiff > 1000 / this.fps) {
         // next frame
-        this._currentFrameIndex++
+        this.currentFrameIndex++
         if (
-          this._currentFrameIndex >=
-          this._currentAnimation.sequenceOfFrameNames.length
+          this.currentFrameIndex >=
+          this.currentAnimation.sequenceOfFrameNames.length
         ) {
-          this._currentFrameIndex = 0
+          this.currentFrameIndex = 0
         }
 
-        this._currentFrameName =
-          this._currentAnimation.sequenceOfFrameNames[this._currentFrameIndex]
-        this._currentFrame = this._frames.get(this._currentFrameName) || null
-        if (!this._currentFrame) {
-          throw new Error(`Frame ${this._currentFrameName} not found`)
+        this.currentFrameName =
+          this.currentAnimation.sequenceOfFrameNames[this.currentFrameIndex]
+        this.currentFrame = this.frames.get(this.currentFrameName) || null
+        if (!this.currentFrame) {
+          throw new Error(`Frame ${this.currentFrameName} not found`)
         }
-        this._currentFrameX = this._currentFrame.x
-        this._currentFrameY = this._currentFrame.y
-        this._currentFrameWidth = this._currentFrame.width
-        this._currentFrameHeight = this._currentFrame.height
-        this._currentFrameFlipAlongX = this._currentFrame.flipAlongX
-        this._currentFrameFlipAlongY = this._currentFrame.flipAlongY
-        this._currentFrameScaleX = this._currentFrame.scaleX
-        this._currentFrameScaleY = this._currentFrame.scaleY
+        this.currentFrameX = this.currentFrame.x
+        this.currentFrameY = this.currentFrame.y
+        this.currentFrameWidth = this.currentFrame.width
+        this.currentFrameHeight = this.currentFrame.height
+        this.currentFrameFlipAlongX = this.currentFrame.flipAlongX
+        this.currentFrameFlipAlongY = this.currentFrame.flipAlongY
+        this.currentFrameScaleX = this.currentFrame.scaleX
+        this.currentFrameScaleY = this.currentFrame.scaleY
 
-        console.log(this._currentFrameFlipAlongX, this._currentFrameFlipAlongY) //TODO: remove this
+        console.log(this.currentFrameFlipAlongX, this.currentFrameFlipAlongY) //TODO: remove this
 
-        // this._svg.setAttribute(
+        // this.svg.setAttribute(
         //   "transform",
-        //   `scale(${this._currentFrameFlipAlongX ? -1 : 1}, 1)`
+        //   `scale(${this.currentFrameFlipAlongX ? -1 : 1}, 1)`
         // )
 
-        //TODO: Finally it works, but requires full refactoring(with adding flipY implementation too) . Transform above(implemented to _svg) do nothing in some purposes
-        this._element.setAttribute(
+        //TODO: Finally it works, but requires full refactoring(with adding flipY implementation too) . Transform above(implemented to svg) do nothing in some purposes
+        this.element.setAttribute(
           "transform",
-          `scale(${this._currentFrameScaleX} , ${this._currentFrameScaleY})`
+          `scale(${this.currentFrameScaleX} , ${this.currentFrameScaleY})`
         )
 
-        this._svg.setAttribute(
+        this.svg.setAttribute(
           "viewBox",
-          `${this._currentFrameX} ${this._currentFrameY} ${this._currentFrameWidth} ${this._currentFrameHeight}`
+          `${this.currentFrameX} ${this.currentFrameY} ${this.currentFrameWidth} ${this.currentFrameHeight}`
         )
-        this._lastFrameTime = time
+        this.lastFrameTime = time
       }
     }
-    requestAnimationFrame(this._loop)
+    requestAnimationFrame(this.loop)
   }
 
   /**
-   * @param animationName name of the animation to play. Each animation name is unique and is same as key in {@link AnimateBitmapBasedSVGImageElement._namedAnimations}
+   * @param animationName - name of the animation to play. Each animation name is unique and is same as key in {@link AnimateBitmapBasedSVGImageElement.namedAnimations}
    * */
   public play(animationName: string) {
-    this._currentAnimation = this._namedAnimations.get(animationName) || null
-    if (!this._currentAnimation) {
+    this.currentAnimation = this.namedAnimations.get(animationName) || null
+    if (!this.currentAnimation) {
       throw new Error(`Animation ${animationName} not found`)
     }
-    this._currentFrameIndex = 0
-    this._lastFrameTime = 0
-    this._currentFrameName =
-      this._currentAnimation.sequenceOfFrameNames[this._currentFrameIndex]
-    this._currentFrame = this._frames.get(this._currentFrameName) || null
-    if (!this._currentFrame) {
-      throw new Error(`Frame ${this._currentFrameName} not found`)
+    this.currentFrameIndex = 0
+    this.lastFrameTime = 0
+    this.currentFrameName =
+      this.currentAnimation.sequenceOfFrameNames[this.currentFrameIndex]
+    this.currentFrame = this.frames.get(this.currentFrameName) || null
+    if (!this.currentFrame) {
+      throw new Error(`Frame ${this.currentFrameName} not found`)
     }
-    this._currentFrameX = this._currentFrame.x
-    this._currentFrameY = this._currentFrame.y
-    this._currentFrameWidth = this._currentFrame.width
-    this._currentFrameHeight = this._currentFrame.height
-    this._currentFrameFlipAlongX = this._currentFrame.flipAlongX
-    this._currentFrameFlipAlongY = this._currentFrame.flipAlongY
-    this._currentFrameScaleX = this._currentFrame.scaleX
-    this._currentFrameScaleY = this._currentFrame.scaleY
+    this.currentFrameX = this.currentFrame.x
+    this.currentFrameY = this.currentFrame.y
+    this.currentFrameWidth = this.currentFrame.width
+    this.currentFrameHeight = this.currentFrame.height
+    this.currentFrameFlipAlongX = this.currentFrame.flipAlongX
+    this.currentFrameFlipAlongY = this.currentFrame.flipAlongY
+    this.currentFrameScaleX = this.currentFrame.scaleX
+    this.currentFrameScaleY = this.currentFrame.scaleY
 
-    console.log(this._currentFrameFlipAlongX, this._currentFrameFlipAlongY)
+    console.log(this.currentFrameFlipAlongX, this.currentFrameFlipAlongY)
 
-    this._svg.setAttribute(
+    this.svg.setAttribute(
       "transform",
-      `scale(${this._currentFrameScaleX} , ${this._currentFrameScaleY})`
+      `scale(${this.currentFrameScaleX} , ${this.currentFrameScaleY})`
     )
 
-    this._svg.setAttribute(
+    this.svg.setAttribute(
       "viewBox",
-      `0 0 ${this._currentFrameWidth} ${this._currentFrameHeight}`
+      `0 0 ${this.currentFrameWidth} ${this.currentFrameHeight}`
     )
 
-    this._lastFrameTime = performance.now()
-    requestAnimationFrame(this._loop)
+    this.lastFrameTime = performance.now()
+    requestAnimationFrame(this.loop)
 
     return this
   }
@@ -148,39 +185,37 @@ export class AnimateBitmapBasedSVGImageElement {
    * Stop animation
    * */
   public stop() {
-    this._element.style.visibility = "hidden"
-    this._currentAnimation = null
+    this.element.style.visibility = "hidden"
+    this.currentAnimation = null
     return this
   }
 
   /**
-   * @param animationName name of the animation to play. Each animation name is unique and is same as key in {@link AnimateBitmapBasedSVGImageElement._namedAnimations}
+   * @param animationName - name of the animation to play. Each animation name is unique and is same as key in {@link AnimateBitmapBasedSVGImageElement.namedAnimations}
    * */
   public isPlaying(animationName: string) {
     return (
-      this._currentAnimation &&
-      this._currentAnimation.name === animationName &&
-      this._element.style.visibility === "visible"
+      this.currentAnimation &&
+      this.currentAnimation.name === animationName &&
+      this.element.style.visibility === "visible"
     )
   }
 }
 
-/**
- * @param name name of the frame. Each frame name is unique and is same as key in {@link AnimatedImage._frames}
- * @param x x coordinate of the frame in the atlas, left top corner
- * @param y y coordinate of the frame in the atlas, left top corner
- * @param width width of the frame in the atlas
- * @param height height of the frame in the atlas
- * @param flipAlongX if true, the frame will be flipped along X axis
- * @param flipAlongY if true, the frame will be flipped along Y axis
- * */
 export class MyFrame {
+  /** name of the frame. Each frame name is unique and is same as key in {@link AnimateBitmapBasedSVGImageElement.frames} */
   readonly name: string
+  /** x coordinate of the frame in the atlas, left top corner */
   readonly x: number
+  /** y coordinate of the frame in the atlas, left top corner */
   readonly y: number
+  /** width of the frame in the atlas */
   readonly width: number
+  /** height of the frame in the atlas */
   readonly height: number
+  /** if true, the frame will be flipped along X axis */
   readonly flipAlongX: boolean
+  /** if true, the frame will be flipped along Y axis */
   readonly flipAlongY: boolean
   readonly scaleX: 1 | -1
   readonly scaleY: 1 | -1
@@ -216,11 +251,9 @@ export class MyFrame {
   }
 }
 
-/**
- * @param name name of the animation. Each animation name is unique and is same as key in {@link AnimatedImage._namedAnimations}
- * @param sequenceOfFrameNames array of frame names in the sequence. Each frame name is {@link MyFrame.name}
- */
 export type MyAnimation = {
+  /** name of the animation. Each animation name is unique and is same as key in {@link AnimateBitmapBasedSVGImageElement.namedAnimations} */
   name: string
+  /** array of frame names in the sequence. Each frame name is {@link MyFrame.name} */
   sequenceOfFrameNames: string[]
 }
