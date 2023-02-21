@@ -1,3 +1,5 @@
+import { Animated } from "./base.js"
+
 export const CELL_SIZE = 5
 
 const CLOUD_TIME = 500
@@ -31,14 +33,14 @@ const TYPE_STYLES = {
   },
 } as const
 
-export class Cell {
+export default class Cell extends Animated {
   get type(): CellType {
     return this._type
   }
 
   set type(value: CellType) {
     if (value === "cloud") {
-      this.timer = setTimeout(() => {
+      this.addTimer(() => {
         this.type = "empty"
       }, CLOUD_TIME)
     }
@@ -47,33 +49,16 @@ export class Cell {
   }
 
   // TODO: add pause handling
-  private timer: number | null = null
   private _type!: CellType
-  public element: SVGRectElement
   public col: number
   public row: number
-  /** x coordinate in svg coordinates */
-  public x: number
-  /** y coordinate in svg coordinates */
-  public y: number
 
   constructor(typeCode: CellCode, col: number, row: number) {
-    this.element = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    )
+    super(CELL_SIZE, CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE)
     this.type = CELL_CODES[typeCode]
 
     this.col = col
     this.row = row
-    this.x = col * CELL_SIZE
-    this.y = row * CELL_SIZE
-
-    this.element.x.baseVal.value = this.x
-    this.element.y.baseVal.value = this.y
-
-    this.element.width.baseVal.value = CELL_SIZE
-    this.element.height.baseVal.value = CELL_SIZE
   }
 }
 

@@ -1,4 +1,5 @@
-import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
+import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
+import Creature from "./base.js"
 
 const SHEEP_SIZE = CELL_SIZE
 const SHEEP_SPEED = 0.1
@@ -15,33 +16,7 @@ const oppositeDirections: Record<Direction, Direction> = {
   top: "bottom",
 } as const
 
-export default class Sheep {
-  public element: SVGRectElement
-
-  /** x coordinate in svg coordinates. */
-  public get x() {
-    return this._x
-  }
-
-  public set x(value: number) {
-    this.element.x.baseVal.value = value
-    this._x = value
-  }
-
-  private _x!: number
-
-  /** y coordinate in svg coordinates. */
-  public get y() {
-    return this._y
-  }
-
-  public set y(value: number) {
-    this.element.y.baseVal.value = value
-    this._y = value
-  }
-
-  private _y!: number
-
+export default class Sheep extends Creature {
   public get demonized() {
     return this._demonized
   }
@@ -151,17 +126,9 @@ export default class Sheep {
   }
 
   constructor(cell: Cell, neighbours: NeighbourCells, demonized = true) {
-    this.element = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    )
-    this.element.id = "sheep"
-    this.element.height.baseVal.value = SHEEP_SIZE
-    this.element.width.baseVal.value = SHEEP_SIZE
+    super(SHEEP_SIZE, SHEEP_SIZE, cell.x, cell.y)
 
     this.demonized = demonized
-    this.x = cell.x
-    this.y = cell.y
 
     this.fromCell = cell
     this.setRandomDirection(neighbours)

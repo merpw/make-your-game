@@ -1,13 +1,13 @@
 import Hero from "./hero.js"
 import { Level } from "./levels"
 import Sheep from "./sheep.js"
-import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
+import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 
 export class Board {
   public hero: Hero
   private readonly cells: Cell[][]
   private svg: SVGSVGElement
-  private sheep: Sheep[] = []
+  private readonly sheep: Sheep[] = []
 
   public get isPaused() {
     return this._isPaused
@@ -15,9 +15,15 @@ export class Board {
 
   public set isPaused(value: boolean) {
     this._isPaused = value
-    value
-      ? this.svg.classList.add("paused")
-      : this.svg.classList.remove("paused")
+    if (value) {
+      this.svg.classList.add("paused")
+      this.hero.pause()
+      this.cells.flat().forEach((cell) => cell.pause())
+    } else {
+      this.svg.classList.remove("paused")
+      this.hero.resume()
+      this.cells.flat().forEach((cell) => cell.resume())
+    }
   }
 
   private _isPaused = false
@@ -46,20 +52,21 @@ export class Board {
       }
       sheep.render(frameTimeDiff)
     })
-    if (
-      this.sheep.some(
-        (sheep) =>
-          sheep.demonized &&
-          this.hero.isColliding({
-            left: sheep.x,
-            right: sheep.x + CELL_SIZE,
-            top: sheep.y,
-            bottom: sheep.y + CELL_SIZE,
-          })
-      )
-    ) {
-      this.hero.spawn(this.getRandomEmptyCell())
-    }
+    const demons = this.sheep.filter((sheep) => sheep.demonized)
+    const basic = this.sheep.filter((sheep) => !sheep.demonized)
+
+    const heroRect = this.hero.getRect()
+
+    demons.forEach((demon) => {
+      if (demon.isColliding(heroRect)) {
+        this.hero.spawn(this.getRandomEmptyCell())
+      }
+      basic.forEach((sheep) => {
+        if (sheep != demon && demon.isColliding(sheep.getRect())) {
+          sheep.demonized = true
+        }
+      })
+    })
   }
 
   /**
@@ -143,7 +150,6 @@ export class Board {
     this.hero = new Hero(heroCell)
 
     svg.getElementById("players").appendChild(this.hero.element)
-    svg.getElementById("players").appendChild(this.hero.animatedElement)
 
     svg.viewBox.baseVal.width = this.cells[0].length * CELL_SIZE
     svg.viewBox.baseVal.height = this.cells.length * CELL_SIZE

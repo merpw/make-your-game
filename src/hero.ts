@@ -1,6 +1,5 @@
-import { AnimateBitmapBasedSVGImageElement } from "./animatedImage.js"
-import { Cell, CELL_SIZE, NeighbourCells } from "./cell.js"
-import { MyAnimation, MyFrame } from "./animatedImage.js"
+import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
+import Creature from "./base.js"
 
 const HERO_SPEED = 0.2
 const HERO_WIDTH = CELL_SIZE * 0.75
@@ -13,40 +12,11 @@ const MAX_FUNGI = 4
 
 const DIAGONAL_SPEED = Math.sqrt(2) / 2
 
-export default class Hero {
-  public animatedElement: SVGSVGElement
-  public animationManager: AnimateBitmapBasedSVGImageElement
-  public element: SVGRectElement
+export default class Hero extends Creature {
   public cell!: Cell // there's ! because it's set in spawn()
 
   /** @remarks It's set on first render */
   private neighbourCells = {} as NeighbourCells
-
-  /** Hero's x coordinate in svg coordinates. */
-  public get x(): number {
-    return this._x
-  }
-
-  public set x(value: number) {
-    this.animatedElement.x.baseVal.value = value
-    this.element.x.baseVal.value = value
-    this._x = value
-  }
-
-  private _x!: number
-
-  /** Hero's y coordinate in svg coordinates. */
-  public get y() {
-    return this._y
-  }
-
-  public set y(value: number) {
-    this.animatedElement.y.baseVal.value = value
-    this.element.y.baseVal.value = value
-    this._y = value
-  }
-
-  private _y!: number
 
   /** Hero's {@link Way}. */
   public set way({ up, down, left, right }: Way) {
@@ -69,9 +39,6 @@ export default class Hero {
   private speedX = 0
   private speedY = 0
 
-  // TODO: add pause handling
-  private timer: number | null = null
-
   private set isSick(value: boolean) {
     this._isSick = value
 
@@ -79,8 +46,7 @@ export default class Hero {
       this.element.style.opacity = "0.5"
       this.speed = SICK_SPEED
 
-      clearTimeout(this.timer || undefined)
-      this.timer = setTimeout(() => {
+      this.addTimer(() => {
         this.isSick = false
       }, SICK_TIME)
     } else {
@@ -106,8 +72,6 @@ export default class Hero {
     }
     this.cell = currentCell
     this.neighbourCells = neighbourCells
-
-    if (this.speedX === 0 && this.speedY === 0) return
 
     const dx = this.speedX * frameTimeDiff
     const dy = this.speedY * frameTimeDiff
@@ -141,6 +105,10 @@ export default class Hero {
     )
 
     basicCollisions.forEach(([way, cell]) => {
+      if (cell.type === "cloud") {
+        this.isSick = true
+        return
+      }
       switch (way) {
         case "right":
           newX = cell.x - HERO_WIDTH
@@ -225,115 +193,12 @@ export default class Hero {
    * @param cell - the cell where the hero will be created
    */
   constructor(cell: Cell) {
-    this.animatedElement = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "svg"
-    )
-
-    const frameSize = 16
-    this.animatedElement.setAttribute("width", frameSize.toString())
-    this.animatedElement.setAttribute("height", frameSize.toString())
-    // this.animatedElement.setAttribute("viewBox", "0 0 16 16") // looks like ignored, and later too
-
-    const frames = new Map<string, MyFrame>([
-      [
-        "step1",
-        new MyFrame({
-          name: "step1",
-          x: 0,
-          y: 0,
-          width: frameSize,
-          height: frameSize,
-          flipAlongX: false,
-          flipAlongY: false,
-        }),
-      ],
-      [
-        "step2",
-        new MyFrame({
-          name: "step2",
-          x: frameSize,
-          y: 0,
-          width: frameSize,
-          height: frameSize,
-          flipAlongX: false,
-          flipAlongY: false,
-        }),
-      ],
-      [
-        "step3",
-        new MyFrame({
-          name: "step3",
-          x: 0,
-          y: frameSize,
-          width: frameSize,
-          height: frameSize,
-          flipAlongX: false,
-          flipAlongY: false,
-        }),
-      ],
-      [
-        "step4",
-        new MyFrame({
-          name: "step4",
-          x: frameSize,
-          y: frameSize,
-          width: frameSize,
-          height: frameSize,
-          flipAlongX: false,
-          flipAlongY: false,
-        }),
-      ],
-    ])
-
-    const namedAnimations = new Map<string, MyAnimation>([
-      [
-        "walk",
-        {
-          name: "walk",
-          sequenceOfFrameNames: ["step1", "step2", "step3", "step4"],
-        },
-      ],
-    ])
-
-    this.animationManager = new AnimateBitmapBasedSVGImageElement(
-      this.animatedElement,
-      "assets/atlas.png",
-      frames,
-      namedAnimations,
-      16
-    )
-    this.animationManager.play("walk")
-
-    this.element = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    )
-    this.element.width.baseVal.value = HERO_WIDTH
-    this.element.height.baseVal.value = HERO_HEIGHT
-
-    this.animatedElement.width.baseVal.value = HERO_WIDTH
-    this.animatedElement.height.baseVal.value = HERO_HEIGHT
+    super(HERO_HEIGHT, HERO_WIDTH, 0, 0)
+    // x and y will be set in spawn()
 
     this.element.style.fill = "rebeccapurple"
-    this.element.id = "mainHero"
 
     this.spawn(cell)
-  }
-
-  public isColliding(rect: Rect) {
-    const heroRect = {
-      left: this.x,
-      right: this.x + HERO_WIDTH,
-      top: this.y,
-      bottom: this.y + HERO_HEIGHT,
-    }
-    return (
-      rect.left < heroRect.right &&
-      rect.right > heroRect.left &&
-      rect.top < heroRect.bottom &&
-      rect.bottom > heroRect.top
-    )
   }
 }
 export type Way = {
@@ -341,11 +206,4 @@ export type Way = {
   down: boolean
   left: boolean
   right: boolean
-}
-
-type Rect = {
-  left: number
-  right: number
-  top: number
-  bottom: number
 }
