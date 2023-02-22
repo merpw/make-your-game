@@ -1,10 +1,11 @@
 import Timer from "./timer.js"
-import { AnimationManager, MyFrame } from "./animatedImage.js"
+import { AnimationManager } from "./animatedImage.js"
+import { AssetName } from "./animations/animations"
 
 /** A class for non-static objects that can be animated and paused */
-export class Animated {
+export class Animated<T extends AssetName> {
   public element: SVGSVGElement | SVGRectElement // TODO: remove Rect when all assets will be implemented
-  public animationManager?: AnimationManager // TODO: make required
+  public animationManager?: AnimationManager<T> // TODO: make required
   protected readonly height: number
   protected readonly width: number
 
@@ -40,13 +41,12 @@ export class Animated {
     width: number,
     x: number,
     y: number,
-    namedAnimations: Map<string, MyFrame[]>,
-    animationAsset?: string
+    assetName?: T
   ) {
     this.height = height
     this.width = width
 
-    if (!animationAsset) {
+    if (!assetName) {
       //TODO: remove when all assets will be implemented
       this.element = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -59,33 +59,21 @@ export class Animated {
       this.element.y.baseVal.value = y
       return
     }
-    this.element = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-    this.element.classList.add("pixelated")
 
-    this.element.setAttribute("width", width.toString())
-    this.element.setAttribute("height", height.toString())
-    // TODO: why panic if this.element.x.baseVal.value = "5" ?
-    this.element.setAttribute("viewBox", "0 0 16 16") // looks like ignored, and later too
-
-    this.animationManager = new AnimationManager(
-      this.element,
-      "assets/atlas.png", //TODO: replace to "animationAsset" when all assets will be implemented
-      namedAnimations,
-      16
-    )
-    this.animationManager.play("goRight") //TODO: is it required?
-    this.animationManager.pause()
+    this.animationManager = new AnimationManager(assetName, height, width, 16)
+    this.element = this.animationManager.element
+    this.element.x.baseVal.value = x
+    this.element.y.baseVal.value = y
   }
 }
 
 /** A class for all moving creatures */
-export default class Creature extends Animated {
+export default class Creature<T extends AssetName> extends Animated<T> {
   public get x() {
     return super.x
   }
 
   public set x(value: number) {
-    this.element && (this.element.x.baseVal.value = value)
     this.element.x.baseVal.value = value
   }
 
@@ -94,7 +82,6 @@ export default class Creature extends Animated {
   }
 
   public set y(value: number) {
-    this.element && (this.element.y.baseVal.value = super.y)
     this.element.y.baseVal.value = value
   }
 
@@ -117,17 +104,6 @@ export default class Creature extends Animated {
       rect.top < thisRect.bottom &&
       rect.bottom > thisRect.top
     )
-  }
-
-  constructor(
-    height: number,
-    width: number,
-    x: number,
-    y: number,
-    namedAnimations: Map<string, MyFrame[]>,
-    animationAsset?: string
-  ) {
-    super(height, width, x, y, namedAnimations, animationAsset)
   }
 }
 

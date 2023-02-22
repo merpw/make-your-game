@@ -17,7 +17,7 @@ type CellType = (typeof CELL_CODES)[CellCode] | "fungi" | "cloud"
 
 const TYPE_STYLES = {
   empty: {
-    color: "white",
+    color: "gray",
   },
   wall: {
     color: "black",
@@ -33,7 +33,8 @@ const TYPE_STYLES = {
   },
 } as const
 
-export default class Cell extends Animated {
+export default class Cell extends Animated<never> {
+  // TODO: remove never when cell will be added
   get type(): CellType {
     return this._type
   }
@@ -54,9 +55,8 @@ export default class Cell extends Animated {
   public row: number
 
   constructor(typeCode: CellCode, col: number, row: number) {
-    super(CELL_SIZE, CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE, new Map())
+    super(CELL_SIZE, CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE)
     this.type = CELL_CODES[typeCode]
-
     this.col = col
     this.row = row
   }

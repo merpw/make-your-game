@@ -1,6 +1,5 @@
 import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 import Creature from "./base.js"
-import { heroAnimations } from "./animationDataHero.js"
 
 const HERO_SPEED = 0.2
 const HERO_WIDTH = CELL_SIZE
@@ -13,7 +12,7 @@ const MAX_FUNGI = 4
 
 const DIAGONAL_SPEED = Math.sqrt(2) / 2
 
-export default class Hero extends Creature {
+export default class Hero extends Creature<"hero"> {
   public cell!: Cell // there's ! because it's set in spawn()
 
   /** @remarks It's set on first render */
@@ -24,12 +23,22 @@ export default class Hero extends Creature {
     this._way = { up, down, left, right }
     this.speedX = 0
     this.speedY = 0
-    if (up) this.speedY -= this.speed
-    if (down) this.speedY += this.speed
+    if (up) {
+      this.speedY -= this.speed
+      this.animationManager?.play("goUp")
+    }
+    if (down) {
+      this.speedY += this.speed
+      this.animationManager?.play("goDown")
+    }
     if (left) {
       this.speedX -= this.speed
+      this.animationManager?.play("goLeft")
     }
-    if (right) this.speedX += this.speed
+    if (right) {
+      this.speedX += this.speed
+      this.animationManager?.play("goRight")
+    }
 
     if (this.speedX !== 0 && this.speedY !== 0) {
       this.speedX *= DIAGONAL_SPEED
@@ -201,11 +210,11 @@ export default class Hero extends Creature {
    * @param cell - the cell where the hero will be created
    */
   constructor(cell: Cell) {
-    super(HERO_HEIGHT, HERO_WIDTH, 0, 0, heroAnimations, "hero")
+    super(HERO_HEIGHT, HERO_WIDTH, 0, 0, "hero")
     // x and y will be set in spawn()
 
     this.element.style.fill = "rebeccapurple"
-
+    this.animationManager?.play("goUp")
     this.spawn(cell)
   }
 }

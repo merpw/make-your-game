@@ -20,7 +20,7 @@ const step: FrameRequestCallback = (timestamp: number) => {
   if (frameTime < 2 * lastFrameTime) {
     // limit the frame time to 2x the last frame time
     // to avoid huge jumps in the game state
-    board.render(frameTime / NORMAL_FRAME_TIME)
+    board.render(frameTime / NORMAL_FRAME_TIME, timestamp)
   }
 
   lastFrameTime = frameTime

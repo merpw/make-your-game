@@ -1,22 +1,23 @@
+import { Frame, ATLAS_PATH } from "./animations/frame.js"
+import animations from "./animations/animations.js"
+import { AssetName } from "./animations/animations.js"
+
 /** animated image implementation. Use svg element <image> with frames from bitmap atlas */
-export class AnimationManager {
+export class AnimationManager<T extends AssetName> {
   /** svg element to place on the screen */
-  private readonly svg: SVGSVGElement
-
-  /** svg element to place in the svg */
-  private readonly element: SVGImageElement
-
+  public readonly element: SVGSVGElement
+  private readonly image: SVGImageElement
   /** named animations, used to play the animation */
-  private readonly namedAnimations: Map<string, MyFrame[]>
+  private readonly animations: (typeof animations)[T]
 
   /** frames per second */
   private readonly fps: number
 
   /** current animation name to play in the loop */
-  private currentAnimationName: string | null = null
+  private currentAnimationName?: keyof typeof this.animations
 
   /** current animation to play in the loop */
-  private currentAnimation: MyFrame[] | null = null
+  private keyFrames: Frame[] | null = null
 
   private isPaused = false
 
@@ -27,75 +28,64 @@ export class AnimationManager {
   private lastFrameTime = 0
 
   /**
-   * @param svg - svg element to display on the screen
-   * @param pathToAtlas - path to the atlas image, used to create the image element, and to get the frame width and height from the atlas
-   * @param frames - Map of the named frames in the atlas
-   * @param namedAnimations - named animations, used to play the animation
+   * @param assetName - named animations, used to play the animation
+   * @param height - height of the animated element
+   * @param width - width of the animated element
    * @param fps - frames per second
    * */
-  constructor(
-    svg: SVGSVGElement,
-    pathToAtlas: string,
-    namedAnimations: Map<string, MyFrame[]>,
-    fps: number
-  ) {
-    this.svg = svg
-    this.element = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "image"
-    )
-    this.element.href.baseVal = pathToAtlas
-    this.namedAnimations = namedAnimations
+  constructor(assetName: T, height: number, width: number, fps: number) {
+    this.animations = animations[assetName]
     this.fps = fps
-    this.svg.appendChild(this.element)
+
+    this.element = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+    this.element.classList.add("pixelated")
+
+    this.element.setAttribute("width", width.toString())
+    this.element.setAttribute("height", height.toString())
+    // TODO: why panic if this.element.x.baseVal.value = "5" ?
+
+    this.element.setAttribute("viewBox", "0 0 0 0")
+    // by default its hidden
+
+    this.image = document.createElementNS("http://www.w3.org/2000/svg", "image")
+    this.image.href.baseVal = ATLAS_PATH
+    this.element.appendChild(this.image)
   }
 
   /**
    * Animation loop. It's called by requestAnimationFrame.
    * */
-  private render = (time: number) => {
-    if (this.isPaused || !this.currentAnimation) {
+  public render(time: number) {
+    if (this.isPaused || !this.keyFrames) {
       return
     }
-    const frameTimeDiff = time - this.lastFrameTime
-    if (frameTimeDiff > 1000 / this.fps) {
+    if (time - this.lastFrameTime > 1000 / this.fps) {
       // next frame
       this.currentFrameIndex++
-      if (this.currentFrameIndex >= this.currentAnimation.length) {
+      if (this.currentFrameIndex >= this.keyFrames.length) {
         this.currentFrameIndex = 0
       }
 
-      const currentFrame = this.currentAnimation[this.currentFrameIndex]
+      const currentFrame = this.keyFrames[this.currentFrameIndex]
       if (!currentFrame) {
         return
       }
 
-      this.element.setAttribute(
-        "transform",
-        `scale(${currentFrame.scaleX} , ${currentFrame.scaleY})`
-      )
+      currentFrame.flipX
+        ? this.image.setAttribute("transform", "scale(-1, 1)")
+        : this.image.removeAttribute("transform")
 
-      this.svg.setAttribute(
-        "viewBox",
-        `${currentFrame.x} ${currentFrame.y} ${currentFrame.width} ${currentFrame.height}`
-      )
+      this.element.setAttribute("viewBox", currentFrame.viewBox)
       this.lastFrameTime = time
     }
-
-    requestAnimationFrame(this.render)
   }
 
   /**
-   * @param animationName - name of the animation to play. Each animation name is unique and is same as key in {@link AnimationManager.namedAnimations}
+   * @param animationName - name of the animation to play. Each animation name is unique and is same as key in {@link AnimationManager.animations}
    * */
-  public play(animationName: string) {
-    // if (this.currentAnimationName !== animationName) {
+  public play(animationName: keyof typeof this.animations) {
     this.currentAnimationName = animationName
-    this.currentAnimation = this.namedAnimations.get(animationName) as MyFrame[]
-
-    requestAnimationFrame(this.render)
-    // TODO: consider alternatives (e.g. SVG animate)
-    // }
+    this.keyFrames = this.animations[animationName] as Frame[] // TODO: maybe remove as Frame[]
   }
 
   /** Pause the animation */
@@ -105,55 +95,5 @@ export class AnimationManager {
 
   public resume() {
     this.isPaused = false
-    requestAnimationFrame(this.render)
-  }
-}
-
-export class MyFrame {
-  /** name of the frame. Each frame name is unique and is same as key in {@link AnimationManager.frames} */
-  readonly name: string
-  /** x coordinate of the frame in the atlas, left top corner */
-  readonly x: number
-  /** y coordinate of the frame in the atlas, left top corner */
-  readonly y: number
-  /** width of the frame in the atlas */
-  readonly width: number
-  /** height of the frame in the atlas */
-  readonly height: number
-  /** if true, the frame will be flipped along X axis */
-  readonly flipAlongX: boolean
-  /** if true, the frame will be flipped along Y axis */
-  readonly flipAlongY: boolean
-  readonly scaleX: 1 | -1
-  readonly scaleY: 1 | -1
-
-  constructor(frameData: {
-    name: string
-    x: number
-    y: number
-    width: number
-    height: number
-    flipAlongX: boolean
-    flipAlongY: boolean
-  }) {
-    this.name = frameData.name
-    this.width = frameData.width
-    this.height = frameData.height
-    this.flipAlongX = frameData.flipAlongX
-    this.flipAlongY = frameData.flipAlongY
-    this.scaleX = this.flipAlongX ? -1 : 1
-    this.scaleY = this.flipAlongY ? -1 : 1
-
-    if (this.flipAlongX) {
-      this.x = -(frameData.x + frameData.width)
-    } else {
-      this.x = frameData.x
-    }
-
-    if (this.flipAlongY) {
-      this.y = -(frameData.y + frameData.height)
-    } else {
-      this.y = frameData.y
-    }
   }
 }

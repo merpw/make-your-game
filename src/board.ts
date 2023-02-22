@@ -30,8 +30,10 @@ export class Board {
 
   private _isPaused = false
 
-  public render(frameTimeDiff: number) {
+  public render(frameTimeDiff: number, time: number) {
     if (this.isPaused) return
+
+    this.renderAnimations(time)
 
     const heroCell = this.getCell(this.hero.x, this.hero.y)
     if (!heroCell) {
@@ -69,6 +71,11 @@ export class Board {
         }
       })
     })
+  }
+
+  public renderAnimations(time: number) {
+    this.hero.animationManager?.render(time)
+    this.sheep.forEach((sheep) => sheep.animationManager?.render(time))
   }
 
   /**

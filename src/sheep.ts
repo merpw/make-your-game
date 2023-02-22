@@ -1,6 +1,5 @@
 import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 import Creature from "./base.js"
-import { sheepAnimations } from "./animationDataSheep.js"
 
 const SHEEP_SIZE = CELL_SIZE
 const SHEEP_SPEED = 0.1
@@ -17,7 +16,7 @@ const oppositeDirections: Record<Direction, Direction> = {
   top: "bottom",
 } as const
 
-export default class Sheep extends Creature {
+export default class Sheep extends Creature<"sheep"> {
   public get demonized() {
     return this._demonized
   }
@@ -137,7 +136,7 @@ export default class Sheep extends Creature {
   }
 
   constructor(cell: Cell, neighbours: NeighbourCells, demonized = true) {
-    super(SHEEP_SIZE, SHEEP_SIZE, cell.x, cell.y, sheepAnimations, "sheep")
+    super(SHEEP_SIZE, SHEEP_SIZE, cell.x, cell.y, "sheep")
 
     this.demonized = demonized
 
