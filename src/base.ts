@@ -1,5 +1,5 @@
 import Timer from "./timer.js"
-import { AnimationManager, MyAnimation, MyFrame } from "./animatedImage.js"
+import { AnimationManager, MyFrame } from "./animatedImage.js"
 
 /** A class for non-static objects that can be animated and paused */
 export class Animated {
@@ -40,6 +40,7 @@ export class Animated {
     width: number,
     x: number,
     y: number,
+    namedAnimations: Map<string, MyFrame[]>,
     animationAsset?: string
   ) {
     this.height = height
@@ -61,83 +62,18 @@ export class Animated {
     this.element = document.createElementNS("http://www.w3.org/2000/svg", "svg")
     this.element.classList.add("pixelated")
 
-    const frameSize = 16
-
     this.element.setAttribute("width", width.toString())
     this.element.setAttribute("height", height.toString())
     // TODO: why panic if this.element.x.baseVal.value = "5" ?
     this.element.setAttribute("viewBox", "0 0 16 16") // looks like ignored, and later too
 
-    // TODO: move frames declaration to animations file
-    const frames = new Map<string, MyFrame>([
-      [
-        "step1",
-        new MyFrame({
-          name: "step1",
-          x: 0,
-          y: 0,
-          width: frameSize,
-          height: frameSize,
-          flipAlongX: false,
-          flipAlongY: false,
-        }),
-      ],
-      [
-        "step2",
-        new MyFrame({
-          name: "step2",
-          x: frameSize,
-          y: 0,
-          width: frameSize,
-          height: frameSize,
-          flipAlongX: false,
-          flipAlongY: false,
-        }),
-      ],
-      [
-        "step3",
-        new MyFrame({
-          name: "step3",
-          x: 0,
-          y: frameSize,
-          width: frameSize,
-          height: frameSize,
-          flipAlongX: false,
-          flipAlongY: false,
-        }),
-      ],
-      [
-        "step4",
-        new MyFrame({
-          name: "step4",
-          x: frameSize,
-          y: frameSize,
-          width: frameSize,
-          height: frameSize,
-          flipAlongX: false,
-          flipAlongY: false,
-        }),
-      ],
-    ])
-
-    const namedAnimations = new Map<string, MyAnimation>([
-      [
-        "walk",
-        {
-          name: "walk",
-          sequenceOfFrameNames: ["step1", "step2", "step3", "step4"],
-        },
-      ],
-    ])
-
     this.animationManager = new AnimationManager(
       this.element,
-      "assets/atlas.png",
-      frames,
+      "assets/atlas.png", //TODO: replace to "animationAsset" when all assets will be implemented
       namedAnimations,
       16
     )
-    this.animationManager.play("walk")
+    this.animationManager.play("goRight") //TODO: is it required?
     this.animationManager.pause()
   }
 }
@@ -188,9 +124,10 @@ export default class Creature extends Animated {
     width: number,
     x: number,
     y: number,
+    namedAnimations: Map<string, MyFrame[]>,
     animationAsset?: string
   ) {
-    super(height, width, x, y, animationAsset)
+    super(height, width, x, y, namedAnimations, animationAsset)
   }
 }
 

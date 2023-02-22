@@ -6,17 +6,17 @@ export class AnimationManager {
   /** svg element to place in the svg */
   private readonly element: SVGImageElement
 
-  /** Map of the named frames in the atlas */
-  private readonly frames: Map<string, MyFrame>
-
   /** named animations, used to play the animation */
-  private readonly namedAnimations: Map<string, MyAnimation>
+  private readonly namedAnimations: Map<string, MyFrame[]>
 
   /** frames per second */
   private readonly fps: number
 
+  /** current animation name to play in the loop */
+  private currentAnimationName: string | null = null
+
   /** current animation to play in the loop */
-  private currentAnimation: MyAnimation | null = null
+  private currentAnimation: MyFrame[] | null = null
 
   private isPaused = false
 
@@ -36,8 +36,7 @@ export class AnimationManager {
   constructor(
     svg: SVGSVGElement,
     pathToAtlas: string,
-    frames: Map<string, MyFrame>,
-    namedAnimations: Map<string, MyAnimation>,
+    namedAnimations: Map<string, MyFrame[]>,
     fps: number
   ) {
     this.svg = svg
@@ -46,7 +45,6 @@ export class AnimationManager {
       "image"
     )
     this.element.href.baseVal = pathToAtlas
-    this.frames = frames
     this.namedAnimations = namedAnimations
     this.fps = fps
     this.svg.appendChild(this.element)
@@ -63,24 +61,18 @@ export class AnimationManager {
     if (frameTimeDiff > 1000 / this.fps) {
       // next frame
       this.currentFrameIndex++
-      if (
-        this.currentFrameIndex >=
-        this.currentAnimation.sequenceOfFrameNames.length
-      ) {
+      if (this.currentFrameIndex >= this.currentAnimation.length) {
         this.currentFrameIndex = 0
       }
 
-      const currentFrameName =
-        this.currentAnimation.sequenceOfFrameNames[this.currentFrameIndex]
-
-      const currentFrame = this.frames.get(currentFrameName)
+      const currentFrame = this.currentAnimation[this.currentFrameIndex]
       if (!currentFrame) {
         return
       }
 
       this.element.setAttribute(
         "transform",
-        `scale(${currentFrame.scaleX} , ${currentFrame.scaleX})`
+        `scale(${currentFrame.scaleX} , ${currentFrame.scaleY})`
       )
 
       this.svg.setAttribute(
@@ -97,12 +89,13 @@ export class AnimationManager {
    * @param animationName - name of the animation to play. Each animation name is unique and is same as key in {@link AnimationManager.namedAnimations}
    * */
   public play(animationName: string) {
-    this.currentAnimation = this.namedAnimations.get(
-      animationName
-    ) as MyAnimation
+    // if (this.currentAnimationName !== animationName) {
+    this.currentAnimationName = animationName
+    this.currentAnimation = this.namedAnimations.get(animationName) as MyFrame[]
 
     requestAnimationFrame(this.render)
     // TODO: consider alternatives (e.g. SVG animate)
+    // }
   }
 
   /** Pause the animation */
@@ -163,11 +156,4 @@ export class MyFrame {
       this.y = frameData.y
     }
   }
-}
-
-export type MyAnimation = {
-  /** name of the animation. Each animation name is unique and is same as key in {@link AnimationManager.namedAnimations} */
-  name: string
-  /** array of frame names in the sequence. Each frame name is {@link MyFrame.name} */
-  sequenceOfFrameNames: string[]
 }

@@ -19,10 +19,12 @@ export class Board {
       this.svg.classList.add("paused")
       this.hero.pause()
       this.cells.flat().forEach((cell) => cell.pause())
+      this.sheep.forEach((sheep) => sheep.pause())
     } else {
       this.svg.classList.remove("paused")
       this.hero.resume()
       this.cells.flat().forEach((cell) => cell.resume())
+      this.sheep.forEach((sheep) => sheep.resume())
     }
   }
 

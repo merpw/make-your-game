@@ -54,7 +54,7 @@ export default class Cell extends Animated {
   public row: number
 
   constructor(typeCode: CellCode, col: number, row: number) {
-    super(CELL_SIZE, CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE)
+    super(CELL_SIZE, CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE, new Map())
     this.type = CELL_CODES[typeCode]
 
     this.col = col

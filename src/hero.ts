@@ -1,5 +1,6 @@
 import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 import Creature from "./base.js"
+import { heroAnimations } from "./animationDataHero.js"
 
 const HERO_SPEED = 0.2
 const HERO_WIDTH = CELL_SIZE
@@ -200,7 +201,7 @@ export default class Hero extends Creature {
    * @param cell - the cell where the hero will be created
    */
   constructor(cell: Cell) {
-    super(HERO_HEIGHT, HERO_WIDTH, 0, 0, "hero")
+    super(HERO_HEIGHT, HERO_WIDTH, 0, 0, heroAnimations, "hero")
     // x and y will be set in spawn()
 
     this.element.style.fill = "rebeccapurple"

@@ -1,5 +1,6 @@
 import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 import Creature from "./base.js"
+import { sheepAnimations } from "./animationDataSheep.js"
 
 const SHEEP_SIZE = CELL_SIZE
 const SHEEP_SPEED = 0.1
@@ -54,6 +55,9 @@ export default class Sheep extends Creature {
           this.x = this.targetCell.x
           this.targetCell = null
         }
+        this.animationManager?.play(
+          this.demonized ? "goRightDemonized" : "goRight"
+        )
         break
       case "bottom":
         this.y += SHEEP_SPEED * frameTimeDiff
@@ -61,6 +65,9 @@ export default class Sheep extends Creature {
           this.y = this.targetCell.y
           this.targetCell = null
         }
+        this.animationManager?.play(
+          this.demonized ? "goDownDemonized" : "goDown"
+        )
         break
       case "left":
         this.x -= SHEEP_SPEED * frameTimeDiff
@@ -68,6 +75,9 @@ export default class Sheep extends Creature {
           this.x = this.targetCell.x
           this.targetCell = null
         }
+        this.animationManager?.play(
+          this.demonized ? "goLeftDemonized" : "goLeft"
+        )
         break
       case "top":
         this.y -= SHEEP_SPEED * frameTimeDiff
@@ -75,6 +85,7 @@ export default class Sheep extends Creature {
           this.y = this.targetCell.y
           this.targetCell = null
         }
+        this.animationManager?.play(this.demonized ? "goUpDemonized" : "goUp")
     }
   }
 
@@ -126,7 +137,7 @@ export default class Sheep extends Creature {
   }
 
   constructor(cell: Cell, neighbours: NeighbourCells, demonized = true) {
-    super(SHEEP_SIZE, SHEEP_SIZE, cell.x, cell.y)
+    super(SHEEP_SIZE, SHEEP_SIZE, cell.x, cell.y, sheepAnimations, "sheep")
 
     this.demonized = demonized
 
