@@ -36,6 +36,9 @@ export class AnimationManager<T extends AssetName> {
   constructor(assetName: T, height: number, width: number, fps: number) {
     this.animations = animations[assetName]
     this.fps = fps
+    // TODO: think about implement code for fps = 0
+    /* when the frame is not changed, just ignore any calculations after play() call,
+    until animation is changed, but keep the same object(f.e. when portal is not turned on)*/
 
     this.element = document.createElementNS("http://www.w3.org/2000/svg", "svg")
     this.element.classList.add("pixelated")
