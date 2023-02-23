@@ -1,5 +1,5 @@
 import { Animated } from "./base.js"
-import { AnimationManager } from "./animatedImage"
+import AnimationManager from "./animationManager"
 
 export const CELL_SIZE = 5
 

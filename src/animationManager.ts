@@ -3,7 +3,7 @@ import animations from "./animations/animations.js"
 import { AssetName } from "./animations/animations.js"
 
 /** animated image implementation. Use svg element <image> with frames from bitmap atlas */
-export class AnimationManager<T extends AssetName> {
+export default class AnimationManager<T extends AssetName> {
   /** svg element to place on the screen */
   public readonly element: SVGSVGElement
   private readonly image: SVGImageElement

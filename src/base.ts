@@ -1,5 +1,5 @@
 import Timer from "./timer.js"
-import { AnimationManager } from "./animatedImage.js"
+import AnimationManager from "./animationManager.js"
 import { AssetName } from "./animations/animations"
 
 /** A class for non-static objects that can be animated and paused */
