@@ -1,5 +1,5 @@
 import { Animated } from "./base.js"
-import AnimationManager from "./animationManager"
+import AnimationManager from "./animationManager.js"
 
 export const CELL_SIZE = 5
 
@@ -14,74 +14,57 @@ const CELL_CODES = {
 /** Cell codes defined in {@link CELL_CODES} */
 export type CellCode = keyof typeof CELL_CODES
 
-type CellType = (typeof CELL_CODES)[CellCode] | "fungi" | "cloud"
+type CellType = (typeof CELL_CODES)[CellCode] | "fungus" | "cloud"
 
-const TYPE_STYLES = {
-  empty: {
-    color: "gray",
-  },
-  wall: {
-    color: "black",
-  },
-  bush: {
-    color: "green",
-  },
-  fungi: {
-    color: "#9B0099",
-  },
-  cloud: {
-    color: "#00FFFF",
-  },
-} as const
-
-export default class Cell extends Animated<"fungus" | "cloud"> {
-  // TODO: remove never when cell will be added
+export default class Cell extends Animated<
+  "fungus" | "cloud" | "wall" | "grass" | "bush"
+> {
   get type(): CellType {
     return this._type
   }
 
   set type(value: CellType) {
     this._type = value
-    if (value === "empty") {
-      this.setAnimation("empty")
-      return
-    }
-    if (value === "cloud") {
-      this.addTimer(() => {
-        this.type = "empty"
-      }, CLOUD_TIME)
-    }
-    if (value === "fungi") {
-      this.setAnimation("fungus")
-      // TODO: maybe improve this
-      ;(this.animationManager as AnimationManager<"fungus">)?.play("stand")
-      return
-    }
+
     if (value === "cloud") {
       this.setAnimation("cloud")
       ;(this.animationManager as AnimationManager<"cloud">)?.play("pink")
+
+      this.addTimer(() => {
+        this.type = "empty"
+      }, CLOUD_TIME)
+      return
+    }
+    if (value === "empty") {
+      this.setAnimation("none")
       return
     }
 
-    // TODO: remove when all assets will be added
-    this.setAnimation()
-    this.element.style.fill = TYPE_STYLES[value].color
+    this.setAnimation(value)
+
+    if (value === "fungus") {
+      ;(this.animationManager as AnimationManager<"fungus">)?.play("stand")
+      return
+    }
   }
 
-  // TODO: add pause handling
   private _type!: CellType
   public col: number
   public row: number
 
   constructor(typeCode: CellCode, col: number, row: number) {
-    super(CELL_SIZE, CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE)
+    super(CELL_SIZE, CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE, "none")
 
-    const grass = document.createElementNS("http://www.w3.org/2000/svg", "rect")
-    grass.height.baseVal.value = CELL_SIZE
-    grass.width.baseVal.value = CELL_SIZE
+    const { element: grass } = new AnimationManager(
+      "grass",
+      CELL_SIZE,
+      CELL_SIZE,
+      0
+    )
+
     grass.x.baseVal.value = col * CELL_SIZE
     grass.y.baseVal.value = row * CELL_SIZE
-    grass.style.fill = "gray"
+
     document.getElementById("landscape")?.appendChild(grass)
 
     this.type = CELL_CODES[typeCode]

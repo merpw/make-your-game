@@ -169,8 +169,8 @@ export default class Hero extends Creature<"hero"> {
   }
 
   public placeFungi = () => {
-    if (this.fungi.length == MAX_FUNGI || this.cell.type === "fungi") return
-    this.cell.type = "fungi"
+    if (this.fungi.length == MAX_FUNGI || this.cell.type === "fungus") return
+    this.cell.type = "fungus"
     this.fungi.push({
       cell: this.cell,
       neighbourCells: {

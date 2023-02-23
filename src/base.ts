@@ -4,9 +4,8 @@ import { AssetName } from "./animations/animations"
 
 /** A class for non-static objects that can be animated and paused */
 export class Animated<T extends AssetName> {
-  public animationManager?: AnimationManager<T> // TODO: make required
-
-  protected element!: SVGSVGElement | SVGRectElement // TODO: remove Rect when all assets will be implemented
+  public animationManager!: AnimationManager<T>
+  protected element!: SVGSVGElement // There's '!' because they're set in setAnimation
   protected readonly height: number
   protected readonly width: number
 
@@ -41,28 +40,18 @@ export class Animated<T extends AssetName> {
     this.animationManager?.resume()
   }
 
-  public setAnimation(assetName?: T | "empty") {
+  public setAnimation(assetName: T | "none") {
     this.element?.remove()
-    if (assetName === "empty") return
+    if (assetName === "none") return
 
-    if (!assetName) {
-      //TODO: remove when all assets will be implemented
-      this.element = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "rect"
-      )
-      this.element.height.baseVal.value = this.height
-      this.element.width.baseVal.value = this.width
-    } else {
-      this.animationManager = new AnimationManager(
-        assetName,
-        this.height,
-        this.width,
-        12
-      )
+    this.animationManager = new AnimationManager(
+      assetName,
+      this.height,
+      this.width,
+      12
+    )
 
-      this.element = this.animationManager.element
-    }
+    this.element = this.animationManager.element
 
     this.element.x.baseVal.value = this._x
     this.element.y.baseVal.value = this._y
@@ -86,7 +75,7 @@ export class Animated<T extends AssetName> {
     width: number,
     x: number,
     y: number,
-    assetName?: T
+    assetName: T | "none"
   ) {
     this.height = height
     this.width = width
