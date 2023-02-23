@@ -2,18 +2,18 @@ import { getFrame } from "./frame.js"
 
 // TODO: define width and height
 const frames = {
-  right1: getFrame(0, 0),
-  right2: getFrame(0, 1),
-  right3: getFrame(0, 2),
-  left1: getFrame(0, 0, undefined, undefined, true),
-  left2: getFrame(0, 1, undefined, undefined, true),
-  left3: getFrame(0, 2, undefined, undefined, true),
-  down1: getFrame(0, 3),
-  down2: getFrame(0, 4),
-  down3: getFrame(0, 5),
-  up1: getFrame(0, 6),
-  up2: getFrame(0, 7),
-  up3: getFrame(0, 8),
+  right1: getFrame(0, 0, 8, 16),
+  right2: getFrame(0, 1, 8, 16),
+  right3: getFrame(0, 2, 8, 16),
+  left1: getFrame(0, 0, 8, 16, true),
+  left2: getFrame(0, 1, 8, 16, true),
+  left3: getFrame(0, 2, 8, 16, true),
+  down1: getFrame(0, 3, 10, 16),
+  down2: getFrame(0, 4, 10, 16),
+  down3: getFrame(0, 5, 10, 16),
+  up1: getFrame(0, 6, 10, 16),
+  up2: getFrame(0, 7, 10, 16),
+  up3: getFrame(0, 8, 10, 16),
 }
 
 export default {
