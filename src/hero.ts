@@ -45,7 +45,7 @@ export default class Hero extends Creature<"hero"> {
       this.speedY *= DIAGONAL_SPEED
     }
     if (this.speedX === 0 && this.speedY === 0) {
-      this.animationManager?.pause()
+      this.animationManager?.pause(false)
     } else {
       this.animationManager?.resume()
     }
@@ -202,6 +202,8 @@ export default class Hero extends Creature<"hero"> {
     this.cell = cell
     this.x = cell.col * CELL_SIZE + (CELL_SIZE - HERO_WIDTH) / 2
     this.y = cell.row * CELL_SIZE + (CELL_SIZE - HERO_HEIGHT) / 2
+    this.way = { up: false, down: false, left: false, right: false }
+    this.animationManager.renderAnimationFrame("goDown")
   }
 
   /**
@@ -214,7 +216,6 @@ export default class Hero extends Creature<"hero"> {
     // x and y will be set in spawn()
 
     this.element.style.fill = "rebeccapurple"
-    this.animationManager?.play("goUp")
     this.spawn(cell)
   }
 }

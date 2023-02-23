@@ -51,14 +51,28 @@ export default class AnimationManager<T extends AssetName> {
       // if static, render it once
       this.fps = 0
       const [frame] = this.animations.static
-      frame.flipX
-        ? this.image.setAttribute("transform", "scale(-1, 1)")
-        : this.image.removeAttribute("transform")
-      this.element.setAttribute("viewBox", frame.viewBox)
+      this.renderFrame(frame)
     } else {
       this.element.setAttribute("viewBox", "0 0 0 0")
       // by default the animated element is hidden
     }
+  }
+
+  private renderFrame(frame: Frame) {
+    frame.flipX
+      ? this.image.setAttribute("transform", "scale(-1, 1)")
+      : this.image.removeAttribute("transform")
+    this.element.setAttribute("viewBox", frame.viewBox)
+  }
+
+  /* Renders one specific frame of the animation */
+  public renderAnimationFrame(
+    animationName: keyof typeof this.animations,
+    frameIndex = 0
+  ) {
+    const keyFrames = this.animations[animationName] as Frame[] // TODO: maybe remove as Frame[]
+    const frame = keyFrames[frameIndex]
+    this.renderFrame(frame)
   }
 
   public render(time: number) {
@@ -76,16 +90,14 @@ export default class AnimationManager<T extends AssetName> {
         return
       }
 
-      currentFrame.flipX
-        ? this.image.setAttribute("transform", "scale(-1, 1)")
-        : this.image.removeAttribute("transform")
+      this.renderFrame(currentFrame)
 
-      this.element.setAttribute("viewBox", currentFrame.viewBox)
       this.lastFrameTime = time
     }
   }
 
   /**
+   * Play the animation with the given name
    * @param animationName - name of the animation to play. Each animation name is unique and is same as key in {@link AnimationManager.animations}
    * */
   public play(animationName: keyof typeof this.animations) {
@@ -93,11 +105,19 @@ export default class AnimationManager<T extends AssetName> {
     this.keyFrames = this.animations[animationName] as Frame[] // TODO: maybe remove as Frame[]
   }
 
-  /** Pause the animation */
-  public pause() {
+  /**
+   * Pause the animation
+   *
+   * @param shouldResume - default: true. if true, the animation will resume when {@link AnimationManager.resume} is called
+   * */
+  public pause(shouldResume = true) {
     this.isPaused = true
+    if (!shouldResume) {
+      this.keyFrames = null
+    }
   }
 
+  /** Resume the animation */
   public resume() {
     this.isPaused = false
   }
