@@ -6,7 +6,6 @@ import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 export class Board {
   public hero: Hero
   private readonly cells: Cell[][]
-  private svg: SVGSVGElement
   private readonly sheep: Sheep[] = []
 
   public get isPaused() {
@@ -16,12 +15,12 @@ export class Board {
   public set isPaused(value: boolean) {
     this._isPaused = value
     if (value) {
-      this.svg.classList.add("paused")
+      document.getElementById("board")?.classList.add("paused")
       this.hero.pause()
       this.cells.flat().forEach((cell) => cell.pause())
       this.sheep.forEach((sheep) => sheep.pause())
     } else {
-      this.svg.classList.remove("paused")
+      document.getElementById("board")?.classList.remove("paused")
       this.hero.resume()
       this.cells.flat().forEach((cell) => cell.resume())
       this.sheep.forEach((sheep) => sheep.resume())
@@ -76,6 +75,7 @@ export class Board {
   public renderAnimations(time: number) {
     this.hero.animationManager?.render(time)
     this.sheep.forEach((sheep) => sheep.animationManager?.render(time))
+    this.cells.flat().forEach((cell) => cell.animationManager?.render(time))
   }
 
   /**
@@ -130,7 +130,7 @@ export class Board {
   /** Returns a random empty and safe cell */
   private getRandomEmptyCell = () => this.getRandomEmptyCells(1)[0]
 
-  constructor(svg: SVGSVGElement, level: Level) {
+  constructor(level: Level) {
     const board = level.board
     board.forEach((row) => {
       row.push(1)
@@ -139,29 +139,22 @@ export class Board {
     board.push(new Array(board[0].length).fill(1))
     board.unshift(new Array(board[0].length).fill(1))
 
-    const landscape = svg.querySelector("#landscape") as SVGGElement
     this.cells = board.map((row, y) =>
-      row.map((cellCode, x) => {
-        const cell = new Cell(cellCode, x, y)
-        landscape.appendChild(cell.element)
-        return cell
-      })
+      row.map((cellCode, x) => new Cell(cellCode, x, y))
     )
 
     const sheepCells = this.getRandomEmptyCells(level.sheepCount)
-    const sheepGroup = svg.querySelector("#sheep") as SVGGElement
-    this.sheep = sheepCells.map((cell) => {
-      const sheep = new Sheep(cell, this.getNeighbors(cell))
-      sheepGroup.appendChild(sheep.element)
-      return sheep
-    })
+    this.sheep = sheepCells.map(
+      (cell) => new Sheep(cell, this.getNeighbors(cell))
+    )
     const heroCell = this.getRandomEmptyCell()
     this.hero = new Hero(heroCell)
 
-    svg.getElementById("players").appendChild(this.hero.element)
+    const svg = document.getElementById("board") as SVGSVGElement | null
 
-    svg.viewBox.baseVal.width = this.cells[0].length * CELL_SIZE
-    svg.viewBox.baseVal.height = this.cells.length * CELL_SIZE
-    this.svg = svg
+    svg?.setAttribute(
+      "viewBox",
+      `0 0 ${this.cells[0].length * CELL_SIZE} ${this.cells.length * CELL_SIZE}`
+    )
   }
 }

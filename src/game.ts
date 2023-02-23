@@ -6,8 +6,7 @@ import takeControl from "./keys.js"
 const FPS = 60
 const NORMAL_FRAME_TIME = 1000 / FPS
 
-export const svg = document.querySelector("#game svg") as SVGSVGElement
-export const board = new Board(svg, level1)
+export const board = new Board(level1)
 
 takeControl(board)
 

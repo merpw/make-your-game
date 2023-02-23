@@ -1,8 +1,9 @@
 import { Animated } from "./base.js"
+import { AnimationManager } from "./animatedImage"
 
 export const CELL_SIZE = 5
 
-const CLOUD_TIME = 500
+const CLOUD_TIME = 300
 
 const CELL_CODES = {
   0: "empty",
@@ -33,20 +34,38 @@ const TYPE_STYLES = {
   },
 } as const
 
-export default class Cell extends Animated<never> {
+export default class Cell extends Animated<"fungus" | "cloud"> {
   // TODO: remove never when cell will be added
   get type(): CellType {
     return this._type
   }
 
   set type(value: CellType) {
+    this._type = value
+    if (value === "empty") {
+      this.setAnimation("empty")
+      return
+    }
     if (value === "cloud") {
       this.addTimer(() => {
         this.type = "empty"
       }, CLOUD_TIME)
     }
+    if (value === "fungi") {
+      this.setAnimation("fungus")
+      // TODO: maybe improve this
+      ;(this.animationManager as AnimationManager<"fungus">)?.play("stand")
+      return
+    }
+    if (value === "cloud") {
+      this.setAnimation("cloud")
+      ;(this.animationManager as AnimationManager<"cloud">)?.play("pink")
+      return
+    }
+
+    // TODO: remove when all assets will be added
+    this.setAnimation()
     this.element.style.fill = TYPE_STYLES[value].color
-    this._type = value
   }
 
   // TODO: add pause handling
@@ -56,6 +75,15 @@ export default class Cell extends Animated<never> {
 
   constructor(typeCode: CellCode, col: number, row: number) {
     super(CELL_SIZE, CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE)
+
+    const grass = document.createElementNS("http://www.w3.org/2000/svg", "rect")
+    grass.height.baseVal.value = CELL_SIZE
+    grass.width.baseVal.value = CELL_SIZE
+    grass.x.baseVal.value = col * CELL_SIZE
+    grass.y.baseVal.value = row * CELL_SIZE
+    grass.style.fill = "gray"
+    document.getElementById("landscape")?.appendChild(grass)
+
     this.type = CELL_CODES[typeCode]
     this.col = col
     this.row = row
