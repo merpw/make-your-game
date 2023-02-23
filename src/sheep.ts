@@ -23,7 +23,6 @@ export default class Sheep extends Creature<"sheep"> {
 
   public set demonized(value: boolean) {
     this._demonized = value
-    this.element.style.fill = value ? "red" : "orange"
   }
 
   private _demonized!: boolean

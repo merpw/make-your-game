@@ -215,7 +215,6 @@ export default class Hero extends Creature<"hero"> {
     super(HERO_HEIGHT, HERO_WIDTH, 0, 0, "hero")
     // x and y will be set in spawn()
 
-    this.element.style.fill = "rebeccapurple"
     this.spawn(cell)
   }
 }
