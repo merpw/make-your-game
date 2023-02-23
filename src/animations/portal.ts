@@ -1,4 +1,4 @@
-import { getFrame } from "./frame"
+import { getFrame } from "./frame.js"
 
 const frames = {
   stand0: getFrame(4, 0),
