@@ -1,12 +1,12 @@
 import { getFrame } from "./frame.js"
 
 const frames = {
-  right1demonized: getFrame(1, 0, 16, 10),
-  right2demonized: getFrame(1, 1, 16, 10),
-  right3demonized: getFrame(1, 2, 16, 10),
-  left1demonized: getFrame(1, 0, 16, 10, true),
-  left2demonized: getFrame(1, 1, 16, 10, true),
-  left3demonized: getFrame(1, 2, 16, 10, true),
+  right1demonized: getFrame(1, 0, 16, 11),
+  right2demonized: getFrame(1, 1, 16, 11),
+  right3demonized: getFrame(1, 2, 16, 11),
+  left1demonized: getFrame(1, 0, 16, 11, true),
+  left2demonized: getFrame(1, 1, 16, 11, true),
+  left3demonized: getFrame(1, 2, 16, 11, true),
   down1demonized: getFrame(1, 3, 8, 15),
   down2demonized: getFrame(1, 4, 8, 15),
   down3demonized: getFrame(1, 5, 8, 15),
