@@ -10,7 +10,7 @@ const frames = {
   down1demonized: getFrame(1, 3, 8, 15),
   down2demonized: getFrame(1, 4, 8, 15),
   down3demonized: getFrame(1, 5, 8, 15),
-  up1demonized: getFrame(1, 6, 8 ,15),
+  up1demonized: getFrame(1, 6, 8, 15),
   up2demonized: getFrame(1, 7, 8, 15),
   up3demonized: getFrame(1, 8, 8, 15),
   right1: getFrame(2, 0, 13, 11),

@@ -17,7 +17,7 @@ export const getFrame = (
 ): Frame => {
   return {
     viewBox: flipX
-      ? `${(-(col + 1) * ATLAS_CELL_SIZE)+ATLAS_CELL_SIZE-width} ${
+      ? `${-(col + 1) * ATLAS_CELL_SIZE + ATLAS_CELL_SIZE - width} ${
           row * ATLAS_CELL_SIZE
         } ${width} ${height}`
       : `${col * ATLAS_CELL_SIZE} ${row * ATLAS_CELL_SIZE} ${width} ${height}`,
