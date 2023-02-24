@@ -135,7 +135,7 @@ export default class Sheep extends Creature<"sheep"> {
   }
 
   constructor(cell: Cell, neighbours: NeighbourCells, demonized = true) {
-    super(SHEEP_SIZE, SHEEP_SIZE, cell.x, cell.y, "sheep")
+    super(SHEEP_SIZE, cell.x, cell.y, "sheep")
 
     this.demonized = demonized
 

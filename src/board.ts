@@ -34,7 +34,12 @@ export class Board {
 
     this.renderAnimations(time)
 
-    const heroCell = this.getCell(this.hero.x, this.hero.y)
+    const heroCell = this.getCell(
+      this.hero.x,
+      this.hero.y,
+      this.hero.height,
+      this.hero.width
+    )
     if (!heroCell) {
       throw new Error("Hero is out of bounds")
     }
@@ -43,7 +48,12 @@ export class Board {
 
     this.sheep.forEach((sheep) => {
       if (!sheep.targetCell) {
-        const sheepCell = this.getCell(sheep.x, sheep.y)
+        const sheepCell = this.getCell(
+          sheep.x,
+          sheep.y,
+          sheep.height,
+          sheep.width
+        )
         if (!sheepCell) {
           throw new Error("Sheep is out of bounds")
         }
@@ -83,10 +93,15 @@ export class Board {
    * @param x - horizontal coordinate in svg coordinates
    * @param y - vertical coordinate in svg coordinates
    */
-  private getCell(x: number, y: number): Cell | null {
-    const cellX = Math.floor((x + CELL_SIZE / 2) / CELL_SIZE)
-    const cellY = Math.floor((y + CELL_SIZE / 2) / CELL_SIZE)
-    return this.cells[cellY]?.[cellX] || null
+  private getCell(
+    x: number,
+    y: number,
+    height: number,
+    width: number
+  ): Cell | null {
+    const cellCol = Math.floor((x + width / 2) / CELL_SIZE)
+    const cellRow = Math.floor((y + height / 2) / CELL_SIZE)
+    return this.cells[cellRow]?.[cellCol] || null
   }
 
   /**
@@ -112,7 +127,8 @@ export class Board {
     !this.sheep.some(
       (sheep) =>
         sheep.demonized &&
-        (sheep.targetCell === cell || this.getCell(sheep.x, sheep.y) === cell)
+        (sheep.targetCell === cell ||
+          this.getCell(sheep.x, sheep.y, sheep.height, sheep.width) === cell)
     )
 
   /**

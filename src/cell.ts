@@ -53,14 +53,9 @@ export default class Cell extends Animated<
   public row: number
 
   constructor(typeCode: CellCode, col: number, row: number) {
-    super(CELL_SIZE, CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE, "none")
+    super(CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE, "none")
 
-    const { element: grass } = new AnimationManager(
-      "grass",
-      CELL_SIZE,
-      CELL_SIZE,
-      0
-    )
+    const { element: grass } = new AnimationManager("grass", CELL_SIZE, 0)
 
     grass.x.baseVal.value = col * CELL_SIZE
     grass.y.baseVal.value = row * CELL_SIZE

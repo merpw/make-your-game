@@ -12,6 +12,7 @@ export default class AnimationManager<T extends AssetName> {
 
   /** frames per second */
   private readonly fps: number
+  private readonly size: number
 
   /** current animation name to play in the loop */
   private currentAnimationName?: keyof typeof this.animations
@@ -29,19 +30,16 @@ export default class AnimationManager<T extends AssetName> {
 
   /**
    * @param assetName - named animations, used to play the animation
-   * @param height - height of the animated element
-   * @param width - width of the animated element
+   * @param size - height of the animated element
    * @param fps - frames per second
    * */
-  constructor(assetName: T, height: number, width: number, fps: number) {
+  constructor(assetName: T, size: number, fps: number) {
     this.animations = animations[assetName]
     this.fps = fps
+    this.size = size
 
     this.element = document.createElementNS("http://www.w3.org/2000/svg", "svg")
     this.element.classList.add("pixelated")
-
-    this.element.setAttribute("width", width.toString())
-    this.element.setAttribute("height", height.toString())
 
     this.image = document.createElementNS("http://www.w3.org/2000/svg", "image")
     this.image.href.baseVal = ATLAS_PATH
@@ -63,6 +61,15 @@ export default class AnimationManager<T extends AssetName> {
       ? this.image.setAttribute("transform", "scale(-1, 1)")
       : this.image.removeAttribute("transform")
     this.element.setAttribute("viewBox", frame.viewBox)
+    const [, , width, height] = frame.viewBox.split(" ")
+    const aspectRatio = Number(width) / Number(height)
+    if (aspectRatio > 1) {
+      this.element.setAttribute("width", this.size.toString())
+      this.element.setAttribute("height", (this.size / aspectRatio).toString())
+    } else {
+      this.element.setAttribute("width", (this.size * aspectRatio).toString())
+      this.element.setAttribute("height", this.size.toString())
+    }
   }
 
   /* Renders one specific frame of the animation */
@@ -89,12 +96,19 @@ export default class AnimationManager<T extends AssetName> {
       if (!currentFrame) {
         return
       }
+      // TODO: change collision rectangle size, to new data from frame
+      const vbox = currentFrame.viewBox.split(" ") // x y width height
+      this.currentFrameViewBoxWidth = Number(vbox[2])
+      this.currentFrameViewBoxHeight = Number(vbox[3])
 
       this.renderFrame(currentFrame)
 
       this.lastFrameTime = time
     }
   }
+
+  currentFrameViewBoxWidth = 0
+  currentFrameViewBoxHeight = 0
 
   /**
    * Play the animation with the given name

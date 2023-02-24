@@ -6,8 +6,15 @@ import { AssetName } from "./animations/animations"
 export class Animated<T extends AssetName> {
   public animationManager!: AnimationManager<T>
   protected element!: SVGSVGElement // There's '!' because they're set in setAnimation
-  protected readonly height: number
-  protected readonly width: number
+  private readonly size: number
+
+  get width() {
+    return this.element.width.baseVal.value
+  }
+
+  get height() {
+    return this.element.height.baseVal.value
+  }
 
   /** x (horizontal) coordinate in svg coordinates. */
   public get x(): number {
@@ -44,12 +51,7 @@ export class Animated<T extends AssetName> {
     this.element?.remove()
     if (assetName === "none") return
 
-    this.animationManager = new AnimationManager(
-      assetName,
-      this.height,
-      this.width,
-      12
-    )
+    this.animationManager = new AnimationManager(assetName, this.size, 12)
 
     this.element = this.animationManager.element
 
@@ -70,17 +72,10 @@ export class Animated<T extends AssetName> {
     }
   }
 
-  constructor(
-    height: number,
-    width: number,
-    x: number,
-    y: number,
-    assetName: T | "none"
-  ) {
-    this.height = height
-    this.width = width
+  constructor(size: number, x: number, y: number, assetName: T | "none") {
     this._x = x
     this._y = y
+    this.size = size
 
     this.setAnimation(assetName)
   }
