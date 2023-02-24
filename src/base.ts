@@ -120,10 +120,10 @@ export default class Creature<T extends AssetName> extends Animated<T> {
   public isColliding(rect: Rect) {
     const thisRect = this.getRect()
     return (
-      rect.left < thisRect.right &&
-      rect.right > thisRect.left &&
-      rect.top < thisRect.bottom &&
-      rect.bottom > thisRect.top
+      thisRect.right > rect.left &&
+      thisRect.left < rect.right &&
+      thisRect.bottom > rect.top &&
+      thisRect.top < rect.bottom
     )
   }
 }
