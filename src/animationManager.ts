@@ -1,4 +1,4 @@
-import { Frame, ATLAS_PATH } from "./animations/frame.js"
+import { Frame, ATLAS_PATH, ATLAS_CELL_SIZE } from "./animations/frame.js"
 import animations from "./animations/animations.js"
 import { AssetName } from "./animations/animations.js"
 
@@ -62,13 +62,23 @@ export default class AnimationManager<T extends AssetName> {
       : this.image.removeAttribute("transform")
     this.element.setAttribute("viewBox", frame.viewBox)
     const [, , width, height] = frame.viewBox.split(" ")
+
+    const wCoef = Number(width) / ATLAS_CELL_SIZE // prevent stretching to fill maximum possible area of "cell"
+    const hCoef = Number(height) / ATLAS_CELL_SIZE
+
     const aspectRatio = Number(width) / Number(height)
     if (aspectRatio > 1) {
-      this.element.setAttribute("width", this.size.toString())
-      this.element.setAttribute("height", (this.size / aspectRatio).toString())
+      this.element.setAttribute("width", (this.size * wCoef).toString())
+      this.element.setAttribute(
+        "height",
+        ((this.size / aspectRatio) * wCoef).toString()
+      )
     } else {
-      this.element.setAttribute("width", (this.size * aspectRatio).toString())
-      this.element.setAttribute("height", this.size.toString())
+      this.element.setAttribute(
+        "width",
+        (this.size * aspectRatio * hCoef).toString()
+      )
+      this.element.setAttribute("height", (this.size * hCoef).toString())
     }
   }
 
@@ -96,19 +106,12 @@ export default class AnimationManager<T extends AssetName> {
       if (!currentFrame) {
         return
       }
-      // TODO: change collision rectangle size, to new data from frame
-      const vbox = currentFrame.viewBox.split(" ") // x y width height
-      this.currentFrameViewBoxWidth = Number(vbox[2])
-      this.currentFrameViewBoxHeight = Number(vbox[3])
 
       this.renderFrame(currentFrame)
 
       this.lastFrameTime = time
     }
   }
-
-  currentFrameViewBoxWidth = 0
-  currentFrameViewBoxHeight = 0
 
   /**
    * Play the animation with the given name
