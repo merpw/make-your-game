@@ -20,11 +20,10 @@ main {
   border: 1px solid;
   border-radius: 10px;
   text-align: center;
-
   width: 1280px;
 }
 
-#game svg {
+#board {
   border: 1px solid;
   border-radius: 10px;
 }
