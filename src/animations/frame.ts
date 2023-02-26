@@ -1,5 +1,9 @@
 export const ATLAS_PATH = "assets/atlas.png"
-export const ATLAS_CELL_SIZE = 16
+export const ATLAS_CELL_SIZE = 18
+/** empty border around each cell added to right and bottom*/
+const ATLAS_CELL_EMPTY_BORDER = 2
+/** area (inside the square cell) plan to be covered by the art*/
+export const ATLAS_CELL_ART_SIZE = ATLAS_CELL_SIZE - ATLAS_CELL_EMPTY_BORDER
 
 // TODO: consider alternatives (e.g. SVG animate and transform instead of viewBox)
 
@@ -21,6 +25,6 @@ export const getFrame = (
           row * ATLAS_CELL_SIZE
         } ${width} ${height}`
       : `${col * ATLAS_CELL_SIZE} ${row * ATLAS_CELL_SIZE} ${width} ${height}`,
-    flipX,
+    flipX
   }
 }

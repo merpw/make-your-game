@@ -24,7 +24,7 @@ const frames = {
   down3: getFrame(2, 5, 8, 14),
   up1: getFrame(2, 6, 8, 14),
   up2: getFrame(2, 7, 8, 14),
-  up3: getFrame(2, 8, 8, 14),
+  up3: getFrame(2, 8, 8, 14)
 }
 
 export default {
@@ -37,25 +37,25 @@ export default {
     frames.right1demonized,
     frames.right2demonized,
     frames.right1demonized,
-    frames.right3demonized,
+    frames.right3demonized
   ],
   goLeftDemonized: [
     frames.left1demonized,
     frames.left2demonized,
     frames.left1demonized,
-    frames.left3demonized,
+    frames.left3demonized
   ],
   goDownDemonized: [
     frames.down1demonized,
     frames.down2demonized,
     frames.down1demonized,
-    frames.down3demonized,
+    frames.down3demonized
   ],
   goUpDemonized: [
     frames.up1demonized,
     frames.up2demonized,
     frames.up1demonized,
-    frames.up3demonized,
+    frames.up3demonized
   ],
 
   standRight: [frames.right1],
@@ -66,5 +66,5 @@ export default {
   goRight: [frames.right1, frames.right2, frames.right1, frames.right3],
   goLeft: [frames.left1, frames.left2, frames.left1, frames.left3],
   goDown: [frames.down1, frames.down2, frames.down1, frames.down3],
-  goUp: [frames.up1, frames.up2, frames.up1, frames.up3],
+  goUp: [frames.up1, frames.up2, frames.up1, frames.up3]
 } as const

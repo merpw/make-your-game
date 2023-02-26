@@ -1,4 +1,4 @@
-import { Frame, ATLAS_PATH, ATLAS_CELL_SIZE } from "./animations/frame.js"
+import { Frame, ATLAS_PATH, ATLAS_CELL_ART_SIZE } from "./animations/frame.js"
 import animations from "./animations/animations.js"
 import { AssetName } from "./animations/animations.js"
 
@@ -63,8 +63,8 @@ export default class AnimationManager<T extends AssetName> {
     this.element.setAttribute("viewBox", frame.viewBox)
     const [, , width, height] = frame.viewBox.split(" ")
 
-    const wCoef = Number(width) / ATLAS_CELL_SIZE // prevent stretching to fill maximum possible area of "cell"
-    const hCoef = Number(height) / ATLAS_CELL_SIZE
+    const wCoef = Number(width) / ATLAS_CELL_ART_SIZE // prevent stretching to fill maximum possible area of "cell"
+    const hCoef = Number(height) / ATLAS_CELL_ART_SIZE
 
     const aspectRatio = Number(width) / Number(height)
     if (aspectRatio > 1) {
