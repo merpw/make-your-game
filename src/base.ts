@@ -2,7 +2,7 @@ import Timer from "./timer.js"
 import AnimationManager from "./animationManager.js"
 import { AssetName } from "./animations/animations"
 
-/** A class for non-static objects that can be animated and paused */
+/** A class for non-static objects that can be animated using {@link AnimationManager}*/
 export class Animated<T extends AssetName> {
   public animationManager!: AnimationManager<T>
   protected element!: SVGSVGElement // There's '!' because they're set in setAnimation
@@ -72,6 +72,16 @@ export class Animated<T extends AssetName> {
     }
   }
 
+  /** Returns a rectangle that represents the creature's position */
+  public getRect(): Rect {
+    return {
+      left: this.x,
+      right: this.x + this.width,
+      top: this.y,
+      bottom: this.y + this.height,
+    }
+  }
+
   constructor(size: number, x: number, y: number, assetName: T | "none") {
     this._x = x
     this._y = y
@@ -99,16 +109,6 @@ export default class Creature<T extends AssetName> extends Animated<T> {
   public set y(value: number) {
     this._y = value
     this.element.y.baseVal.value = value
-  }
-
-  /** Returns a rectangle that represents the creature's position */
-  public getRect(): Rect {
-    return {
-      left: this.x,
-      right: this.x + this.width,
-      top: this.y,
-      bottom: this.y + this.height,
-    }
   }
 
   /** Returns true if the creature is colliding with the given rectangle */

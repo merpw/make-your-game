@@ -110,14 +110,7 @@ export default class Hero extends Creature<"hero"> {
 
     const collisions = Object.entries(neighbourCells).filter(
       ([, cell]) =>
-        cell &&
-        cell.type !== "empty" &&
-        this.isColliding({
-          left: cell.x,
-          right: cell.x + CELL_SIZE,
-          top: cell.y,
-          bottom: cell.y + CELL_SIZE,
-        })
+        cell && cell.type !== "empty" && this.isColliding(cell.getRect())
     ) as [keyof typeof neighbourCells, Cell][]
 
     const basicCollisions = collisions.filter(

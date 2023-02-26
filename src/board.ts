@@ -34,12 +34,7 @@ export class Board {
 
     this.renderAnimations(time)
 
-    const heroCell = this.getCell(
-      this.hero.x,
-      this.hero.y,
-      this.hero.height,
-      this.hero.width
-    )
+    const heroCell = this.getCell(this.hero)
     if (!heroCell) {
       throw new Error("Hero is out of bounds")
     }
@@ -48,12 +43,7 @@ export class Board {
 
     this.sheep.forEach((sheep) => {
       if (!sheep.targetCell) {
-        const sheepCell = this.getCell(
-          sheep.x,
-          sheep.y,
-          sheep.height,
-          sheep.width
-        )
+        const sheepCell = this.getCell(sheep)
         if (!sheepCell) {
           throw new Error("Sheep is out of bounds")
         }
@@ -65,6 +55,7 @@ export class Board {
       }
       sheep.render(frameTimeDiff)
     })
+
     const demons = this.sheep.filter((sheep) => sheep.demonized)
     const basic = this.sheep.filter((sheep) => !sheep.demonized)
 
@@ -81,7 +72,7 @@ export class Board {
         }
       }
       basic.forEach((sheep) => {
-        if (sheep != demon && demon.isColliding(sheep.getRect())) {
+        if (demon.isColliding(sheep.getRect())) {
           sheep.demonized = true
         }
       })
@@ -95,23 +86,30 @@ export class Board {
   }
 
   /**
-   * Returns the cell at the given coordinates
+   * Return a cell of the center of the given object
    * @param x - horizontal coordinate in svg coordinates
    * @param y - vertical coordinate in svg coordinates
+   * @param height - height of the object
+   * @param width - width of the object
    */
-  private getCell(
-    x: number,
-    y: number,
-    height: number,
+  private getCell({
+    x,
+    y,
+    height,
+    width,
+  }: {
+    x: number
+    y: number
+    height: number
     width: number
-  ): Cell | null {
+  }): Cell | null {
     const cellCol = Math.floor((x + width / 2) / CELL_SIZE)
     const cellRow = Math.floor((y + height / 2) / CELL_SIZE)
     return this.cells[cellRow]?.[cellCol] || null
   }
 
   /**
-   * Returns the neighbours of the given cell
+   * Returns the neighbour cells of the given cell
    * @param cell - the {@link Cell} to get the neighbours of
    */
   private getNeighbors(cell: Cell): NeighbourCells {
@@ -127,7 +125,7 @@ export class Board {
     }
   }
 
-  /** Returns true if the given cell is empty and safe */
+  /** Returns true if the given cell is empty and safe (there's no demons) */
   private isCellEmpty = (cell: Cell) =>
     cell.type === "empty" &&
     !this.sheep.some(
@@ -148,7 +146,7 @@ export class Board {
       .slice(0, count)
   }
 
-  /** Returns a random empty and safe cell */
+  /** Returns one random empty and safe cell */
   private getRandomEmptyCell = () => this.getRandomEmptyCells(1)[0]
 
   constructor(level: Level) {
