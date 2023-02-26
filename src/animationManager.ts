@@ -52,6 +52,8 @@ export default class AnimationManager<T extends AssetName> {
       this.renderFrame(frame)
     } else {
       this.element.setAttribute("viewBox", "0 0 0 0")
+      this.element.setAttribute("width", "0")
+      this.element.setAttribute("height", "0")
       // by default the animated element is hidden
     }
   }
