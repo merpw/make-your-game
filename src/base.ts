@@ -39,7 +39,7 @@ export class Animated<T extends AssetName> {
 
   public pause() {
     this.timer?.pause()
-    this.animationManager?.pause(false)
+    this.animationManager?.pause(true)
   }
 
   public resume() {
