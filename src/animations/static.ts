@@ -1,6 +1,6 @@
 import { getFrame } from "./frame.js"
 
-const grassFrame = getFrame(3, 2, 16, 16)
+const grassFrame = getFrame(3, 2, 18, 18)
 
 const wallFrame = getFrame(3, 0, 16, 16)
 
