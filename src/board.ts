@@ -15,12 +15,12 @@ export class Board {
   public set isPaused(value: boolean) {
     this._isPaused = value
     if (value) {
-      document.getElementById("board")?.classList.add("paused")
+      document.getElementById("game")?.classList.add("paused")
       this.hero.pause()
       this.cells.flat().forEach((cell) => cell.pause())
       this.sheep.forEach((sheep) => sheep.pause())
     } else {
-      document.getElementById("board")?.classList.remove("paused")
+      document.getElementById("game")?.classList.remove("paused")
       this.hero.resume()
       this.cells.flat().forEach((cell) => cell.resume())
       this.sheep.forEach((sheep) => sheep.resume())

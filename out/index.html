@@ -9,7 +9,6 @@
   <body>
     <main>
       <div id="game">
-        <h1>Make Your Game</h1>
         <svg id="board" viewBox="0 0 95 55">
           <g id="landscape"></g>
           <g id="bushes"></g>
@@ -17,10 +16,17 @@
           <g id="sheep"></g>
           <g id="players"></g>
           <g id="clouds"></g>
-          <foreignObject height="100%" width="100%">
-            <div id="pause"><p>Paused</p></div>
-          </foreignObject>
         </svg>
+        <div id="ui">
+          <div id="topbar">
+            <span class="banner">Score: <span id="score">0</span></span>
+            <span class="banner">Time: <span id="time">0</span></span>
+            <span class="banner">Lives: <span id="lives">3</span></span>
+          </div>
+          <div id="pause">
+            <h1>Paused</h1>
+          </div>
+        </div>
       </div>
     </main>
     <script src="dist/js/game.js" type="module"></script>

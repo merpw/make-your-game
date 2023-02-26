@@ -7,45 +7,77 @@ html {
 body {
   margin: 0;
   padding: 0;
-}
-
-main {
   display: flex;
   min-height: 100vh;
 }
 
-#game {
-  margin: auto auto;
-  padding: 0 20px 20px 20px;
+main {
+  margin: auto;
   border: 1px solid;
   border-radius: 10px;
+  height: 100%;
+}
+
+#game {
+  position: relative;
+  margin: 20px;
   text-align: center;
-  width: 1280px;
 }
 
 #board {
   border: 1px solid;
   border-radius: 10px;
+  height: 720px;
+  max-width: 90vw;
+  max-height: 90vh;
 }
 
 .pixelated {
   image-rendering: pixelated;
 }
 
-#pause {
-  border-radius: 1px;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: none;
-  margin: 6px;
-}
-
-svg.paused #pause {
-  display: block;
-  backdrop-filter: blur(3px);
-}
-
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
+}
+
+#ui {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  color: white;
+}
+
+#topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  font-size: x-large;
+}
+
+#topbar .banner {
+  padding: 10px;
+  border-radius: 15px;
+  backdrop-filter: blur(10px) brightness(0.7);
+}
+
+#pause {
+  display: none;
+
+  padding: 40px 0 40px 0;
+  border-radius: 1px;
+  backdrop-filter: blur(3px) brightness(0.5);
+  font-size: xx-large;
+
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#game.paused #pause {
+  display: block;
 }
