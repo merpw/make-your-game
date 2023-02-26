@@ -2,12 +2,12 @@ import { getFrame } from "./frame.js"
 
 // TODO: define width and height
 const frames = {
-  right1: getFrame(0, 0, 8, 16),
-  right2: getFrame(0, 1, 8, 16),
-  right3: getFrame(0, 2, 8, 16),
-  left1: getFrame(0, 0, 8, 16, true),
-  left2: getFrame(0, 1, 8, 16, true),
-  left3: getFrame(0, 2, 8, 16, true),
+  right1: getFrame(0, 0, 9, 16),
+  right2: getFrame(0, 1, 9, 16),
+  right3: getFrame(0, 2, 10, 16),
+  left1: getFrame(0, 0, 9, 16, true),
+  left2: getFrame(0, 1, 9, 16, true),
+  left3: getFrame(0, 2, 10, 16, true),
   down1: getFrame(0, 3, 10, 16),
   down2: getFrame(0, 4, 10, 16),
   down3: getFrame(0, 5, 10, 16),
