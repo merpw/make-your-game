@@ -72,7 +72,13 @@ export class Board {
 
     demons.forEach((demon) => {
       if (demon.isColliding(heroRect)) {
-        this.hero.spawn(this.getRandomEmptyCell())
+        this.hero.lives--
+        if (this.hero.lives > 0) {
+          this.hero.spawn(this.getRandomEmptyCell())
+        } else {
+          alert("Game over")
+          // TODO: end game
+        }
       }
       basic.forEach((sheep) => {
         if (sheep != demon && demon.isColliding(sheep.getRect())) {
@@ -127,8 +133,7 @@ export class Board {
     !this.sheep.some(
       (sheep) =>
         sheep.demonized &&
-        (sheep.targetCell === cell ||
-          this.getCell(sheep.x, sheep.y, sheep.height, sheep.width) === cell)
+        (sheep.targetCell === cell || sheep.fromCell === cell)
     )
 
   /**

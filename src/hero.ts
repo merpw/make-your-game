@@ -7,12 +7,25 @@ const HERO_SIZE = CELL_SIZE
 const SICK_TIME = 5000
 const SICK_SPEED = HERO_SPEED / 3
 
+const LIVES = 3
+
 const MAX_FUNGI = 4
 
 const DIAGONAL_SPEED = Math.sqrt(2) / 2
 
 export default class Hero extends Creature<"hero"> {
   public cell!: Cell // there's ! because it's set in spawn()
+  public get lives() {
+    return this._lives
+  }
+
+  public set lives(value: number) {
+    this._lives = value
+    const lives = document.getElementById("lives")
+    if (lives) lives.innerText = value.toString()
+  }
+
+  private _lives = LIVES
 
   /** @remarks It's set on first render */
   private neighbourCells = {} as NeighbourCells
@@ -203,6 +216,9 @@ export default class Hero extends Creature<"hero"> {
     this.x = cell.col * CELL_SIZE + (CELL_SIZE - this.width) / 2
     this.y = cell.row * CELL_SIZE + (CELL_SIZE - this.height) / 2
     this.way = { up: false, down: false, left: false, right: false }
+
+    this.fungi.forEach((fungus) => (fungus.cell.type = "empty"))
+    this.fungi = []
   }
 
   /**
@@ -213,7 +229,6 @@ export default class Hero extends Creature<"hero"> {
   constructor(cell: Cell) {
     super(HERO_SIZE, 0, 0, "hero")
     // x and y will be set in spawn()
-
     this.spawn(cell)
   }
 }
