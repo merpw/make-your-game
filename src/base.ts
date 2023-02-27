@@ -4,7 +4,7 @@ import { AssetName } from "./animations/animations"
 
 /** A class for non-static objects that can be animated using {@link AnimationManager}*/
 export class Animated<T extends AssetName> {
-  public animationManager!: AnimationManager<T>
+  public animationManager?: AnimationManager<T>
   protected element!: SVGSVGElement // There's '!' because they're set in setAnimation
   private readonly size: number
 
@@ -49,7 +49,10 @@ export class Animated<T extends AssetName> {
 
   public setAnimation(assetName: T | "none") {
     this.element?.remove()
-    if (assetName === "none") return
+    if (assetName === "none") {
+      this.animationManager = undefined
+      return
+    }
 
     this.animationManager = new AnimationManager(assetName, this.size, 12)
 

@@ -205,7 +205,7 @@ export default class Hero extends Creature<"hero"> {
   /** Spawn the hero in the given cell */
   public spawn(cell: Cell) {
     this.cell = cell
-    this.animationManager.renderAnimationFrame("goDown")
+    this.animationManager?.renderAnimationFrame("goDown")
     this.x = cell.col * CELL_SIZE + (CELL_SIZE - this.width) / 2
     this.y = cell.row * CELL_SIZE + (CELL_SIZE - this.height) / 2
     this.way = { up: false, down: false, left: false, right: false }
