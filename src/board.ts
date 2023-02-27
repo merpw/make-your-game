@@ -3,10 +3,12 @@ import { Level } from "./levels"
 import Sheep from "./sheep.js"
 import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 import Timer from "./timer.js"
+import AnimationManager from "./animationManager"
 
 export class Board {
   public hero: Hero
   private readonly cells: Cell[][]
+  private readonly portal: Cell
   private readonly sheep: Sheep[] = []
 
   public get time() {
@@ -90,6 +92,11 @@ export class Board {
     })
 
     const demons = this.sheep.filter((sheep) => sheep.demonized)
+    if (demons.length === 0) {
+      ;(this.portal.animationManager as AnimationManager<"portal">)?.play("on")
+    } else {
+      ;(this.portal.animationManager as AnimationManager<"portal">)?.play("off")
+    }
     const basic = this.sheep.filter((sheep) => !sheep.demonized)
 
     const heroRect = this.hero.getRect()
@@ -195,6 +202,11 @@ export class Board {
     this.cells = board.map((row, y) =>
       row.map((cellCode, x) => new Cell(cellCode, x, y))
     )
+    const bushes = this.cells.flat().filter((cell) => cell.type === "bush")
+
+    const [portalCell] = bushes.sort(() => Math.random() - 0.5)
+    portalCell.secret = "portal"
+    this.portal = portalCell
 
     const sheepCells = this.getRandomEmptyCells(level.sheepCount)
     this.sheep = sheepCells.map(

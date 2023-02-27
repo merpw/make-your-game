@@ -17,7 +17,7 @@ export type CellCode = keyof typeof CELL_CODES
 type CellType = (typeof CELL_CODES)[CellCode] | "fungus" | "cloud"
 
 export default class Cell extends Animated<
-  "fungus" | "cloud" | "wall" | "grass" | "bush"
+  "fungus" | "cloud" | "wall" | "grass" | "bush" | "portal"
 > {
   get type(): CellType {
     return this._type
@@ -36,6 +36,11 @@ export default class Cell extends Animated<
       return
     }
     if (value === "empty") {
+      if (this.secret === "portal") {
+        this.setAsset("portal")
+        ;(this.animationManager as AnimationManager<"portal">)?.play("off")
+        return
+      }
       this.setAsset("none")
       return
     }
@@ -51,6 +56,8 @@ export default class Cell extends Animated<
   private _type!: CellType
   public col: number
   public row: number
+
+  public secret?: "portal"
 
   constructor(typeCode: CellCode, col: number, row: number) {
     super(CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE, "none")
