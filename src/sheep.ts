@@ -3,6 +3,9 @@ import Creature from "./base.js"
 
 const SHEEP_SIZE = CELL_SIZE
 const SHEEP_SPEED = 0.1
+const DEMON_SPEED = 0.12
+
+const GENETICS = 0.15 // +-15% speed genetics
 
 const BACK_PROBABILITY = 0.1
 // 10% chance to go back
@@ -22,12 +25,15 @@ export default class Sheep extends Creature<"sheep"> {
   }
 
   public set demonized(value: boolean) {
+    this.speed = (value ? DEMON_SPEED : SHEEP_SPEED) * this.genetics
     this._demonized = value
   }
 
   private _demonized!: boolean
   private direction!: Direction // there's ! because it's set in constructor using setRandomDirection()
   public fromCell: Cell
+
+  private readonly genetics: number
 
   public get targetCell() {
     return this._targetCell
@@ -40,6 +46,8 @@ export default class Sheep extends Creature<"sheep"> {
 
   private _targetCell!: Cell | null
 
+  public speed = SHEEP_SPEED
+
   render(frameTimeDiff: number) {
     if (this.fromCell.type === "cloud" || this.targetCell?.type === "cloud") {
       this.demonized = false
@@ -48,7 +56,7 @@ export default class Sheep extends Creature<"sheep"> {
 
     switch (this.direction) {
       case "right":
-        this.x += SHEEP_SPEED * frameTimeDiff
+        this.x += this.speed * frameTimeDiff
         if (this.x >= this.targetCell.x) {
           this.x = this.targetCell.x
           this.targetCell = null
@@ -58,7 +66,7 @@ export default class Sheep extends Creature<"sheep"> {
         )
         break
       case "bottom":
-        this.y += SHEEP_SPEED * frameTimeDiff
+        this.y += this.speed * frameTimeDiff
         if (this.y >= this.targetCell.y) {
           this.y = this.targetCell.y
           this.targetCell = null
@@ -68,7 +76,7 @@ export default class Sheep extends Creature<"sheep"> {
         )
         break
       case "left":
-        this.x -= SHEEP_SPEED * frameTimeDiff
+        this.x -= this.speed * frameTimeDiff
         if (this.x <= this.targetCell.x) {
           this.x = this.targetCell.x
           this.targetCell = null
@@ -78,7 +86,7 @@ export default class Sheep extends Creature<"sheep"> {
         )
         break
       case "top":
-        this.y -= SHEEP_SPEED * frameTimeDiff
+        this.y -= this.speed * frameTimeDiff
         if (this.y <= this.targetCell.y) {
           this.y = this.targetCell.y
           this.targetCell = null
@@ -136,6 +144,7 @@ export default class Sheep extends Creature<"sheep"> {
 
   constructor(cell: Cell, neighbours: NeighbourCells, demonized = true) {
     super(SHEEP_SIZE, cell.x, cell.y, "sheep")
+    this.genetics = 1 - GENETICS + Math.random() / (1 / (GENETICS * 2))
 
     this.demonized = demonized
 
