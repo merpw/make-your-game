@@ -3,6 +3,7 @@ import { CellCode } from "./cell"
 export type Level = {
   board: CellCode[][]
   sheepCount: number
+  time: number
 }
 
 export const level1: Level = {
@@ -18,4 +19,5 @@ export const level1: Level = {
     [2, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0],
   ],
   sheepCount: 5,
+  time: 120,
 }

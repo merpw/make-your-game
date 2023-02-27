@@ -2,25 +2,49 @@ import Hero from "./hero.js"
 import { Level } from "./levels"
 import Sheep from "./sheep.js"
 import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
+import Timer from "./timer.js"
 
 export class Board {
   public hero: Hero
   private readonly cells: Cell[][]
   private readonly sheep: Sheep[] = []
 
+  public get time() {
+    return this._time
+  }
+
+  set time(value: number) {
+    this._time = value
+    if (value < 0) {
+      this.over()
+      return
+    }
+    const time = document.getElementById("time")
+    time && (time.innerText = value.toString())
+  }
+
+  private _time!: number
+
+  private timer = new Timer(() => this.time--, 1000, true)
+
   public get isPaused() {
     return this._isPaused
   }
 
   public set isPaused(value: boolean) {
+    if (this.isOver) return
     this._isPaused = value
     if (value) {
       document.getElementById("game")?.classList.add("paused")
+
+      this.timer.pause()
       this.hero.pause()
       this.cells.flat().forEach((cell) => cell.pause())
       this.sheep.forEach((sheep) => sheep.pause())
     } else {
       document.getElementById("game")?.classList.remove("paused")
+
+      this.timer.resume()
       this.hero.resume()
       this.cells.flat().forEach((cell) => cell.resume())
       this.sheep.forEach((sheep) => sheep.resume())
@@ -28,6 +52,15 @@ export class Board {
   }
 
   private _isPaused = false
+
+  public over() {
+    this.isPaused = true
+    this.isOver = true
+    this.timer.stop()
+    document.getElementById("game")?.classList.add("over")
+  }
+
+  private isOver = false
 
   public render(frameTimeDiff: number, time: number) {
     if (this.isPaused) return
@@ -67,8 +100,7 @@ export class Board {
         if (this.hero.lives > 0) {
           this.hero.spawn(this.getRandomEmptyCell())
         } else {
-          alert("Game over")
-          // TODO: end game
+          this.over()
         }
       }
       basic.forEach((sheep) => {
@@ -150,7 +182,9 @@ export class Board {
   private getRandomEmptyCell = () => this.getRandomEmptyCells(1)[0]
 
   constructor(level: Level) {
+    this.time = level.time
     const board = level.board
+
     board.forEach((row) => {
       row.push(1)
       row.unshift(1)
