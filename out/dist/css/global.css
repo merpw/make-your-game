@@ -64,10 +64,7 @@ main {
   backdrop-filter: blur(10px) brightness(0.7);
 }
 
-#pause {
-  display: none;
-
-  padding: 40px 0 40px 0;
+#popup {
   border-radius: 1px;
   backdrop-filter: blur(3px) brightness(0.5);
   font-size: xx-large;
@@ -78,6 +75,22 @@ main {
   transform: translateY(-50%);
 }
 
-#game.paused #pause {
+#popup * {
+  display: none;
+}
+
+#game.paused .pause {
   display: block;
+}
+
+#ui .over {
+  color: red;
+}
+
+#game.over .over {
+  display: block;
+}
+
+#game.over .pause {
+  display: none;
 }
