@@ -1,6 +1,6 @@
-/** A timer that can be paused, resumed, and stopped. */
+/** {@link setTimeout} and {@link setInterval} that can be paused. */
 export default class Timer {
-  private timer: number | null
+  private timer: number | null = null
   private readonly _callback: () => void
   private startTime: number
   private timeout: number
@@ -9,9 +9,13 @@ export default class Timer {
   public pause() {
     if (this.timer) {
       this.isPaused = true
-      clearTimeout(this.timer)
+      this.isInterval ? clearInterval(this.timer) : clearTimeout(this.timer)
       this.timer = null
-      this.timeout = this.timeout - (Date.now() - this.startTime)
+
+      const timePassed = Date.now() - this.startTime
+      this.timeout = this.isInterval
+        ? this.timeout - (timePassed % this.timeout)
+        : this.timeout - timePassed
     }
   }
 
@@ -30,14 +34,36 @@ export default class Timer {
     }
   }
 
-  constructor(callback: () => void, timeout: number) {
-    this._callback = callback
+  /**
+   * @param callback - function to be called after timeout/interval
+   * @param timeout - timeout in milliseconds
+   * @param isInterval - if true, timer will be interval, by default it will be timeout
+   */
+  constructor(
+    callback: () => void,
+    timeout: number,
+    private isInterval = false
+  ) {
+    this._callback = () => {
+      callback()
+
+      if (isInterval) {
+        if (this.timeout !== timeout) {
+          // interval was paused, and replaced with setTimeout for one iteration
+          // we should create interval once again
+          this.timeout = timeout
+          this.timer = setInterval(this._callback, timeout)
+        }
+      } else {
+        this.timer = null
+      }
+    }
     this.timeout = timeout
     this.startTime = Date.now()
 
-    this.timer = setTimeout(() => {
-      this._callback()
-      this.timer = null
-    }, this.timeout)
+    this.isPaused = true
+    isInterval
+      ? (this.timer = setInterval(this._callback, timeout))
+      : (this.timer = setTimeout(this._callback, timeout))
   }
 }
