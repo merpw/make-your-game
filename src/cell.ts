@@ -27,7 +27,7 @@ export default class Cell extends Animated<
     this._type = value
 
     if (value === "cloud") {
-      this.setAnimation("cloud")
+      this.setAsset("cloud")
       ;(this.animationManager as AnimationManager<"cloud">)?.play("pink")
 
       this.addTimer(() => {
@@ -36,11 +36,11 @@ export default class Cell extends Animated<
       return
     }
     if (value === "empty") {
-      this.setAnimation("none")
+      this.setAsset("none")
       return
     }
 
-    this.setAnimation(value)
+    this.setAsset(value)
 
     if (value === "fungus") {
       ;(this.animationManager as AnimationManager<"fungus">)?.play("stand")

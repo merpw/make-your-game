@@ -47,7 +47,7 @@ export class Animated<T extends AssetName> {
     this.animationManager?.resume()
   }
 
-  public setAnimation(assetName: T | "none") {
+  public setAsset(assetName: T | "none") {
     this.element?.remove()
     if (assetName === "none") {
       this.animationManager = undefined
@@ -90,7 +90,7 @@ export class Animated<T extends AssetName> {
     this._y = y
     this.size = size
 
-    this.setAnimation(assetName)
+    this.setAsset(assetName)
   }
 }
 
