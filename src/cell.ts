@@ -31,7 +31,7 @@ export default class Cell extends Animated<
       this.animationManager?.play<"cloud">("pink")
 
       this.addTimer(() => {
-        this.type = "empty"
+        this.type === "cloud" && (this.type = "empty")
       }, CLOUD_TIME)
       return
     }
