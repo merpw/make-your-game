@@ -28,7 +28,7 @@ export default class Cell extends Animated<
 
     if (value === "cloud") {
       this.setAsset("cloud")
-      ;(this.animationManager as AnimationManager<"cloud">)?.play("pink")
+      this.animationManager?.play<"cloud">("pink")
 
       this.addTimer(() => {
         this.type = "empty"
@@ -38,12 +38,12 @@ export default class Cell extends Animated<
     if (value === "empty") {
       if (this.secret === "portal") {
         this.setAsset("portal")
-        ;(this.animationManager as AnimationManager<"portal">)?.play("off")
+        this.animationManager?.play<"portal">("off")
         return
       }
       if (this.secret === "potion") {
         this.setAsset("potion")
-        ;(this.animationManager as AnimationManager<"potion">)?.play("stand")
+        this.animationManager?.play<"potion">("stand")
         return
       }
       this.setAsset("none")
@@ -53,7 +53,7 @@ export default class Cell extends Animated<
     this.setAsset(value)
 
     if (value === "fungus") {
-      ;(this.animationManager as AnimationManager<"fungus">)?.play("stand")
+      this.animationManager?.play<"fungus">("stand")
       return
     }
   }

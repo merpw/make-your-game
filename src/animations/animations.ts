@@ -21,4 +21,7 @@ const animations = {
 
 export type AssetName = keyof typeof animations
 
+/** Type for names of animations for a specified {@link AssetName}*/
+export type AnimationName<T extends AssetName> = keyof (typeof animations)[T]
+
 export default animations

@@ -1,42 +1,32 @@
 import { Frame, ATLAS_PATH, ATLAS_CELL_ART_SIZE } from "./animations/frame.js"
-import animations from "./animations/animations.js"
+import animations, { AnimationName } from "./animations/animations.js"
 import { AssetName } from "./animations/animations.js"
 
-/** animated image implementation. Use svg element <image> with frames from bitmap atlas */
+/** Animated image implementation, gets one of the assets from {@link animations} by {@link AssetName}*/
 export default class AnimationManager<T extends AssetName> {
-  /** svg element to place on the screen */
+  /** name of the asset to show, can be one or several of {@link AssetName}'s */
+  private readonly assetName: T
+  /** svg image that contains cropped asset */
   public readonly element: SVGSVGElement
+  /** atlas image that can be cropped by svg {@link element} to get a specific asset using */
   private readonly image: SVGImageElement
-  /** named animations, used to play the animation */
-  private readonly animations: (typeof animations)[T]
 
-  /** frames per second */
+  /** animation fps, can be 0 to create static animation */
   private readonly fps: number
   private readonly size: number
 
   /** current animation name to play in the loop */
-  private currentAnimationName?: keyof typeof this.animations
+  private currentAnimationName?: AnimationName<T>
 
-  /** current animation to play in the loop */
+  /** array of {@link Frame}'s to show*/
   private keyFrames: Frame[] | null = null
-
-  private isPaused = false
-
   /** current frame index in the animation sequence */
   private currentFrameIndex = 0
 
-  /** last frame time in milliseconds */
-  private lastFrameTime = 0
-
-  /**
-   * @param assetName - named animations, used to play the animation
-   * @param size - height of the animated element
-   * @param fps - frames per second
-   * */
   constructor(assetName: T, size: number, fps: number) {
-    this.animations = animations[assetName]
-    this.fps = fps
+    this.assetName = assetName
     this.size = size
+    this.fps = fps
 
     this.element = document.createElementNS("http://www.w3.org/2000/svg", "svg")
     this.element.classList.add("pixelated")
@@ -45,10 +35,11 @@ export default class AnimationManager<T extends AssetName> {
     this.image.href.baseVal = ATLAS_PATH
     this.element.appendChild(this.image)
 
-    if ("static" in this.animations) {
+    const assetAnimations = animations[assetName]
+    if ("static" in assetAnimations) {
       // if static, render it once
       this.fps = 0
-      const [frame] = this.animations.static
+      const [frame] = assetAnimations.static
       this.renderFrame(frame)
     } else {
       this.element.setAttribute("viewBox", "0 0 0 0")
@@ -85,14 +76,19 @@ export default class AnimationManager<T extends AssetName> {
   }
 
   /* Renders one specific frame of the animation */
-  public renderAnimationFrame(
-    animationName: keyof typeof this.animations,
+  public renderAnimationFrame<U extends T>(
+    animationName: AnimationName<U>,
     frameIndex = 0
   ) {
-    const keyFrames = this.animations[animationName] as Frame[] // TODO: maybe remove as Frame[]
+    const keyFrames = animations[this.assetName][
+      animationName as AnimationName<T>
+    ] as Frame[]
     const frame = keyFrames[frameIndex]
     this.renderFrame(frame)
   }
+
+  /** last frame time in milliseconds */
+  private lastFrameTime = 0
 
   public render(time: number) {
     if (this.fps === 0 || this.isPaused || !this.keyFrames) {
@@ -105,10 +101,6 @@ export default class AnimationManager<T extends AssetName> {
       }
 
       const currentFrame = this.keyFrames[this.currentFrameIndex]
-      if (!currentFrame) {
-        return
-      }
-
       this.renderFrame(currentFrame)
 
       this.lastFrameTime = time
@@ -117,18 +109,24 @@ export default class AnimationManager<T extends AssetName> {
 
   /**
    * Play the animation with the given name
-   * @param animationName - name of the animation to play. Each animation name is unique and is same as key in {@link AnimationManager.animations}
-   * */
-  public play(animationName: keyof typeof this.animations) {
-    this.currentAnimationName = animationName
-    this.keyFrames = this.animations[animationName] as Frame[] // TODO: maybe remove as Frame[]
+   *
+   * @param animationName - name of the animation to play
+   * @typeParam U - type of the asset to play animation for. Optional, should be provided only if the {@link AnimationManager} supports several assets
+   */
+  public play<U extends T>(animationName: AnimationName<U>): void {
+    this.currentAnimationName = animationName as AnimationName<T>
+    this.keyFrames = animations[this.assetName][
+      this.currentAnimationName
+    ] as Frame[]
   }
+
+  private isPaused = false
 
   /**
    * Pause the animation
    *
-   * @param shouldResume - default: true. if true, the animation will resume when {@link AnimationManager.resume} is called
-   * */
+   * @param shouldResume - default: true. if true, the animation will be resumed when {@link resume} is called
+   */
   public pause(shouldResume = true) {
     this.isPaused = true
     if (!shouldResume) {

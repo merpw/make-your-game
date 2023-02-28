@@ -3,7 +3,6 @@ import { Level } from "./levels"
 import Sheep from "./sheep.js"
 import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 import Timer from "./timer.js"
-import AnimationManager from "./animationManager"
 
 export class Board {
   public hero: Hero
@@ -93,11 +92,11 @@ export class Board {
     })
 
     const demons = this.sheep.filter((sheep) => sheep.demonized)
-    if (demons.length === 0) {
-      ;(this.portal.animationManager as AnimationManager<"portal">)?.play("on")
-    } else {
-      ;(this.portal.animationManager as AnimationManager<"portal">)?.play("off")
-    }
+
+    this.portal.animationManager?.play<"portal">(
+      demons.length === 0 ? "on" : "off"
+    )
+
     const basic = this.sheep.filter((sheep) => !sheep.demonized)
 
     const heroRect = this.hero.getRect()
