@@ -150,6 +150,16 @@ export default class Sheep extends Creature<"sheep"> {
   constructor(cell: Cell, neighbours: NeighbourCells, demonized = true) {
     super(SHEEP_SIZE, cell.x, cell.y, "sheep")
     this.genetics = 1 - GENETICS + Math.random() / (1 / (GENETICS * 2))
+    // TODO: simplify this.
+    // isnt it just 1 - GENETICS + Math.random() * GENETICS * 2 ?
+    // and 1 - GENETICS + GENETICS * 2 * Math.random() ?
+    // and 1 - (1 - 2 * Math.random()) * GENETICS ?
+    // and 1 + (2 * Math.random() - 1) * GENETICS ?
+    // Division potentially can be not safe. but for this language it's ok.
+    // The worst potential case is when GENETICS is infinity and Math.random() is 0, it can produce NaN.
+    // > 1-1/0+0/0
+    // NaN
+    // Readability is important too.
 
     this.demonized = demonized
 
