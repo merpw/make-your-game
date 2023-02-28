@@ -134,6 +134,11 @@ export default class Sheep extends Creature<"sheep"> {
       return
     }
 
+    if (!this.demonized) {
+      // sheep prefer bushes, they are tasty
+      availableDirections.sort(([, cell]) => (cell.type === "bush" ? -1 : 1))
+    }
+
     const [direction, targetCell] = availableDirections.find(
       ([way]) => way !== oppositeDirections[this.direction]
     ) || [backDirection, backCell]
