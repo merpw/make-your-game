@@ -3,6 +3,7 @@ import sheep from "./sheep.js"
 import fungus from "./fungus.js"
 import cloud from "./cloud.js"
 import portal from "./portal.js"
+import potion from "./potion.js"
 import { wall, bush, grass } from "./static.js"
 
 const animations = {
@@ -11,6 +12,7 @@ const animations = {
   fungus,
   cloud,
   portal,
+  potion,
 
   grass,
   wall,

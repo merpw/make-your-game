@@ -9,6 +9,7 @@ export class Board {
   public hero: Hero
   private readonly cells: Cell[][]
   private readonly portal: Cell
+  private readonly potion: Cell
   private readonly sheep: Sheep[] = []
 
   public get time() {
@@ -207,6 +208,16 @@ export class Board {
     const [portalCell] = bushes.sort(() => Math.random() - 0.5)
     portalCell.secret = "portal"
     this.portal = portalCell
+
+    this.potion = this.portal
+    // add potion into cell
+    while (this.potion === this.portal) {
+      // TODO: not looks very safe, depends on the bushes number
+      const [potionCell] = bushes.sort(() => Math.random() - 0.5)
+      if (potionCell === this.portal) continue
+      potionCell.secret = "potion"
+      this.potion = potionCell
+    }
 
     const sheepCells = this.getRandomEmptyCells(level.sheepCount)
     this.sheep = sheepCells.map(
