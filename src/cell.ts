@@ -4,6 +4,7 @@ import AnimationManager from "./animationManager.js"
 export const CELL_SIZE = 5
 
 const CLOUD_TIME = 300
+const SPAWN_CLOUD_TIME = 1000
 
 const CELL_CODES = {
   0: "empty",
@@ -14,7 +15,7 @@ const CELL_CODES = {
 /** Cell codes defined in {@link CELL_CODES} */
 export type CellCode = keyof typeof CELL_CODES
 
-type CellType = (typeof CELL_CODES)[CellCode] | "fungus" | "cloud"
+type CellType = (typeof CELL_CODES)[CellCode] | "fungus" | "cloud" | "spawn"
 
 export default class Cell extends Animated<
   "fungus" | "cloud" | "wall" | "grass" | "bush" | "portal" | "potion"
@@ -47,6 +48,16 @@ export default class Cell extends Animated<
         return
       }
       this.setAsset("none")
+      return
+    }
+
+    if (value === "spawn") {
+      this.setAsset("cloud")
+      this.animationManager?.play<"cloud">("blue")
+
+      this.addTimer(() => {
+        this.type === "spawn" && (this.type = "empty")
+      }, SPAWN_CLOUD_TIME)
       return
     }
 
