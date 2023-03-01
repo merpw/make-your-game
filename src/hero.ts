@@ -177,7 +177,12 @@ export default class Hero extends Creature<"hero"> {
   }
 
   public placeFungi = () => {
-    if (this.fungi.length == MAX_FUNGI || this.cell.type === "fungus") return
+    if (
+      this.fungi.length == MAX_FUNGI ||
+      this.cell.type !== "empty" ||
+      this.cell.secret
+    )
+      return
     this.cell.type = "fungus"
     this.fungi.push({
       cell: this.cell,
@@ -220,6 +225,7 @@ export default class Hero extends Creature<"hero"> {
     this.y = cell.row * CELL_SIZE + (CELL_SIZE - this.height) / 2
     this.way = { up: false, down: false, left: false, right: false }
 
+    this.isSick = false
     this.fungi.forEach((fungus) => (fungus.cell.type = "empty"))
     this.fungi = []
   }
