@@ -15,7 +15,12 @@ const CELL_CODES = {
 /** Cell codes defined in {@link CELL_CODES} */
 export type CellCode = keyof typeof CELL_CODES
 
-type CellType = (typeof CELL_CODES)[CellCode] | "fungus" | "cloud" | "spawn"
+type CellType =
+  | (typeof CELL_CODES)[CellCode]
+  | "fungus"
+  | "cloud"
+  | "spawn"
+  | "portal"
 
 export default class Cell extends Animated<
   "fungus" | "cloud" | "wall" | "grass" | "bush" | "portal" | "potion"
@@ -32,11 +37,9 @@ export default class Cell extends Animated<
         this.setAsset("none")
         return
       }
-      if (this.secret === "portalActive" || this.secret === "portal") {
+      if (this.secret === "portal") {
         this.setAsset("portal")
-        this.animationManager?.play<"portal">(
-          this.secret === "portalActive" ? "on" : "off"
-        )
+        this.animationManager?.play<"portal">("off")
         return
       }
       if (this.secret === "potion") {
@@ -83,13 +86,18 @@ export default class Cell extends Animated<
       this.animationManager?.play<"fungus">("stand")
       return
     }
+    if (value === "portal") {
+      this.setAsset("portal")
+      this.animationManager?.play<"portal">("on")
+      return
+    }
   }
 
   private _type!: CellType
   public col: number
   public row: number
 
-  public secret?: "portal" | "portalActive" | "potion"
+  public secret?: "portal" | "potion"
 
   constructor(typeCode: CellCode, col: number, row: number) {
     super(CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE, "none")

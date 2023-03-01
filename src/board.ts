@@ -236,10 +236,7 @@ export class Board {
         this.sheepStorage.basic.add(sheep)
 
         if (this.sheepStorage.demonized.size === 0) {
-          this.portal.secret = "portalActive"
-          if (this.portal.type === "empty") {
-            this.portal.animationManager?.play<"portal">("on")
-          }
+          this.portal.type = "portal"
         }
       }
     }
