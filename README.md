@@ -20,7 +20,7 @@ Solved during studying in Gritlab coding school on Åland, February 2023
 Example:
 
 ```bash
-python -m http.server -d out
+npx serve out
 ```
 
 ## How to develop?
