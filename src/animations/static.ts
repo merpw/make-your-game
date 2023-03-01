@@ -10,13 +10,13 @@ const bushFrame = getFrame(3, 1, 16, 16)
 // they will be rendered as a single image only once
 
 export const grass = {
-  static: [grassFrame]
+  static: [grassFrame],
 } as const
 
 export const wall = {
-  static: [wallFrame]
+  static: [wallFrame],
 } as const
 
 export const bush = {
-  static: [bushFrame]
+  static: [bushFrame],
 } as const

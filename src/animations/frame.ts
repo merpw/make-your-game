@@ -25,6 +25,6 @@ export const getFrame = (
           row * ATLAS_CELL_SIZE
         } ${width} ${height}`
       : `${col * ATLAS_CELL_SIZE} ${row * ATLAS_CELL_SIZE} ${width} ${height}`,
-    flipX
+    flipX,
   }
 }
