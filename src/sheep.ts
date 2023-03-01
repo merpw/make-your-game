@@ -75,7 +75,10 @@ export default class Sheep extends Creature<"sheep"> {
   public speed!: number // there's ! because it's set in set demonized
 
   render(frameTimeDiff: number) {
-    if (this.fromCell.type === "cloud" || this.targetCell?.type === "cloud") {
+    if (
+      this.demonized &&
+      (this.fromCell.type === "cloud" || this.targetCell?.type === "cloud")
+    ) {
       this.demonized = false
     }
     if (!this.targetCell) return
