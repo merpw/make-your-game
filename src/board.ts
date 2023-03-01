@@ -86,6 +86,17 @@ export class Board {
           sheepCell.type = "empty"
         }
         const sheepNeighbours = this.getNeighbors(sheepCell)
+
+        if (sheep.demonized && this.hero.isLucky) {
+          const heroEntry = Object.entries(sheepNeighbours).find(
+            ([, cell]) => cell === heroCell
+          )
+          if (heroEntry) {
+            const heroDirection = heroEntry[0] as keyof NeighbourCells
+            sheepNeighbours[heroDirection] = null
+          }
+        }
+
         sheep.setRandomDirection(sheepNeighbours)
       }
       sheep.render(frameTimeDiff)

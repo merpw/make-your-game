@@ -1,19 +1,22 @@
 import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 import Creature from "./base.js"
 
-const HERO_SPEED = 0.2
 const HERO_SIZE = CELL_SIZE
+
+const HERO_SPEED = 0.2
+const DIAGONAL_SPEED = Math.sqrt(2) / 2
 
 const SICK_TIME = 5000
 const SICK_SPEED = HERO_SPEED / 3
 
 const LIVES = 3
-
 const MAX_FUNGI = 4
 
-const DIAGONAL_SPEED = Math.sqrt(2) / 2
+const SPAWN_LUCKY_TIME = 5000
 
 export default class Hero extends Creature<"hero"> {
+  /** if true, demons won't choose hero's cell */
+  public isLucky = false
   public cell!: Cell // there's ! because it's set in spawn()
   public get lives() {
     return this._lives
@@ -206,6 +209,12 @@ export default class Hero extends Creature<"hero"> {
   public spawn(cell: Cell) {
     this.cell = cell
     this.cell.type = "spawn"
+
+    this.isLucky = true
+    this.addTimer(() => {
+      this.isLucky = false
+    }, SPAWN_LUCKY_TIME)
+
     this.animationManager?.renderAnimationFrame("goDown")
     this.x = cell.col * CELL_SIZE + (CELL_SIZE - this.width) / 2
     this.y = cell.row * CELL_SIZE + (CELL_SIZE - this.height) / 2
