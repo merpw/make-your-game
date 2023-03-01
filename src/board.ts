@@ -9,7 +9,11 @@ export class Board {
   private readonly cells: Cell[][]
   private readonly portal: Cell
   private readonly potion: Cell
-  private readonly sheep: Sheep[] = []
+  private readonly sheepStorage = {
+    all: new Set<Sheep>(),
+    demonized: new Set<Sheep>(),
+    basic: new Set<Sheep>(),
+  }
 
   public get time() {
     return this._time
@@ -42,14 +46,14 @@ export class Board {
       this.timer.pause()
       this.hero.pause()
       this.cells.flat().forEach((cell) => cell.pause())
-      this.sheep.forEach((sheep) => sheep.pause())
+      this.sheepStorage.all.forEach((sheep) => sheep.pause())
     } else {
       document.getElementById("game")?.classList.remove("paused")
 
       this.timer.resume()
       this.hero.resume()
       this.cells.flat().forEach((cell) => cell.resume())
-      this.sheep.forEach((sheep) => sheep.resume())
+      this.sheepStorage.all.forEach((sheep) => sheep.resume())
     }
   }
 
@@ -76,7 +80,7 @@ export class Board {
     const heroNeighbours = this.getNeighbors(heroCell)
     this.hero.render(frameTimeDiff, heroCell, heroNeighbours)
 
-    this.sheep.forEach((sheep) => {
+    this.sheepStorage.all.forEach((sheep) => {
       if (!sheep.targetCell) {
         const sheepCell = this.getCell(sheep)
         if (!sheepCell) {
@@ -102,17 +106,9 @@ export class Board {
       sheep.render(frameTimeDiff)
     })
 
-    const demons = this.sheep.filter((sheep) => sheep.demonized)
-
-    this.portal.animationManager?.play<"portal">(
-      demons.length === 0 ? "on" : "off"
-    )
-
-    const basic = this.sheep.filter((sheep) => !sheep.demonized)
-
     const heroRect = this.hero.getRect()
 
-    demons.forEach((demon) => {
+    this.sheepStorage.demonized.forEach((demon) => {
       if (demon.isColliding(heroRect)) {
         this.hero.lives--
         if (this.hero.lives > 0) {
@@ -121,7 +117,7 @@ export class Board {
           this.over()
         }
       }
-      basic.forEach((sheep) => {
+      this.sheepStorage.basic.forEach((sheep) => {
         if (demon.isColliding(sheep.getRect())) {
           sheep.demonized = true
         }
@@ -131,7 +127,9 @@ export class Board {
 
   public renderAnimations(time: number) {
     this.hero.animationManager?.render(time)
-    this.sheep.forEach((sheep) => sheep.animationManager?.render(time))
+    this.sheepStorage.all.forEach((sheep) =>
+      sheep.animationManager?.render(time)
+    )
     this.cells.flat().forEach((cell) => cell.animationManager?.render(time))
   }
 
@@ -178,10 +176,8 @@ export class Board {
   /** Returns true if the given cell is empty and safe (there's no demons) */
   private isCellEmpty = (cell: Cell) =>
     cell.type === "empty" &&
-    !this.sheep.some(
-      (sheep) =>
-        sheep.demonized &&
-        (sheep.targetCell === cell || sheep.fromCell === cell)
+    ![...this.sheepStorage.demonized].some(
+      (sheep) => sheep.targetCell === cell || sheep.fromCell === cell
     )
 
   /**
@@ -230,9 +226,28 @@ export class Board {
     }
 
     const sheepCells = this.getRandomEmptyCells(level.sheepCount)
-    this.sheep = sheepCells.map(
-      (cell) => new Sheep(cell, this.getNeighbors(cell))
+
+    Sheep.onDemonization = (sheep) => {
+      if (sheep.demonized) {
+        this.sheepStorage.demonized.add(sheep)
+        this.sheepStorage.basic.delete(sheep)
+      } else {
+        this.sheepStorage.demonized.delete(sheep)
+        this.sheepStorage.basic.add(sheep)
+
+        if (this.sheepStorage.demonized.size === 0) {
+          this.portal.secret = "portalActive"
+          if (this.portal.type === "empty") {
+            this.portal.animationManager?.play<"portal">("on")
+          }
+        }
+      }
+    }
+
+    sheepCells.forEach((cell) =>
+      this.sheepStorage.all.add(new Sheep(cell, this.getNeighbors(cell)))
     )
+
     const heroCell = this.getRandomEmptyCell()
     this.hero = new Hero(heroCell)
 

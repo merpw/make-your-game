@@ -27,9 +27,14 @@ export default class Sheep extends Creature<"sheep"> {
     this.speed = (value ? DEMON_SPEED : SHEEP_SPEED) * this.genetics
     this._demonized = value
     this.direction = this._direction // to play animation
+
+    Sheep.onDemonization(this)
   }
 
   private _demonized!: boolean
+
+  /** function to call when {@link demonized} state  */
+  public static onDemonization: (sheep: Sheep) => void = () => void 0
 
   private get direction() {
     return this._direction
