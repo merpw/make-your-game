@@ -27,19 +27,16 @@ export default class Cell extends Animated<
   set type(value: CellType) {
     this._type = value
 
-    if (value === "cloud") {
-      this.setAsset("cloud")
-      this.animationManager?.play<"cloud">("pink")
-
-      this.addTimer(() => {
-        this.type === "cloud" && (this.type = "empty")
-      }, CLOUD_TIME)
-      return
-    }
     if (value === "empty") {
-      if (this.secret === "portal") {
+      if (!this.secret) {
+        this.setAsset("none")
+        return
+      }
+      if (this.secret === "portalActive" || this.secret === "portal") {
         this.setAsset("portal")
-        this.animationManager?.play<"portal">("off")
+        this.animationManager?.play<"portal">(
+          this.secret === "portalActive" ? "on" : "off"
+        )
         return
       }
       if (this.secret === "potion") {
@@ -47,23 +44,42 @@ export default class Cell extends Animated<
         this.animationManager?.play<"potion">("stand")
         return
       }
-      this.setAsset("none")
+      return
+    }
+
+    if (value === "wall" || value === "bush") {
+      // static
+      this.setAsset(value)
       return
     }
 
     if (value === "spawn") {
       this.setAsset("cloud")
       this.animationManager?.play<"cloud">("blue")
-
       this.addTimer(() => {
-        this.type === "spawn" && (this.type = "empty")
+        this.type = "empty"
       }, SPAWN_CLOUD_TIME)
       return
     }
 
-    this.setAsset(value)
+    if (value === "cloud") {
+      let bg: SVGElement | null
+      if (this.secret) {
+        // create a copy of a secret to show under the cloud
+        bg = this.element.cloneNode(true) as SVGSVGElement
+        document.getElementById("landscape")?.appendChild(bg)
+      }
+      this.setAsset("cloud")
+      this.animationManager?.play<"cloud">("pink")
+      this.addTimer(() => {
+        this.type = "empty"
+        bg?.remove()
+      }, CLOUD_TIME)
+      return
+    }
 
     if (value === "fungus") {
+      this.setAsset("fungus")
       this.animationManager?.play<"fungus">("stand")
       return
     }
@@ -73,7 +89,7 @@ export default class Cell extends Animated<
   public col: number
   public row: number
 
-  public secret?: "portal" | "potion"
+  public secret?: "portal" | "portalActive" | "potion"
 
   constructor(typeCode: CellCode, col: number, row: number) {
     super(CELL_SIZE, col * CELL_SIZE, row * CELL_SIZE, "none")
