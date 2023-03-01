@@ -2,13 +2,12 @@ import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
 import Creature from "./base.js"
 
 const SHEEP_SIZE = CELL_SIZE
+
 const SHEEP_SPEED = 0.1
 const DEMON_SPEED = 0.12
+const GENETICS = 0.15 // speed is +-15% random from base speeds
 
-const GENETICS = 0.15 // +-15% speed genetics
-
-const BACK_PROBABILITY = 0.1
-// 10% chance to go back
+const BACK_PROBABILITY = 0.1 // probability to choose back direction is 10% of probability to choose any other directions
 
 type Direction = ("right" | "bottom" | "left" | "top") & keyof NeighbourCells
 
@@ -27,12 +26,39 @@ export default class Sheep extends Creature<"sheep"> {
   public set demonized(value: boolean) {
     this.speed = (value ? DEMON_SPEED : SHEEP_SPEED) * this.genetics
     this._demonized = value
+    this.direction = this._direction // to play animation
   }
 
   private _demonized!: boolean
-  private direction!: Direction // there's ! because it's set in constructor using setRandomDirection()
+
+  private get direction() {
+    return this._direction
+  }
+
+  private set direction(value: Direction) {
+    this._direction = value
+
+    const Direction =
+      value === "bottom"
+        ? "Down"
+        : value === "top"
+        ? "Up"
+        : value === "left"
+        ? "Left"
+        : "Right"
+
+    this.animationManager?.play(
+      this.demonized ? `go${Direction}Demonized` : `go${Direction}`
+    )
+  }
+
+  private _direction!: Direction // there's ! because it's set in constructor using setRandomDirection()
   public fromCell: Cell
 
+  /**
+   * genetics component of sheep {@link speed}
+   * sheep {@link speed} is calculated as {@link genetics} * ({@link SHEEP_SPEED} or {@link DEMON_SPEED})
+   */
   private readonly genetics: number
 
   public get targetCell() {
@@ -46,7 +72,7 @@ export default class Sheep extends Creature<"sheep"> {
 
   private _targetCell!: Cell | null
 
-  public speed = SHEEP_SPEED
+  public speed!: number // there's ! because it's set in set demonized
 
   render(frameTimeDiff: number) {
     if (this.fromCell.type === "cloud" || this.targetCell?.type === "cloud") {
@@ -61,9 +87,6 @@ export default class Sheep extends Creature<"sheep"> {
           this.x = this.targetCell.x
           this.targetCell = null
         }
-        this.animationManager?.play(
-          this.demonized ? "goRightDemonized" : "goRight"
-        )
         break
       case "bottom":
         this.y += this.speed * frameTimeDiff
@@ -71,9 +94,6 @@ export default class Sheep extends Creature<"sheep"> {
           this.y = this.targetCell.y
           this.targetCell = null
         }
-        this.animationManager?.play(
-          this.demonized ? "goDownDemonized" : "goDown"
-        )
         break
       case "left":
         this.x -= this.speed * frameTimeDiff
@@ -81,9 +101,6 @@ export default class Sheep extends Creature<"sheep"> {
           this.x = this.targetCell.x
           this.targetCell = null
         }
-        this.animationManager?.play(
-          this.demonized ? "goLeftDemonized" : "goLeft"
-        )
         break
       case "top":
         this.y -= this.speed * frameTimeDiff
@@ -91,7 +108,7 @@ export default class Sheep extends Creature<"sheep"> {
           this.y = this.targetCell.y
           this.targetCell = null
         }
-        this.animationManager?.play(this.demonized ? "goUpDemonized" : "goUp")
+        break
     }
   }
 
@@ -100,18 +117,6 @@ export default class Sheep extends Creature<"sheep"> {
    * @param neighbours - object with {@link NeighbourCells| neighbour cells}
    */
   setRandomDirection(neighbours: NeighbourCells) {
-    const backDirection = oppositeDirections[this.direction]
-    const backCell = neighbours[backDirection]
-
-    if (
-      backCell?.type === "empty" &&
-      Math.random() - (1 - BACK_PROBABILITY) >= 0
-    ) {
-      this.direction = oppositeDirections[this.direction]
-      this.targetCell = neighbours[this.direction]
-      return
-    }
-
     const availableDirections = Object.entries(neighbours)
       .filter(
         ([way, cell]) =>
@@ -125,7 +130,7 @@ export default class Sheep extends Creature<"sheep"> {
       )
       .map(([way, cell]) => [way, cell] as [Direction, Cell])
 
-    availableDirections.sort(() => Math.random() - 0.5)
+    const backDirection = oppositeDirections[this.direction]
 
     if (availableDirections.length === 0) {
       this.targetCell = null
@@ -134,14 +139,24 @@ export default class Sheep extends Creature<"sheep"> {
       return
     }
 
+    availableDirections.sort(() => Math.random() - 0.5)
+
     if (!this.demonized) {
       // sheep prefer bushes, they are tasty
       availableDirections.sort(([, cell]) => (cell.type === "bush" ? -1 : 1))
     }
 
-    const [direction, targetCell] = availableDirections.find(
-      ([way]) => way !== oppositeDirections[this.direction]
-    ) || [backDirection, backCell]
+    let [direction, targetCell] = availableDirections[0]
+
+    if (
+      direction === backDirection &&
+      availableDirections.length > 1 &&
+      Math.random() - BACK_PROBABILITY >= 0
+    ) {
+      // if chosen randomly direction is back, think one more time
+      // with probability 1-BACK_PROBABILITY choose another direction
+      ;[direction, targetCell] = availableDirections[1]
+    }
 
     this.direction = direction
     this.targetCell = targetCell
@@ -149,17 +164,8 @@ export default class Sheep extends Creature<"sheep"> {
 
   constructor(cell: Cell, neighbours: NeighbourCells, demonized = true) {
     super(SHEEP_SIZE, cell.x, cell.y, "sheep")
-    this.genetics = 1 - GENETICS + Math.random() / (1 / (GENETICS * 2))
-    // TODO: simplify this.
-    // isnt it just 1 - GENETICS + Math.random() * GENETICS * 2 ?
-    // and 1 - GENETICS + GENETICS * 2 * Math.random() ?
-    // and 1 - (1 - 2 * Math.random()) * GENETICS ?
-    // and 1 + (2 * Math.random() - 1) * GENETICS ?
-    // Division potentially can be not safe. but for this language it's ok.
-    // The worst potential case is when GENETICS is infinity and Math.random() is 0, it can produce NaN.
-    // > 1-1/0+0/0
-    // NaN
-    // Readability is important too.
+    this.genetics = 1 - GENETICS + Math.random() * GENETICS * 2
+    // random value between 1 - GENETICS and 1 + GENETICS
 
     this.demonized = demonized
 
