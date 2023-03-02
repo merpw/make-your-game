@@ -3,8 +3,8 @@ import AnimationManager from "./animationManager.js"
 
 export const CELL_SIZE = 5
 
-const CLOUD_TIME = 300
-const SPAWN_CLOUD_TIME = 1000
+const SPORE_CLOUD_TIME = 300
+const PLAYER_CLOUD_TIME = 500
 
 const CELL_CODES = {
   0: "empty",
@@ -61,7 +61,7 @@ export default class Cell extends Animated<
       this.animationManager?.play<"cloud">("blue")
       this.addTimer(() => {
         this.type = "empty"
-      }, SPAWN_CLOUD_TIME)
+      }, PLAYER_CLOUD_TIME)
       return
     }
 
@@ -77,7 +77,7 @@ export default class Cell extends Animated<
       this.addTimer(() => {
         this.type = "empty"
         bg?.remove()
-      }, CLOUD_TIME)
+      }, SPORE_CLOUD_TIME)
       return
     }
 
