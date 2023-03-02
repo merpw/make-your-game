@@ -1,7 +1,7 @@
 @import "font.css";
 
 html {
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: "Nunito";
 }
 
 body {
@@ -15,18 +15,23 @@ main {
   margin: auto;
   border: 1px solid;
   border-radius: 10px;
+  border-color: #666666;
   height: 100%;
+  text-align: center;
+  font-size: large;
+  color: #666666;
 }
 
 #game {
   position: relative;
-  margin: 20px;
+  margin: 20px 20px 0 20px;
   text-align: center;
 }
 
 #board {
   border: 1px solid;
   border-radius: 10px;
+  border-color: #666666;
   height: 720px;
   max-width: 90vw;
   max-height: 90vh;
@@ -39,7 +44,25 @@ main {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+    background-color: #171717;
   }
+}
+#start {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 100%;
+  width: 100%;
+  color: #dc3836;
+  font-family: "Notalot35";
+  font-size: 3vmax;
+  font-size: 10vmax;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow-x: scroll;
+  overflow-y: scroll;
 }
 
 #ui {
@@ -55,19 +78,28 @@ main {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  font-size: x-large;
 }
 
 #topbar .banner {
   padding: 10px;
   border-radius: 15px;
-  backdrop-filter: blur(10px) brightness(0.7);
+  backdrop-filter: blur(3px) brightness(0.7);
+  -webkit-backdrop-filter: blur(3px) brightness(0.7);
+  width: 90px;
+  min-width: auto;
+
+
+  font-family: "Nunito";
+  font-size: large;
+  color: #79b753;
 }
 
 #popup {
   border-radius: 1px;
   backdrop-filter: blur(3px) brightness(0.5);
-  font-size: xx-large;
+  -webkit-backdrop-filter: blur(3px) brightness(0.5);
+  font-family: "Notalot35";
+  font-size: 3rem;
 
   position: absolute;
   width: 100%;
@@ -79,12 +111,25 @@ main {
   display: none;
 }
 
+#popup img {
+  width: 50%;
+  height: auto;
+  align-items: center;
+  margin: auto;
+}
+
 #game.paused .pause {
   display: block;
+  font-family: "Nunito";
+  color: #2d7a2d;
+  margin: 20px 0 20px 0;
+  padding: 0;
 }
 
 #ui .over {
-  color: red;
+  color: #dc3836;
+  margin: 20px 0 20px 0;
+  padding: 0;
 }
 
 #game.over .over {
@@ -93,4 +138,22 @@ main {
 
 #game.over .pause {
   display: none;
+}
+
+#score {
+  color: white;
+  font-family: "Notalot35";
+  font-size: xx-large;
+}
+
+#time {
+  color: white;
+  font-family: "Notalot35";
+  font-size: xx-large;
+}
+
+#lives {
+  color: white;
+  font-family: "Notalot35";
+  font-size: xx-large;
 }
