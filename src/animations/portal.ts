@@ -1,10 +1,10 @@
 import { getFrame } from "./frame.js"
 
 const frames = {
-  stand0: getFrame(4, 0, 16, 16),
-  stand1: getFrame(4, 1, 16, 16),
-  stand2: getFrame(4, 2, 16, 16),
-  stand3: getFrame(4, 3, 16, 16),
+  stand0: getFrame(4, 0),
+  stand1: getFrame(4, 1),
+  stand2: getFrame(4, 2),
+  stand3: getFrame(4, 3),
 }
 
 export default {

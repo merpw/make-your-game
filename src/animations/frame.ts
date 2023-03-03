@@ -1,7 +1,7 @@
 export const ATLAS_PATH = "assets/atlas.png"
-export const ATLAS_CELL_SIZE = 18
+export const ATLAS_CELL_SIZE = 36
 /** empty border around each cell added to right and bottom*/
-const ATLAS_CELL_EMPTY_BORDER = 2
+const ATLAS_CELL_EMPTY_BORDER = 4
 /** area (inside the square cell) plan to be covered by the art*/
 export const ATLAS_CELL_ART_SIZE = ATLAS_CELL_SIZE - ATLAS_CELL_EMPTY_BORDER
 
@@ -15,8 +15,8 @@ export type Frame = {
 export const getFrame = (
   col: number,
   row: number,
-  width: number = ATLAS_CELL_SIZE,
-  height: number = ATLAS_CELL_SIZE,
+  width: number = ATLAS_CELL_ART_SIZE,
+  height: number = ATLAS_CELL_ART_SIZE,
   flipX = false
 ): Frame => {
   return {
