@@ -91,34 +91,41 @@ export default class Sheep extends Creature<"sheep"> {
     switch (this.direction) {
       case "right":
         this.x += this.speed * frameTimeDiff
-        if (this.x >= this.targetCell.x) {
-          this.x = this.targetCell.x
+        if (this.x - this.dx >= this.targetCell.x) {
+          this.x = this.targetCell.x + this.dx
+          this.y = this.targetCell.y + this.dy
           this.targetCell = null
         }
         break
       case "bottom":
         this.y += this.speed * frameTimeDiff
-        if (this.y >= this.targetCell.y) {
-          this.y = this.targetCell.y
+        if (this.y - this.dy >= this.targetCell.y) {
+          this.y = this.targetCell.y + this.dy
+          this.x = this.targetCell.x + this.dx
           this.targetCell = null
         }
         break
       case "left":
         this.x -= this.speed * frameTimeDiff
-        if (this.x <= this.targetCell.x) {
-          this.x = this.targetCell.x
+        if (this.x - this.dx <= this.targetCell.x) {
+          this.x = this.targetCell.x + this.dx
+          this.y = this.targetCell.y + this.dy
           this.targetCell = null
         }
         break
       case "top":
         this.y -= this.speed * frameTimeDiff
-        if (this.y <= this.targetCell.y) {
-          this.y = this.targetCell.y
+        if (this.y - this.dy <= this.targetCell.y) {
+          this.y = this.targetCell.y + this.dy
+          this.x = this.targetCell.x + this.dx
           this.targetCell = null
         }
         break
     }
   }
+
+  private dx = 1.1
+  private dy = 1.5
 
   /**
    * Sets random {@link direction} and {@link targetCell} from one of the available directions
@@ -172,6 +179,8 @@ export default class Sheep extends Creature<"sheep"> {
 
   constructor(cell: Cell, neighbours: NeighbourCells, demonized = true) {
     super(SHEEP_SIZE, cell.x, cell.y, "sheep")
+    super.x += this.dx
+    super.y += this.dy
     this.genetics = 1 - GENETICS + Math.random() * GENETICS * 2
     // random value between 1 - GENETICS and 1 + GENETICS
 
