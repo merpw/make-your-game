@@ -26,7 +26,7 @@ export default class Sheep extends Creature<"sheep"> {
   public set demonized(value: boolean) {
     this.speed = (value ? DEMON_SPEED : SHEEP_SPEED) * this.genetics
     this._demonized = value
-    this.direction = this._direction // to play animation
+    this.setAnimation(this.direction)
 
     Sheep.onDemonization(this)
   }
@@ -36,25 +36,41 @@ export default class Sheep extends Creature<"sheep"> {
   /** function to call when {@link demonized} state  */
   public static onDemonization: (sheep: Sheep) => void = () => void 0
 
-  private get direction() {
-    return this._direction
-  }
-
-  private set direction(value: Direction) {
-    this._direction = value
-
+  private setAnimation(direction: Direction) {
     const Direction =
-      value === "bottom"
+      direction === "bottom"
         ? "Down"
-        : value === "top"
+        : direction === "top"
         ? "Up"
-        : value === "left"
+        : direction === "left"
         ? "Left"
         : "Right"
 
     this.animationManager?.play(
       this.demonized ? `go${Direction}Demonized` : `go${Direction}`
     )
+  }
+
+  private get direction() {
+    return this._direction
+  }
+
+  private set direction(value: Direction) {
+    this.setAnimation(value)
+    this._direction = value
+
+    this.x = this.fromCell.x
+    this.y = this.fromCell.y
+
+    switch (value) {
+      case "left":
+      case "right":
+        this.y += CELL_SIZE - this.height
+        break
+      case "bottom":
+      case "top":
+        this.x += (CELL_SIZE - this.width) / 2
+    }
   }
 
   private _direction!: Direction // there's ! because it's set in constructor using setRandomDirection()
@@ -89,43 +105,36 @@ export default class Sheep extends Creature<"sheep"> {
     if (!this.targetCell) return
 
     switch (this.direction) {
-      case "right":
+      case "right": {
         this.x += this.speed * frameTimeDiff
-        if (this.x - this.dx >= this.targetCell.x) {
-          this.x = this.targetCell.x + this.dx
-          this.y = this.targetCell.y + this.dy
+        if (this.x >= this.targetCell.x) {
           this.targetCell = null
         }
         break
-      case "bottom":
+      }
+      case "bottom": {
         this.y += this.speed * frameTimeDiff
-        if (this.y - this.dy >= this.targetCell.y) {
-          this.y = this.targetCell.y + this.dy
-          this.x = this.targetCell.x + this.dx
+        if (this.y >= this.targetCell.y) {
           this.targetCell = null
         }
         break
-      case "left":
+      }
+      case "left": {
         this.x -= this.speed * frameTimeDiff
-        if (this.x - this.dx <= this.targetCell.x) {
-          this.x = this.targetCell.x + this.dx
-          this.y = this.targetCell.y + this.dy
+        if (this.x <= this.targetCell.x) {
           this.targetCell = null
         }
         break
-      case "top":
+      }
+      case "top": {
         this.y -= this.speed * frameTimeDiff
-        if (this.y - this.dy <= this.targetCell.y) {
-          this.y = this.targetCell.y + this.dy
-          this.x = this.targetCell.x + this.dx
+        if (this.y <= this.targetCell.y) {
           this.targetCell = null
         }
         break
+      }
     }
   }
-
-  private dx = 1.1
-  private dy = 1.5
 
   /**
    * Sets random {@link direction} and {@link targetCell} from one of the available directions
@@ -179,14 +188,12 @@ export default class Sheep extends Creature<"sheep"> {
 
   constructor(cell: Cell, neighbours: NeighbourCells, demonized = true) {
     super(SHEEP_SIZE, cell.x, cell.y, "sheep")
-    super.x += this.dx
-    super.y += this.dy
     this.genetics = 1 - GENETICS + Math.random() * GENETICS * 2
     // random value between 1 - GENETICS and 1 + GENETICS
 
-    this.demonized = demonized
-
     this.fromCell = cell
+    this._demonized = demonized
     this.setRandomDirection(neighbours)
+    this.demonized = demonized
   }
 }

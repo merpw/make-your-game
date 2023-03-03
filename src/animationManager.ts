@@ -118,6 +118,7 @@ export default class AnimationManager<T extends AssetName> {
     this.keyFrames = animations[this.assetName][
       this.currentAnimationName
     ] as Frame[]
+    this.renderFrame(this.keyFrames[0])
   }
 
   private isPaused = false
