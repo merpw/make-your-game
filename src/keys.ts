@@ -14,6 +14,7 @@ const CONTROLS = {
 
   Restart: "r",
   Pause: "p",
+  Resume: "Enter",
 }
 
 /**
@@ -39,22 +40,26 @@ const getWay = (): Way => ({
 /** Take control of the {@link Board} using the keyboard. */
 const takeControl = (board: Board) => {
   window.addEventListener("keydown", (event: KeyboardEvent) => {
+    if (event.repeat) return
     const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
-
-    if (key === CONTROLS.Pause) {
-      board.isPaused = !board.isPaused
-      return
-    }
 
     if (board.isPaused) {
       if (key === CONTROLS.Restart) {
         console.log("not implemented yet")
         return
       }
+      if (key === CONTROLS.Resume || key === CONTROLS.Pause) {
+        board.isPaused = false
+      }
       return
     }
 
-    if (MoveInputState.has(key) && !MoveInputState.get(key)) {
+    if (key === CONTROLS.Pause) {
+      board.isPaused = true
+      return
+    }
+
+    if (MoveInputState.has(key)) {
       MoveInputState.set(key, true)
       board.hero.way = getWay()
       return
