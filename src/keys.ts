@@ -41,20 +41,22 @@ const takeControl = (board: Board) => {
   window.addEventListener("keydown", (event: KeyboardEvent) => {
     const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
 
-    if (MoveInputState.has(key)) {
-      MoveInputState.set(key, true)
-      board.hero.way = getWay()
-      return
-    }
     if (key === CONTROLS.Pause) {
       board.isPaused = !board.isPaused
       return
     }
+
     if (board.isPaused) {
       if (key === CONTROLS.Restart) {
         console.log("not implemented yet")
         return
       }
+      return
+    }
+
+    if (MoveInputState.has(key) && !MoveInputState.get(key)) {
+      MoveInputState.set(key, true)
+      board.hero.way = getWay()
       return
     }
     if (key === CONTROLS.PlaceFungi) {

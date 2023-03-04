@@ -114,6 +114,9 @@ export default class AnimationManager<T extends AssetName> {
    * @typeParam U - type of the asset to play animation for. Optional, should be provided only if the {@link AnimationManager} supports several assets
    */
   public play<U extends T>(animationName: AnimationName<U>): void {
+    if (this.currentAnimationName === animationName) {
+      return
+    }
     this.currentAnimationName = animationName as AnimationName<T>
     this.keyFrames = animations[this.assetName][
       this.currentAnimationName
@@ -131,6 +134,7 @@ export default class AnimationManager<T extends AssetName> {
   public pause(shouldResume = true) {
     this.isPaused = true
     if (!shouldResume) {
+      this.currentAnimationName = undefined
       this.keyFrames = null
     }
   }
