@@ -6,9 +6,10 @@ import Timer from "./timer.js"
 
 export class Board {
   public hero: Hero
+
   private readonly cells: Cell[][]
-  private readonly portal: Cell
-  private readonly potion: Cell
+  private readonly portalCell: Cell
+
   private readonly sheepStorage = {
     all: new Set<Sheep>(),
     demonized: new Set<Sheep>(),
@@ -208,19 +209,10 @@ export class Board {
     )
     const bushes = this.cells.flat().filter((cell) => cell.type === "bush")
 
-    const [portalCell] = bushes.sort(() => Math.random() - 0.5)
+    const [portalCell, potionCell] = bushes.sort(() => Math.random() - 0.5)
     portalCell.secret = "portal"
-    this.portal = portalCell
-
-    this.potion = this.portal
-    // add potion into cell
-    while (this.potion === this.portal) {
-      // TODO: not looks very safe, depends on the bushes number
-      const [potionCell] = bushes.sort(() => Math.random() - 0.5)
-      if (potionCell === this.portal) continue
-      potionCell.secret = "potion"
-      this.potion = potionCell
-    }
+    this.portalCell = portalCell
+    potionCell.secret = "potion"
 
     const sheepCells = this.getRandomEmptyCells(level.sheepCount)
 
@@ -233,7 +225,7 @@ export class Board {
         this.sheepStorage.basic.add(sheep)
 
         if (this.sheepStorage.demonized.size === 0) {
-          this.portal.type = "portal"
+          this.portalCell.type = "portal"
         }
       }
     }
