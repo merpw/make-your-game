@@ -172,6 +172,22 @@ export default class Hero extends Creature<"hero"> {
       }
     }
 
+    // TODO implement increasing of fungi spores distance after explosion.
+    /* 
+      for this, should be added a new property to fungi distance.
+      This property should have type number and affect the nighboors cells calculation some way.
+      One potion should increase fungi distance by 1.
+      So if fungi distance is 1(one potion collected),
+      then fungi should be able to spread to max 8 cells, to four directions around central fungi cell.
+      If fungi distance is 2(two potions collected),
+      then fungi should be able to spread spores to max 12 cells around central cell (x3 to each direction).
+    */
+    if (this.cell.secret === "potion") {
+      this.cell.secret = undefined
+      this.cell.type = "empty"
+      this.isSick = false
+    }
+
     this.x = newX
     this.y = newY
   }
