@@ -1,10 +1,10 @@
 import { CellCode } from "./cell"
 
-export type Level = {
+export type Level = Readonly<{
   board: CellCode[][]
   sheepCount: number
   time: number
-}
+}>
 
 export const level1: Level = {
   board: [

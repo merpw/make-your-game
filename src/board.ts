@@ -1,7 +1,7 @@
 import Hero from "./hero.js"
 import { Level } from "./levels"
 import Sheep from "./sheep.js"
-import Cell, { CELL_SIZE, NeighbourCells } from "./cell.js"
+import Cell, { CellCode, CELL_SIZE, NeighbourCells } from "./cell.js"
 import Timer from "./timer.js"
 
 export class Board {
@@ -197,12 +197,9 @@ export class Board {
 
   constructor(level: Level) {
     this.time = level.time
-    const board = level.board
 
-    board.forEach((row) => {
-      row.push(1)
-      row.unshift(1)
-    })
+    const board = level.board.map((row) => [1, ...row, 1] as CellCode[])
+
     board.push(new Array(board[0].length).fill(1))
     board.unshift(new Array(board[0].length).fill(1))
 
