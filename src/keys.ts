@@ -1,5 +1,5 @@
 import { Way } from "./hero"
-import { Board } from "./board"
+import { currentBoard, restartLevel } from "./game.js"
 
 /** Configuration of the control keys. */
 const CONTROLS = {
@@ -37,55 +37,52 @@ const getWay = (): Way => ({
   right: CONTROLS.move.Right.some((key) => MoveInputState.get(key)),
 })
 
-/** Take control of the {@link Board} using the keyboard. */
-const takeControl = (board: Board) => {
-  window.addEventListener("keydown", (event: KeyboardEvent) => {
-    if (event.repeat) return
-    const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
+window.addEventListener("keydown", (event: KeyboardEvent) => {
+  if (event.repeat || !currentBoard) return
+  const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
 
-    if (board.isPaused) {
-      if (key === CONTROLS.Restart) {
-        console.log("not implemented yet")
-        return
-      }
-      if (key === CONTROLS.Resume || key === CONTROLS.Pause) {
-        board.isPaused = false
-      }
+  if (currentBoard.isPaused) {
+    if (key === CONTROLS.Restart) {
+      restartLevel()
       return
     }
-
-    if (key === CONTROLS.Pause) {
-      board.isPaused = true
-      return
+    if (key === CONTROLS.Resume || key === CONTROLS.Pause) {
+      currentBoard.isPaused = false
     }
+    return
+  }
 
-    if (MoveInputState.has(key)) {
-      MoveInputState.set(key, true)
-      board.hero.way = getWay()
-      return
-    }
-    if (key === CONTROLS.PlaceFungi) {
-      board.hero.placeFungi()
-      return
-    }
-    if (key === CONTROLS.TerminateFungi) {
-      board.hero.terminateFungi()
-      return
-    }
-  })
+  if (key === CONTROLS.Pause) {
+    currentBoard.isPaused = true
+    return
+  }
 
-  window.addEventListener("keyup", (event: KeyboardEvent) => {
-    const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
+  if (MoveInputState.has(key)) {
+    MoveInputState.set(key, true)
+    currentBoard.hero.way = getWay()
+    return
+  }
+  if (key === CONTROLS.PlaceFungi) {
+    currentBoard.hero.placeFungi()
+    return
+  }
+  if (key === CONTROLS.TerminateFungi) {
+    currentBoard.hero.terminateFungi()
+    return
+  }
+})
 
-    if (MoveInputState.has(key)) {
-      MoveInputState.set(key, false)
-      board.hero.way = getWay()
-      return
-    }
-  })
-  window.addEventListener("blur", () => {
-    board.isPaused = true
-  })
-}
+window.addEventListener("keyup", (event: KeyboardEvent) => {
+  if (!currentBoard) return
+  const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
 
-export default takeControl
+  if (MoveInputState.has(key)) {
+    MoveInputState.set(key, false)
+    currentBoard.hero.way = getWay()
+    return
+  }
+})
+window.addEventListener("blur", () => {
+  if (!currentBoard) return
+  currentBoard.isPaused = true
+})

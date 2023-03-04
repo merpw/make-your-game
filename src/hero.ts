@@ -28,7 +28,7 @@ export default class Hero extends Creature<"hero"> {
     if (lives) lives.innerText = value.toString()
   }
 
-  private _lives = LIVES
+  private _lives!: number
 
   /** @remarks It's set on first render */
   private neighbourCells = {} as NeighbourCells
@@ -238,6 +238,7 @@ export default class Hero extends Creature<"hero"> {
   constructor(cell: Cell) {
     super(HERO_SIZE, 0, 0, "hero")
     // x and y will be set in spawn()
+    this.lives = LIVES
     this.spawn(cell)
   }
 }
