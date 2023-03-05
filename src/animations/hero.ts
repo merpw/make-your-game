@@ -1,6 +1,9 @@
 import { getFrame } from "./frame.js"
 
-// TODO: define width and height
+/** All the frames, available for the hero animation.
+ * The left animation frames are flipped horizontally.
+ * But the coordinates inside the atlas are still the same as for the right animation frames.
+ */
 const frames = {
   right1: getFrame(0, 0, 20, 32),
   right2: getFrame(0, 1, 20, 32),
@@ -16,6 +19,10 @@ const frames = {
   up3: getFrame(0, 8, 20, 32),
 }
 
+/** Animations for a hero.
+ * The "stand" animations are for standing, so only one frame.
+ * The "go" animations are for moving, so several frames.
+ */
 export default {
   standRight: [frames.right1],
   standLeft: [frames.left1],

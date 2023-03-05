@@ -1,5 +1,9 @@
 import { getFrame } from "./frame.js"
 
+/** All the frames, available for the sheep animation.
+ * The "demonized" means that the sheep is demonized.
+ * The "left" frames are flipped horizontally.
+ */
 const frames = {
   right1demonized: getFrame(1, 0, 32, 22),
   right2demonized: getFrame(1, 1, 32, 22),
@@ -27,6 +31,14 @@ const frames = {
   up3: getFrame(2, 8, 16, 28),
 }
 
+/** Animation for a sheep.
+ *
+ * The "stand" means that the sheep is standing in place. It's just one frame.
+ * The "stand" animations implemented only for the demonized sheep, because not demonized sheep can eat the bush.
+ * So the not demonized sheep can't be locked in the bush. And walls are always have gaps, empty or bush based.
+ *
+ * The "go" means that the sheep is moving. It's several frames.
+ */
 export default {
   standRightDemonized: [frames.right1demonized],
   standLeftDemonized: [frames.left1demonized],

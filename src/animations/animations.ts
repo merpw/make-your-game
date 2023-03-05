@@ -6,6 +6,7 @@ import portal from "./portal.js"
 import potion from "./potion.js"
 import { wall, bush, grass } from "./static.js"
 
+/** All the animations */
 const animations = {
   hero,
   sheep,
@@ -19,6 +20,9 @@ const animations = {
   bush,
 } as const
 
+/** Type for names of assets.
+ * To limit the available names to the keys of {@link animations}
+ */
 export type AssetName = keyof typeof animations
 
 /** Type for names of animations for a specified {@link AssetName}*/
