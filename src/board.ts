@@ -1,7 +1,12 @@
 import Hero from "./hero.js"
 import { Level } from "./levels"
 import Sheep from "./sheep.js"
-import Cell, { CellCode, CELL_SIZE, NeighbourCells } from "./cell.js"
+import Cell, {
+  CellCode,
+  CELL_SIZE,
+  NeighbourCells,
+  PORTAL_EXIT_TIME,
+} from "./cell.js"
 import Timer from "./timer.js"
 
 export class Board {
@@ -31,8 +36,10 @@ export class Board {
   }
 
   private _time!: number
-
+  /** Main {@link Timer} in {@link setInterval} mode that counts down the time. */
   private timer = new Timer(() => this.time--, 1000, true)
+  /** Secondary {@link Timer} in {@link setTimeout} mode for single delayed events */
+  private eventTimer: Timer | null = null
 
   public get isPaused() {
     return this._isPaused
@@ -45,6 +52,7 @@ export class Board {
       document.getElementById("game")?.classList.add("paused")
 
       this.timer.pause()
+      this.eventTimer?.pause()
       this.hero.pause()
       this.cells.flat().forEach((cell) => cell.pause())
       this.sheepStorage.all.forEach((sheep) => sheep.pause())
@@ -52,6 +60,7 @@ export class Board {
       document.getElementById("game")?.classList.remove("paused")
 
       this.timer.resume()
+      this.eventTimer?.resume()
       this.hero.resume()
       this.cells.flat().forEach((cell) => cell.resume())
       this.sheepStorage.all.forEach((sheep) => sheep.resume())
@@ -60,11 +69,11 @@ export class Board {
 
   private _isPaused = false
 
-  public over() {
+  public over(isWin = false) {
     this.isPaused = true
     this.isOver = true
     this.timer.stop()
-    document.getElementById("game")?.classList.add("over")
+    document.getElementById("game")?.classList.add(isWin ? "win" : "over")
   }
 
   private isOver = false
@@ -77,6 +86,21 @@ export class Board {
     const heroCell = this.getCell(this.hero)
     if (!heroCell) {
       throw new Error("Hero is out of bounds")
+    }
+    if (heroCell.type === "portal") {
+      heroCell.type = "portalActivated"
+      this.eventTimer = new Timer(
+        () => {
+          if (this.hero.cell == this.portalCell) {
+            this.hero.setAsset("none")
+            this.portalCell.type = "empty"
+            this.over(true)
+          }
+          this.eventTimer = null
+        },
+        PORTAL_EXIT_TIME,
+        false
+      )
     }
     const heroNeighbours = this.getNeighbors(heroCell)
     this.hero.render(frameTimeDiff, heroCell, heroNeighbours)

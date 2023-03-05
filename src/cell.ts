@@ -2,6 +2,7 @@ import { Animated } from "./base.js"
 import AnimationManager from "./animationManager.js"
 
 export const CELL_SIZE = 5
+export const PORTAL_EXIT_TIME = 1000
 
 const SPORE_CLOUD_TIME = 300
 const PLAYER_CLOUD_TIME = 500
@@ -21,6 +22,7 @@ type CellType =
   | "cloud"
   | "spawn"
   | "portal"
+  | "portalActivated"
 
 export default class Cell extends Animated<
   "fungus" | "cloud" | "wall" | "grass" | "bush" | "portal" | "potion"
@@ -65,7 +67,7 @@ export default class Cell extends Animated<
       return
     }
 
-    if (value === "cloud") {
+    if (value === "cloud" || value === "portalActivated") {
       let bg: SVGElement | null
       if (this.secret) {
         // create a copy of a secret to show under the cloud
@@ -73,11 +75,15 @@ export default class Cell extends Animated<
         document.getElementById("landscape")?.appendChild(bg)
       }
       this.setAsset("cloud")
-      this.animationManager?.play<"cloud">("pink")
-      this.addTimer(() => {
-        this.type = "empty"
-        bg?.remove()
-      }, SPORE_CLOUD_TIME)
+      this.animationManager?.play<"cloud">(value === "cloud" ? "pink" : "blue")
+
+      this.addTimer(
+        () => {
+          this.type = value === "cloud" ? "empty" : "portal"
+          bg?.remove()
+        },
+        value === "cloud" ? SPORE_CLOUD_TIME : PORTAL_EXIT_TIME
+      )
       return
     }
 

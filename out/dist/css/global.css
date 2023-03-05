@@ -88,7 +88,6 @@ main {
   width: 90px;
   min-width: auto;
 
-
   font-family: "Nunito";
   font-size: large;
   color: #79b753;
@@ -136,7 +135,12 @@ main {
   display: block;
 }
 
-#game.over .pause {
+#game.win .win {
+  display: block;
+}
+
+#game.over .pause,
+#game.win .pause {
   display: none;
 }
 
