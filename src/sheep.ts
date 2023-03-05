@@ -108,6 +108,7 @@ export default class Sheep extends Creature<"sheep"> {
       case "right": {
         this.x += this.speed * frameTimeDiff
         if (this.x >= this.targetCell.x) {
+          this.x = this.targetCell.x
           this.targetCell = null
         }
         break
@@ -115,6 +116,7 @@ export default class Sheep extends Creature<"sheep"> {
       case "bottom": {
         this.y += this.speed * frameTimeDiff
         if (this.y >= this.targetCell.y) {
+          this.y = this.targetCell.y
           this.targetCell = null
         }
         break
@@ -122,6 +124,7 @@ export default class Sheep extends Creature<"sheep"> {
       case "left": {
         this.x -= this.speed * frameTimeDiff
         if (this.x <= this.targetCell.x) {
+          this.x = this.targetCell.x
           this.targetCell = null
         }
         break
@@ -129,6 +132,7 @@ export default class Sheep extends Creature<"sheep"> {
       case "top": {
         this.y -= this.speed * frameTimeDiff
         if (this.y <= this.targetCell.y) {
+          this.y = this.targetCell.y
           this.targetCell = null
         }
         break
