@@ -8,6 +8,7 @@ const frames = {
   pinkBig: getFrame(3, 3),
   pinkMiddle: getFrame(3, 4),
   pinkSmall: getFrame(3, 5),
+
   blueGiant: getFrame(4, 5),
   blueBig: getFrame(4, 6),
   blueMiddle: getFrame(4, 7),
