@@ -15,6 +15,7 @@ const MAX_FUNGI = 4
 const SPAWN_LUCKY_TIME = 5000
 
 export default class Hero extends Creature<"hero"> {
+  private insideActivatedPortal = false
   /** if true, demons won't choose hero's cell */
   public isLucky = false
   public cell!: Cell // there's ! because it's set in spawn()
@@ -99,6 +100,18 @@ export default class Hero extends Creature<"hero"> {
     currentCell: Cell,
     neighbourCells: NeighbourCells
   ) {
+    /* after level completed, prevent the player control inside the portal */
+    if (this.insideActivatedPortal) {
+      return
+    } else if (
+      this.cell.type === "portalActivated" &&
+      !this.insideActivatedPortal
+    ) {
+      this.insideActivatedPortal = true
+      this.setAsset("none")
+      return
+    }
+
     if (this.cell.type === "cloud") {
       this.isSick = true
     }
