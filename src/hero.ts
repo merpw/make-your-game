@@ -9,7 +9,7 @@ const DIAGONAL_SPEED = Math.sqrt(2) / 2
 const SICK_TIME = 5000
 const SICK_SPEED = HERO_SPEED / 3
 
-const LIVES = 0
+const LIVES = 3
 const MAX_FUNGI = 4
 
 const SPAWN_LUCKY_TIME = 5000

@@ -8,10 +8,10 @@ const frames = {
   pinkBig: getFrame(3, 3),
   pinkMiddle: getFrame(3, 4),
   pinkSmall: getFrame(3, 5),
-  blueGiant: getFrame(5, 1),
-  blueBig: getFrame(5, 2),
-  blueMiddle: getFrame(5, 3),
-  blueSmall: getFrame(5, 4),
+  blueGiant: getFrame(4, 5),
+  blueBig: getFrame(4, 6),
+  blueMiddle: getFrame(4, 7),
+  blueSmall: getFrame(4, 8),
 }
 
 // TODO: maybe make cloud green to set any color using filters?
