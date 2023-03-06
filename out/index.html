@@ -8,8 +8,8 @@
   </head>
   <body>
     <main>
-      <h1 class="topic" style="margin: 20px 0 0 0">Make Your Game</h1>
-      <h3 class="topic" style="margin: 0; color: #6fa84e82">• EWEXORCISM •</h3>
+      <h1 id="project">Make Your Game</h1>
+      <h3 id="game-name">• EWEXORCISM •</h3>
       <div id="game">
         <svg id="board" viewBox="0 0 95 55">
           <g id="landscape" class="layer"></g>
@@ -26,37 +26,36 @@
             <span class="banner">Lives: <span id="lives">3</span></span>
           </div>
           <div id="popup">
-            <h1 class="pause" style="font-family: Notalot35">PAUSE</h1>
-            <p class="pause" ; style="font-size: large; color: #7f7f7f">
+            <h1 class="pause state">PAUSE</h1>
+            <p class="pause keys">
               Press
-              <span class="pause" ; style="display: inline; color: white"
-                >ENTER</span
-              >
-              to continue<br class="pause" style="margin: 0" />
+              <span class="pause the-key">ENTER</span>
+              to continue<br class="pause newline" />
               Press
-              <span class="pause" ; style="display: inline; color: white"
-                >R</span
-              >
+              <span class="pause the-key">R</span>
               to restart
             </p>
-            <h1 class="over">GAME OVER</h1>
+            <h1 class="over state">GAME OVER</h1>
+            <p class="over keys">
+              Press
+              <span class="over the-key">R</span>
+              to restart
+            </p>
+
             <img
               src="images/Game_over.png"
               alt="GAME OVER"
-              class="over"
-              style="margin: auto"
+              class="over foreground"
             />
             <h1 class="win">WELL DONE!🥩</h1>
           </div>
         </div>
       </div>
-      <h5 style="margin: 0; display: inline">
+      <h5 id="authors">
         Authors: • Maksim Mikhailov • Natalia Kim • Sergei Ivanov •
       </h5>
 
-      <h6 style="margin: 0 0 10px 0">
-        Grit:lab coding school on Åland, February 2023
-      </h6>
+      <h6 id="place-date">Grit:lab coding school on Åland, February 2023</h6>
     </main>
     <script src="dist/js/game.js" type="module"></script>
   </body>

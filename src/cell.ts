@@ -5,7 +5,7 @@ export const CELL_SIZE = 5
 export const PORTAL_EXIT_TIME = 1000
 
 const SPORE_CLOUD_TIME = 300
-const PLAYER_CLOUD_TIME = 500
+const PLAYER_CLOUD_TIME = 300
 
 const CELL_CODES = {
   0: "empty",

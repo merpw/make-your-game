@@ -21,6 +21,25 @@ main {
   font-size: large;
   color: #666666;
 }
+#project {
+  margin: 20px 0 0 0;
+  padding: 0;
+}
+
+#game-name {
+  margin: 0;
+  padding: 0;
+  color: #6fa84e82;
+}
+
+#authors {
+  margin: 0;
+  display: inline;
+}
+
+#place-date {
+  margin: 0 0 10px 0;
+}
 
 #game {
   position: relative;
@@ -83,8 +102,8 @@ main {
 #topbar .banner {
   padding: 10px;
   border-radius: 15px;
-  backdrop-filter: blur(3px) brightness(0.7);
   -webkit-backdrop-filter: blur(3px) brightness(0.7);
+  backdrop-filter: blur(3px) brightness(0.7);
   width: 90px;
   min-width: auto;
 
@@ -95,8 +114,8 @@ main {
 
 #popup {
   border-radius: 1px;
-  backdrop-filter: blur(3px) brightness(0.5);
   -webkit-backdrop-filter: blur(3px) brightness(0.5);
+  backdrop-filter: blur(3px) brightness(0.5);
   font-family: "Notalot35";
   font-size: 3rem;
 
@@ -111,7 +130,7 @@ main {
 }
 
 #popup img {
-  width: 50%;
+  width: 30%;
   height: auto;
   align-items: center;
   margin: auto;
@@ -125,14 +144,48 @@ main {
   padding: 0;
 }
 
+#game.paused .pause.state {
+  font-family: Notalot35;
+}
+
+#game.paused .pause.keys {
+  font-size: large;
+  color: #7f7f7f;
+}
+
+#game.paused .pause.newline {
+  margin: 0;
+}
+
+#game.paused .pause.the-key {
+  display: inline;
+  color: white;
+}
 #ui .over {
-  color: #dc3836;
   margin: 20px 0 20px 0;
   padding: 0;
 }
 
 #game.over .over {
   display: block;
+  font-family: "Nunito";
+  margin: 20px 0 20px 0;
+  padding: 0;
+}
+
+#game.over .over.state {
+  color: #dc3836;
+  font-family: Notalot35;
+}
+
+#game.over .over.the-key {
+  display: inline;
+  color: white;
+}
+
+#game.over .over.keys {
+  font-size: large;
+  color: #7f7f7f;
 }
 
 #game.win .win {
@@ -160,4 +213,9 @@ main {
   color: white;
   font-family: "Notalot35";
   font-size: xx-large;
+}
+
+#popup img.foreground {
+  position: relative;
+
 }
