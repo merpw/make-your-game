@@ -68,8 +68,8 @@ export default class Hero extends Creature<"hero"> {
 
   private _way: Way = { up: false, down: false, left: false, right: false }
   private speed = HERO_SPEED
-  private speedX = 0
-  private speedY = 0
+  public speedX = 0
+  public speedY = 0
 
   private set isSick(value: boolean) {
     this._isSick = value

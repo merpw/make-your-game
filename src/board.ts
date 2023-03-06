@@ -9,9 +9,18 @@ import Cell, {
 } from "./cell.js"
 import Timer from "./timer.js"
 
+/** camera height in cells */
+const VIEW_HEIGHT = 7
+// TODO: fix bug with svg wrapping (especially on mobile)
+const VIEW_ASPECT_RATIO = 16 / 9
+
+const VIEW_WIDTH = Math.floor(VIEW_HEIGHT * VIEW_ASPECT_RATIO)
+
 export class Board {
   public hero: Hero
-
+  private element: SVGSVGElement
+  private readonly height: number
+  private readonly width: number
   private readonly cells: Cell[][]
   private readonly portalCell: Cell
 
@@ -68,6 +77,39 @@ export class Board {
   }
 
   private _isPaused = false
+  private cameraX!: number
+  private cameraY!: number
+
+  /** centers camera by {@link hero} */
+  centerCamera() {
+    const heroCenterX = this.hero.x + this.hero.width / 2
+    const heroCenterY = this.hero.y + this.hero.height / 2
+    // TODO: add acceleration to prevent camera jumping on hero stacking
+    const x = Math.max(
+      0,
+      Math.min(
+        heroCenterX - (VIEW_WIDTH * CELL_SIZE) / 2,
+        this.width - VIEW_WIDTH * CELL_SIZE
+      )
+    )
+    const y = Math.max(
+      0,
+      Math.min(
+        heroCenterY - (VIEW_HEIGHT * CELL_SIZE) / 2,
+        this.height - VIEW_HEIGHT * CELL_SIZE
+      )
+    )
+    if (this.cameraX !== x || this.cameraY !== y) {
+      this.cameraX = x
+      this.cameraY = y
+      this.element.setAttribute(
+        "viewBox",
+        `${x.toFixed(2)} ${y.toFixed(2)} ${VIEW_WIDTH * CELL_SIZE} ${
+          VIEW_HEIGHT * CELL_SIZE
+        }`
+      )
+    }
+  }
 
   public over(isWin = false) {
     this.isPaused = true
@@ -80,7 +122,9 @@ export class Board {
 
   public render(frameTimeDiff: number, time: number) {
     if (this.isPaused) return
-
+    if (this.hero.speedX !== 0 || this.hero.speedY !== 0) {
+      this.centerCamera()
+    }
     this.renderAnimations(time)
 
     const heroCell = this.getCell(this.hero)
@@ -262,10 +306,12 @@ export class Board {
     this.hero = new Hero(heroCell)
 
     const svg = document.getElementById("board") as SVGSVGElement | null
-
-    svg?.setAttribute(
-      "viewBox",
-      `0 0 ${this.cells[0].length * CELL_SIZE} ${this.cells.length * CELL_SIZE}`
-    )
+    if (!svg) {
+      throw new Error("No #board svg element found")
+    }
+    this.height = this.cells.length * CELL_SIZE
+    this.width = this.cells[0].length * CELL_SIZE
+    this.element = svg
+    this.centerCamera()
   }
 }
