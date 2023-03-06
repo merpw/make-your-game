@@ -1,5 +1,4 @@
-// don't forget .js extensions
-import { Board } from "./board.js" // don't forget the .js extension
+import { Board } from "./board.js"
 import { Level, level1 } from "./levels.js"
 import "./keys.js"
 
@@ -11,9 +10,8 @@ const clean = () => {
   document
     .querySelectorAll("#game g.layer > *")
     .forEach((node) => node.remove())
-  const game = document.getElementById("game")
-  game?.classList.remove("paused")
-  game?.classList.remove("over")
+  const game = document.getElementById("game") as HTMLElement
+  game.classList.value = ""
   currentBoard = null
 }
 
