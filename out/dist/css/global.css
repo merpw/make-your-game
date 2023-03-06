@@ -190,6 +190,14 @@ main {
 
 #game.win .win {
   display: block;
+  font-family: "Nunito";
+  margin: 20px 0 20px 0;
+  padding: 0;
+}
+
+#game.win .win.state {
+  color: #8ff4f8;
+  font-family: Notalot35;
 }
 
 #game.over .pause,
