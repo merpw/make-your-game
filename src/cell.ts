@@ -79,7 +79,8 @@ export default class Cell extends Animated<
 
       this.addTimer(
         () => {
-          this.type = value === "cloud" ? "empty" : "portal"
+          this.type === value &&
+            (this.type = value === "cloud" ? "empty" : "portal")
           bg?.remove()
         },
         value === "cloud" ? SPORE_CLOUD_TIME : PORTAL_EXIT_TIME
