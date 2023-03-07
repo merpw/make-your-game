@@ -182,6 +182,7 @@ export class Board {
         this.hero.lives--
         if (this.hero.lives > 0) {
           this.hero.spawn(this.getRandomEmptyCell())
+          this.centerCamera() // TODO: add smooth camera movement after hero respawn after die, if possible
         } else {
           this.over()
         }
