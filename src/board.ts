@@ -21,6 +21,17 @@ const VIEW_WIDTH = Math.floor(VIEW_HEIGHT * VIEW_ASPECT_RATIO)
  * for 1 it's instantly following hero, for 0 there's no movement at all */
 const VIEW_SPEED = 0.1
 
+const SCORES = {
+  demonToSheep: +100,
+  sheepToDemon: -50,
+  /** Bonus for left time, per second */
+  timeBonus: +5,
+  /** Bonus for left lives, per live */
+  livesBonus: +100,
+  potion: +100,
+  selfPoisoning: -100, // TODO: implement
+} as const
+
 export class Board {
   public hero: Hero
   private element: SVGSVGElement
@@ -34,6 +45,18 @@ export class Board {
     demonized: new Set<Sheep>(),
     basic: new Set<Sheep>(),
   }
+
+  public get score() {
+    return this._score
+  }
+
+  public set score(value: number) {
+    this._score = value
+    const score = document.getElementById("score")
+    score && (score.innerText = value.toString())
+  }
+
+  _score!: number
 
   public get time() {
     return this._time
@@ -159,6 +182,12 @@ export class Board {
     this.isPaused = true
     this.isOver = true
     this.timer.stop()
+    if (isWin) {
+      this.score =
+        this.score +
+        this.time * SCORES.timeBonus +
+        this.hero.lives * SCORES.livesBonus
+    }
     document.getElementById("game")?.classList.add(isWin ? "win" : "over")
   }
 
@@ -176,6 +205,13 @@ export class Board {
     const heroCell = this.getCell(this.hero)
     if (!heroCell) {
       throw new Error("Hero is out of bounds")
+    }
+    if (heroCell.secret === "potion") {
+      this.score += SCORES.potion
+      heroCell.secret = undefined
+      heroCell.type = "empty"
+      this.hero.isSick = false
+      // TODO: add more effects
     }
     if (heroCell.type === "portal") {
       heroCell.type = "portalActivated"
@@ -218,6 +254,13 @@ export class Board {
 
         sheep.setRandomDirection(sheepNeighbours)
       }
+      if (
+        sheep.demonized &&
+        (sheep.fromCell.type === "cloud" || sheep.targetCell?.type === "cloud")
+      ) {
+        sheep.demonized = false
+        this.score += SCORES.demonToSheep
+      }
       sheep.render(frameTimeDiff)
     })
 
@@ -236,6 +279,7 @@ export class Board {
       this.sheepStorage.basic.forEach((sheep) => {
         if (demon.isColliding(sheep.getRect())) {
           sheep.demonized = true
+          this.score += SCORES.sheepToDemon
         }
       })
     })
@@ -313,6 +357,7 @@ export class Board {
 
   constructor(level: Level) {
     this.time = level.time
+    this.score = 0
 
     const board = level.board.map((row) => [1, ...row, 1] as CellCode[])
 

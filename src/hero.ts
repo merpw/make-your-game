@@ -71,7 +71,7 @@ export default class Hero extends Creature<"hero"> {
   public speedX = 0
   public speedY = 0
 
-  private set isSick(value: boolean) {
+  public set isSick(value: boolean) {
     this._isSick = value
 
     if (value) {
@@ -185,11 +185,6 @@ export default class Hero extends Creature<"hero"> {
       If fungi distance is 2(two potions collected),
       then fungi should be able to spread spores to max 12 cells around central cell (x3 to each direction).
     */
-    if (this.cell.secret === "potion") {
-      this.cell.secret = undefined
-      this.cell.type = "empty"
-      this.isSick = false
-    }
 
     this.x = newX
     this.y = newY
