@@ -21,6 +21,9 @@ const VIEW_WIDTH = Math.floor(VIEW_HEIGHT * VIEW_ASPECT_RATIO)
  * for 1 it's instantly following hero, for 0 there's no movement at all */
 const VIEW_SPEED = 0.1
 
+/** if camera is closer than this to hero, it won't move */
+const VIEW_SENSITIVITY = 0.5
+
 const SCORES = {
   demonToSheep: +100,
   sheepToDemon: -50,
@@ -156,16 +159,16 @@ export class Board {
 
   /** Changes board {@link element}'s viewBox to move camera to {@link cameraTargetX} and {@link cameraTargetY} */
   renderCamera() {
-    if (
-      this.cameraX === this.cameraTargetX &&
-      this.cameraY === this.cameraTargetY
-    ) {
-      return
-    }
     if (this.cameraX === undefined || this.cameraY === undefined) {
       this.cameraX = this.cameraTargetX
       this.cameraY = this.cameraTargetY
     } else {
+      if (
+        Math.abs(this.cameraTargetX - this.cameraX) < VIEW_SENSITIVITY &&
+        Math.abs(this.cameraTargetY - this.cameraY) < VIEW_SENSITIVITY
+      ) {
+        return
+      }
       this.cameraX += (this.cameraTargetX - this.cameraX) * VIEW_SPEED
       this.cameraY += (this.cameraTargetY - this.cameraY) * VIEW_SPEED
     }
