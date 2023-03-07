@@ -33,6 +33,7 @@ export default class Cell extends Animated<
 
   set type(value: CellType) {
     this._type = value
+    this.cancelTimer()
 
     if (value === "empty") {
       if (!this.secret) {
@@ -79,8 +80,7 @@ export default class Cell extends Animated<
 
       this.addTimer(
         () => {
-          this.type === value &&
-            (this.type = value === "cloud" ? "empty" : "portal")
+          this.type = value === "cloud" ? "empty" : "portal"
           bg?.remove()
         },
         value === "cloud" ? SPORE_CLOUD_TIME : PORTAL_EXIT_TIME

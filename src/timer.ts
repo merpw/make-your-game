@@ -30,6 +30,7 @@ export default class Timer {
   public stop() {
     if (this.timer) {
       clearTimeout(this.timer)
+      this.timeout = 0
       this.timer = null
     }
   }

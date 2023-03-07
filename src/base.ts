@@ -37,6 +37,11 @@ export class Animated<T extends AssetName> {
     this.timer = new Timer(callback, timeout)
   }
 
+  public cancelTimer() {
+    this.timer?.stop()
+    this.timer = null
+  }
+
   public pause() {
     this.timer?.pause()
     this.animationManager?.pause(true)
