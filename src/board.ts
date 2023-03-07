@@ -16,6 +16,11 @@ const VIEW_ASPECT_RATIO = 16 / 9
 
 const VIEW_WIDTH = Math.floor(VIEW_HEIGHT * VIEW_ASPECT_RATIO)
 
+/** Coefficient to change camera movement inertia, should be 0..1
+ *
+ * for 1 it's instantly following hero, for 0 there's no movement at all */
+const VIEW_SPEED = 0.1
+
 export class Board {
   public hero: Hero
   private element: SVGSVGElement
@@ -77,14 +82,35 @@ export class Board {
   }
 
   private _isPaused = false
-  private cameraX!: number
-  private cameraY!: number
+  /** Camera horizontal position in svg coordinate
+   *
+   * if `undefined`, it will be set to {@link cameraTargetX} on next {@link renderCamera} call
+   */
+  private cameraX: number | undefined
+  /** Camera target horizontal position in svg coordinates
+   *
+   * it's set in {@link centerCamera} and used in {@link renderCamera} to move camera smoothly
+   */
+  private cameraTargetX!: number // there's ! because it's set in centerCamera called in constructor
+  /** camera current vertical position in svg coordinate
+   *
+   * if `undefined`, it will be set to {@link cameraTargetY} on next {@link renderCamera} call
+   */
+  private cameraY: number | undefined
+  /** Camera target vertical position in svg coordinates
+   *
+   * it's set in {@link centerCamera} and used in {@link renderCamera} to move camera smoothly
+   */
+  private cameraTargetY!: number // there's ! because it's set in centerCamera called in constructor
 
-  /** centers camera by {@link hero} */
+  /**
+   * Sets {@link cameraTargetX} and {@link cameraTargetY} to show hero in the center of the view
+   *
+   * Cares about camera boundaries
+   * */
   centerCamera() {
     const heroCenterX = this.hero.x + this.hero.width / 2
     const heroCenterY = this.hero.y + this.hero.height / 2
-    // TODO: add acceleration to prevent camera jumping on hero stacking
     const x = Math.max(
       0,
       Math.min(
@@ -99,16 +125,34 @@ export class Board {
         this.height - VIEW_HEIGHT * CELL_SIZE
       )
     )
-    if (this.cameraX !== x || this.cameraY !== y) {
-      this.cameraX = x
-      this.cameraY = y
-      this.element.setAttribute(
-        "viewBox",
-        `${x.toFixed(2)} ${y.toFixed(2)} ${VIEW_WIDTH * CELL_SIZE} ${
-          VIEW_HEIGHT * CELL_SIZE
-        }`
-      )
+    if (this.cameraTargetX !== x || this.cameraTargetY !== y) {
+      this.cameraTargetX = x
+      this.cameraTargetY = y
     }
+  }
+
+  /** Changes board {@link element}'s viewBox to move camera to {@link cameraTargetX} and {@link cameraTargetY} */
+  renderCamera() {
+    if (
+      this.cameraX === this.cameraTargetX &&
+      this.cameraY === this.cameraTargetY
+    ) {
+      return
+    }
+    if (this.cameraX === undefined || this.cameraY === undefined) {
+      this.cameraX = this.cameraTargetX
+      this.cameraY = this.cameraTargetY
+    } else {
+      this.cameraX += (this.cameraTargetX - this.cameraX) * VIEW_SPEED
+      this.cameraY += (this.cameraTargetY - this.cameraY) * VIEW_SPEED
+    }
+
+    this.element.setAttribute(
+      "viewBox",
+      `${this.cameraX.toFixed(2)} ${this.cameraY.toFixed(2)} ${
+        VIEW_WIDTH * CELL_SIZE
+      } ${VIEW_HEIGHT * CELL_SIZE}`
+    )
   }
 
   public over(isWin = false) {
@@ -125,6 +169,8 @@ export class Board {
     if (this.hero.speedX !== 0 || this.hero.speedY !== 0) {
       this.centerCamera()
     }
+
+    this.renderCamera()
     this.renderAnimations(time)
 
     const heroCell = this.getCell(this.hero)
@@ -182,7 +228,7 @@ export class Board {
         this.hero.lives--
         if (this.hero.lives > 0) {
           this.hero.spawn(this.getRandomEmptyCell())
-          this.centerCamera() // TODO: add smooth camera movement after hero respawn after die, if possible
+          this.centerCamera()
         } else {
           this.over()
         }
