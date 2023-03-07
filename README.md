@@ -33,13 +33,23 @@ npx serve out
 npm install
 ```
 
-### Run development script to automatically build TypeScript files
+### Run development script
+
+to automatically build TypeScript files into readable and debuggable JavaScript
 
 ```bash
 npm run dev
 ```
 
-#### Or Run `npm run build` to build TypeScript files manually
+### How to build?
+
+#### Run `npm run build`
+
+to build TypeScript to readable JavaScript
+
+#### Run `npm run build:prod`
+
+to build TypeScript to production-ready minified JavaScript using [webpack](https://webpack.js.org/)
 
 ### Code quality tools
 
