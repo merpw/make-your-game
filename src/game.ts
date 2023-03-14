@@ -11,7 +11,8 @@ const clean = () => {
     .querySelectorAll("#game g.layer > *")
     .forEach((node) => node.remove())
   const game = document.getElementById("game") as HTMLElement
-  game.classList.value = ""
+  const classes = Array.from(game.classList)
+  game.classList.remove(...classes)
   currentBoard = null
 }
 
