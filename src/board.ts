@@ -258,13 +258,6 @@ export class Board {
 
         sheep.setRandomDirection(sheepNeighbours)
       }
-      if (
-        sheep.demonized &&
-        (sheep.fromCell.type === "cloud" || sheep.targetCell?.type === "cloud")
-      ) {
-        sheep.demonized = false
-        this.score += SCORES.demonToSheep
-      }
       sheep.render(frameTimeDiff)
     })
 
@@ -286,6 +279,28 @@ export class Board {
           this.score += SCORES.sheepToDemon
         }
       })
+    })
+
+    /* demons that had contact with cloud and may become sheep */
+    const weakDemons: Sheep[] = []
+    /* demons that are safe from cloud */
+    const safeDemons: Sheep[] = []
+
+    this.sheepStorage.demonized.forEach((demon) =>
+      demon.fromCell.type === "cloud" || demon.targetCell?.type === "cloud"
+        ? weakDemons.push(demon)
+        : safeDemons.push(demon)
+    )
+
+    weakDemons.forEach((weakDemon) => {
+      const weakDemonRect = weakDemon.getRect()
+      if (
+        !safeDemons.some((safeDemon) => safeDemon.isColliding(weakDemonRect))
+      ) {
+        // there's no safe demon that can keep the weak demon demonized (by sharing the devil's power)
+        weakDemon.demonized = false
+        this.score += SCORES.demonToSheep
+      }
     })
   }
 
