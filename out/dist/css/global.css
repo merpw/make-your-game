@@ -267,6 +267,7 @@ main {
 
 #touch-controls {
   display: none;
+  touch-action: none; /* TODO: test, maybe add user-scalable=0 to prevent user from scrolling globally */
 }
 
 @media (max-width: 600px) {

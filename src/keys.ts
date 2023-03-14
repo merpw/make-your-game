@@ -88,34 +88,43 @@ window.addEventListener("blur", () => {
 })
 
 const touchControls = document.getElementById("touch-controls")
+const buttons = document.querySelectorAll(
+  "#touch-controls button"
+) as NodeListOf<HTMLButtonElement>
 
 if (touchControls && touchControls.style.display !== "none") {
-  // TODO: maybe add joystick to allow single finger movement
   touchControls.addEventListener("selectstart", (e) => e.preventDefault())
-  touchControls.addEventListener("touchstart", (e) => {
-    if (!currentBoard || currentBoard.isPaused) return
-
-    for (let i = 0; i < e.changedTouches.length; i++) {
-      const action = (e.changedTouches[i].target as HTMLButtonElement).id
-      if (MoveInputState.has(action)) {
-        MoveInputState.set(action, true)
-      }
+  buttons.forEach((button) => {
+    if (MoveInputState.has(button.id)) {
+      button.addEventListener(
+        "pointerdown",
+        (e) => button.releasePointerCapture(e.pointerId)
+        // workaround for https://github.com/w3c/pointerevents/issues/178#issuecomment-1029108322
+      )
+      button.addEventListener("pointerenter", () => {
+        if (!currentBoard || currentBoard.isPaused) return
+        MoveInputState.set(button.id, true)
+        currentBoard.hero.way = getWay()
+      })
+      button.addEventListener("pointerleave", () => {
+        if (!currentBoard || currentBoard.isPaused) return
+        MoveInputState.set(button.id, false)
+        currentBoard.hero.way = getWay()
+      })
+      return
     }
-    currentBoard.hero.way = getWay()
-  })
-  touchControls.addEventListener("touchend", (e) => {
-    if (!currentBoard || currentBoard.isPaused) return
-
-    for (let i = 0; i < e.changedTouches.length; i++) {
-      const action = (e.changedTouches[i].target as HTMLButtonElement).id
-      if (MoveInputState.has(action)) {
-        MoveInputState.set(action, false)
-      } else if (action === "touchPlaceFungi") {
+    if (button.id === "touchPlaceFungi") {
+      button.addEventListener("pointerdown", () => {
+        if (!currentBoard || currentBoard.isPaused) return
         currentBoard.hero.placeFungi()
-      } else if (action === "touchTerminateFungi") {
-        currentBoard.hero.terminateFungi()
-      }
+      })
+      return
     }
-    currentBoard.hero.way = getWay()
+    if (button.id === "touchTerminateFungi") {
+      button.addEventListener("pointerdown", () => {
+        if (!currentBoard || currentBoard.isPaused) return
+        currentBoard?.hero.terminateFungi()
+      })
+    }
   })
 }
