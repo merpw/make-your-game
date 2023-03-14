@@ -1,7 +1,7 @@
 @import "font.css";
 
 html {
-  font-family: "Nunito";
+  font-family: "Nunito", serif;
 }
 
 body {
@@ -13,14 +13,14 @@ body {
 
 main {
   margin: auto;
-  border: 1px solid;
   border-radius: 10px;
-  border-color: #666666;
+  border: 1px solid #666666;
   height: 100%;
   text-align: center;
   font-size: large;
   color: #666666;
 }
+
 #project {
   margin: 20px 0 0 0;
   padding: 0;
@@ -48,9 +48,8 @@ main {
 }
 
 #board {
-  border: 1px solid;
   border-radius: 10px;
-  border-color: #666666;
+  border: 1px solid #666666;
   height: 720px;
   max-width: 90vw;
   max-height: 90vh;
@@ -66,6 +65,7 @@ main {
     background-color: #171717;
   }
 }
+
 #start {
   display: flex;
   justify-content: center;
@@ -74,8 +74,7 @@ main {
   height: 100%;
   width: 100%;
   color: #dc3836;
-  font-family: "Notalot35";
-  font-size: 3vmax;
+  font-family: "Notalot35", serif;
   font-size: 10vmax;
   position: absolute;
   top: 0;
@@ -107,7 +106,7 @@ main {
   width: 90px;
   min-width: auto;
 
-  font-family: "Nunito";
+  font-family: "Nunito", serif;
   font-size: large;
   color: #79b753;
 }
@@ -116,7 +115,7 @@ main {
   border-radius: 1px;
   -webkit-backdrop-filter: blur(3px) brightness(0.5);
   backdrop-filter: blur(3px) brightness(0.5);
-  font-family: "Notalot35";
+  font-family: "Notalot35", serif;
   font-size: 3rem;
 
   position: absolute;
@@ -138,14 +137,14 @@ main {
 
 #game.paused .pause {
   display: block;
-  font-family: "Nunito";
+  font-family: "Nunito", serif;
   color: #2d7a2d;
   margin: 20px 0 20px 0;
   padding: 0;
 }
 
 #game.paused .pause.state {
-  font-family: Notalot35;
+  font-family: Notalot35, serif;
 }
 
 #game.paused .pause.keys {
@@ -161,6 +160,7 @@ main {
   display: inline;
   color: white;
 }
+
 #ui .over {
   margin: 20px 0 20px 0;
   padding: 0;
@@ -168,14 +168,14 @@ main {
 
 #game.over .over {
   display: block;
-  font-family: "Nunito";
+  font-family: "Nunito", serif;
   margin: 20px 0 20px 0;
   padding: 0;
 }
 
 #game.over .over.state {
   color: #dc3836;
-  font-family: Notalot35;
+  font-family: Notalot35, serif;
 }
 
 #game.over .over.the-key {
@@ -190,14 +190,14 @@ main {
 
 #game.win .win {
   display: block;
-  font-family: "Nunito";
+  font-family: "Nunito", serif;
   margin: 20px 0 20px 0;
   padding: 0;
 }
 
 #game.win .win.state {
   color: #8ff4f8;
-  font-family: Notalot35;
+  font-family: Notalot35, serif;
 }
 
 #game.over .pause,
@@ -207,19 +207,19 @@ main {
 
 #score {
   color: white;
-  font-family: "Notalot35";
+  font-family: "Notalot35", serif;
   font-size: xx-large;
 }
 
 #time {
   color: white;
-  font-family: "Notalot35";
+  font-family: "Notalot35", serif;
   font-size: xx-large;
 }
 
 #lives {
   color: white;
-  font-family: "Notalot35";
+  font-family: "Notalot35", serif;
   font-size: xx-large;
 }
 
