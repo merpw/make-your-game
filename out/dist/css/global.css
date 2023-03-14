@@ -45,14 +45,15 @@ main {
   position: relative;
   margin: 20px 20px 0 20px;
   text-align: center;
+  width: 1280px;
+  max-width: 90vw;
 }
 
 #board {
   border-radius: 10px;
   border: 1px solid #666666;
-  height: 720px;
-  max-width: 90vw;
-  max-height: 90vh;
+  height: 100%;
+  width: 100%;
 }
 
 .pixelated {
@@ -103,8 +104,7 @@ main {
   border-radius: 15px;
   -webkit-backdrop-filter: blur(3px) brightness(0.7);
   backdrop-filter: blur(3px) brightness(0.7);
-  width: 90px;
-  min-width: auto;
+  min-width: 100px;
 
   font-family: "Nunito", serif;
   font-size: large;
@@ -263,4 +263,23 @@ main {
   bottom: 0;
   z-index: -2;
   filter: brightness(0.5);
+}
+
+#touch-controls {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  body {
+    min-height: 90vh;
+  }
+
+  #touch-controls {
+    display: block;
+  }
+}
+
+#touch-controls button {
+  font-size: xxx-large;
+  margin: 5px;
 }

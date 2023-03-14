@@ -10,11 +10,10 @@ import Cell, {
 import Timer from "./timer.js"
 
 /** camera height in cells */
-const VIEW_HEIGHT = 7
-// TODO: fix bug with svg wrapping (especially on mobile)
-const VIEW_ASPECT_RATIO = 16 / 9
+const CAMERA_HEIGHT = 7
 
-const VIEW_WIDTH = Math.floor(VIEW_HEIGHT * VIEW_ASPECT_RATIO)
+const CAMERA_ASPECT_RATIO = 16 / 9
+const MOBILE_CAMERA_ASPECT_RATIO = 1
 
 /** Coefficient to change camera movement inertia, should be 0..1
  *
@@ -128,6 +127,8 @@ export class Board {
    * it's set in {@link centerCamera} and used in {@link renderCamera} to move camera smoothly
    */
   private cameraTargetY!: number // there's ! because it's set in centerCamera called in constructor
+  private readonly cameraHeight: number
+  private readonly cameraWidth: number
 
   /**
    * Sets {@link cameraTargetX} and {@link cameraTargetY} to show hero in the center of the view
@@ -140,15 +141,15 @@ export class Board {
     const x = Math.max(
       0,
       Math.min(
-        heroCenterX - (VIEW_WIDTH * CELL_SIZE) / 2,
-        this.width - VIEW_WIDTH * CELL_SIZE
+        heroCenterX - (this.cameraWidth * CELL_SIZE) / 2,
+        this.width - this.cameraWidth * CELL_SIZE
       )
     )
     const y = Math.max(
       0,
       Math.min(
-        heroCenterY - (VIEW_HEIGHT * CELL_SIZE) / 2,
-        this.height - VIEW_HEIGHT * CELL_SIZE
+        heroCenterY - (this.cameraHeight * CELL_SIZE) / 2,
+        this.height - this.cameraHeight * CELL_SIZE
       )
     )
     if (this.cameraTargetX !== x || this.cameraTargetY !== y) {
@@ -176,8 +177,8 @@ export class Board {
     this.element.setAttribute(
       "viewBox",
       `${this.cameraX.toFixed(2)} ${this.cameraY.toFixed(2)} ${
-        VIEW_WIDTH * CELL_SIZE
-      } ${VIEW_HEIGHT * CELL_SIZE}`
+        this.cameraWidth * CELL_SIZE
+      } ${this.cameraHeight * CELL_SIZE}`
     )
   }
 
@@ -407,6 +408,14 @@ export class Board {
     this.height = this.cells.length * CELL_SIZE
     this.width = this.cells[0].length * CELL_SIZE
     this.element = svg
+
+    this.cameraHeight = CAMERA_HEIGHT
+    // TODO: maybe improve mobile device detection
+    this.cameraWidth = Math.floor(
+      (screen.orientation?.type === "portrait-primary"
+        ? MOBILE_CAMERA_ASPECT_RATIO
+        : CAMERA_ASPECT_RATIO) * this.cameraHeight
+    )
     this.centerCamera()
   }
 }

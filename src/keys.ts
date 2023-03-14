@@ -4,10 +4,10 @@ import { currentBoard, restartLevel } from "./game.js"
 /** Configuration of the control keys. */
 const CONTROLS = {
   move: {
-    Up: ["w", "ArrowUp"],
-    Down: ["s", "ArrowDown"],
-    Left: ["a", "ArrowLeft"],
-    Right: ["d", "ArrowRight"],
+    Up: ["w", "ArrowUp", "touchUp"],
+    Down: ["s", "ArrowDown", "touchDown"],
+    Left: ["a", "ArrowLeft", "touchLeft"],
+    Right: ["d", "ArrowRight", "touchRight"],
   },
   PlaceFungi: "f",
   TerminateFungi: "t",
@@ -86,3 +86,36 @@ window.addEventListener("blur", () => {
   if (!currentBoard) return
   currentBoard.isPaused = true
 })
+
+const touchControls = document.getElementById("touch-controls")
+
+if (touchControls && touchControls.style.display !== "none") {
+  // TODO: maybe add joystick to allow single finger movement
+  touchControls.addEventListener("selectstart", (e) => e.preventDefault())
+  touchControls.addEventListener("touchstart", (e) => {
+    if (!currentBoard || currentBoard.isPaused) return
+
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      const action = (e.changedTouches[i].target as HTMLButtonElement).id
+      if (MoveInputState.has(action)) {
+        MoveInputState.set(action, true)
+      }
+    }
+    currentBoard.hero.way = getWay()
+  })
+  touchControls.addEventListener("touchend", (e) => {
+    if (!currentBoard || currentBoard.isPaused) return
+
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      const action = (e.changedTouches[i].target as HTMLButtonElement).id
+      if (MoveInputState.has(action)) {
+        MoveInputState.set(action, false)
+      } else if (action === "touchPlaceFungi") {
+        currentBoard.hero.placeFungi()
+      } else if (action === "touchTerminateFungi") {
+        currentBoard.hero.terminateFungi()
+      }
+    }
+    currentBoard.hero.way = getWay()
+  })
+}

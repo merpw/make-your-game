@@ -11,7 +11,11 @@
       <h1 id="project">Make Your Game</h1>
       <h3 id="game-name">• EWEXORCISM •</h3>
       <div id="game">
-        <svg id="board" viewBox="0 0 95 55">
+        <svg
+          id="board"
+          viewBox="0 0 95 55"
+          preserveAspectRatio="xMidYMin slice"
+        >
           <g id="landscape" class="layer"></g>
           <g id="bushes" class="layer"></g>
           <g id="fungi" class="layer"></g>
@@ -56,6 +60,19 @@
           </div>
         </div>
       </div>
+      <div id="touch-controls">
+        <div>
+          <button id="touchPlaceFungi">🍄</button>
+          <button id="touchUp">⬆️</button>
+          <button id="touchTerminateFungi">💥</button>
+        </div>
+        <div>
+          <button id="touchLeft">⬅️</button>
+          <button id="touchDown">⬇️</button>
+          <button id="touchRight">➡️</button>
+        </div>
+      </div>
+
       <h5 id="authors">
         Authors: • Maksim Mikhailov • Natalia Kim • Sergei Ivanov •
       </h5>
