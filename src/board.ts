@@ -31,7 +31,8 @@ const SCORES = {
   /** Bonus for left lives, per live */
   livesBonus: +100,
   potion: +100,
-  selfPoisoning: -100, // TODO: implement
+  /** Penalty for self poisoning, per frame in cloud (max ≈90) */
+  selfPoisoning: -5,
 } as const
 
 export class Board {
@@ -414,6 +415,9 @@ export class Board {
     )
 
     const heroCell = this.getRandomEmptyCell()
+    Hero.onSick = () => {
+      this.score += SCORES.selfPoisoning
+    }
     this.hero = new Hero(heroCell)
 
     const svg = document.getElementById("board") as SVGSVGElement | null

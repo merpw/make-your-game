@@ -75,6 +75,8 @@ export default class Hero extends Creature<"hero"> {
     this._isSick = value
 
     if (value) {
+      // TODO: maybe improve to prevent multiple calls
+      Hero.onSick?.()
       this.element.style.opacity = "0.5"
       this.speed = SICK_SPEED
 
@@ -243,6 +245,8 @@ export default class Hero extends Creature<"hero"> {
     this.fungi.forEach((fungus) => (fungus.cell.type = "empty"))
     this.fungi = []
   }
+
+  static onSick?: () => void
 
   /**
    * Create a new {@link Hero} in the given cell
