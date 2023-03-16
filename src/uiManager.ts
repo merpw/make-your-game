@@ -1,3 +1,5 @@
+import { currentBoard, restartLevel } from "./game.js"
+
 /** class includes functionality to create the html div element
  * which will be used to display the UI.
  * Every UI element will be a child of this div.
@@ -11,8 +13,10 @@ export class UIManager {
   private buttons: HTMLButtonElement[] = []
   private activeButtonIndex = 0
 
-  constructor() {
+  constructor(uiButtons: UIButton[] = []) {
     this.buttonsPanel = document.createElement("div")
+    // this.buttonsPanel.classList.add("pause")
+    this.addButtons(uiButtons)
   }
 
   private addButton(button: UIButton) {
@@ -71,3 +75,22 @@ export type UIButton = {
   name: string
   onClick: () => void
 }
+
+/** pause uiManager includes restart, continue, resume buttons*/
+export const pauseUIManager = new UIManager([
+  {
+    name: "Restart",
+    onClick: () => {
+      console.log("restart")
+      restartLevel()
+    },
+  },
+  {
+    name: "Continue",
+    onClick: () => {
+      console.log("continue")
+      if (!currentBoard) return
+      currentBoard.isPaused = false
+    },
+  },
+])

@@ -265,3 +265,12 @@ main {
 #players svg.lucky image {
   animation: lucky 2s infinite;
 }
+
+button {
+  display: inline-block !important;
+}
+
+.active {
+  background-color: #79b753;
+  color: white;
+}

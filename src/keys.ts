@@ -1,5 +1,6 @@
 import { Way } from "./hero"
 import { currentBoard, restartLevel } from "./game.js"
+import { pauseUIManager } from "./uiManager.js"
 
 /** Configuration of the control keys. */
 const CONTROLS = {
@@ -14,7 +15,6 @@ const CONTROLS = {
 
   Restart: "r",
   Pause: "p",
-  Resume: "Enter",
 }
 
 /**
@@ -46,7 +46,7 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
       restartLevel()
       return
     }
-    if (key === CONTROLS.Resume || key === CONTROLS.Pause) {
+    if (key === CONTROLS.Pause) {
       currentBoard.isPaused = false
     }
     return
@@ -76,10 +76,33 @@ window.addEventListener("keyup", (event: KeyboardEvent) => {
   if (!currentBoard) return
   const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
 
-  if (MoveInputState.has(key)) {
-    MoveInputState.set(key, false)
-    currentBoard.hero.way = getWay()
-    return
+  if (!currentBoard.isPaused) {
+    if (MoveInputState.has(key)) {
+      MoveInputState.set(key, false)
+      currentBoard.hero.way = getWay()
+      return
+    }
+  } else {
+    switch (key) {
+      case "ArrowUp":
+      case "ArrowLeft":
+      case "w":
+      case "a":
+        pauseUIManager.selectPreviousButton()
+        break
+      case "ArrowDown":
+      case "ArrowRight":
+      case "s":
+      case "d":
+        pauseUIManager.selectNextButton()
+        break
+      case "Enter":
+        pauseUIManager.clickActiveButton()
+        break
+
+      default:
+        break
+    }
   }
 })
 window.addEventListener("blur", () => {
