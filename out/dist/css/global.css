@@ -58,6 +58,7 @@ main {
 
 .pixelated {
   image-rendering: pixelated;
+  overflow: hidden;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -283,4 +284,20 @@ main {
 #touch-controls button {
   font-size: xxx-large;
   margin: 5px;
+}
+
+@keyframes lucky {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(2);
+  }
+  to {
+    filter: brightness(1);
+  }
+}
+
+#players svg.lucky image {
+  animation: lucky 2s infinite;
 }

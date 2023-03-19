@@ -16,7 +16,19 @@ const SPAWN_LUCKY_TIME = 5000
 
 export default class Hero extends Creature<"hero"> {
   /** if true, demons won't choose hero's cell */
-  public isLucky = false
+  public get isLucky() {
+    return this._isLucky
+  }
+
+  public set isLucky(value: boolean) {
+    this._isLucky = value
+    value
+      ? this.element.classList.add("lucky")
+      : this.element.classList.remove("lucky")
+  }
+
+  private _isLucky = false
+
   public cell!: Cell // there's ! because it's set in spawn()
   public get lives() {
     return this._lives
