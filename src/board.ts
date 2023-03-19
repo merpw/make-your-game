@@ -42,6 +42,24 @@ export class Board {
   private readonly width: number
   private readonly cells: Cell[][]
   private readonly portalCell: Cell
+  private POTION_EFFECTS: (() => void)[] = [
+    () => (this.hero.isLucky = true),
+    () => (this.hero.isSick = true),
+    () => this.hero.spawn(this.getRandomEmptyCell()),
+    () => this.sheepStorage.basic.forEach((sheep) => (sheep.demonized = true)),
+    () =>
+      this.sheepStorage.demonized.forEach((sheep) => (sheep.demonized = false)),
+    () => this.hero.lives++,
+    () => this.hero.lives--,
+    () => (this.time += 60),
+    // TODO: maybe add extended fungi effect
+  ]
+
+  getRandomPotionEffect() {
+    return this.POTION_EFFECTS[
+      Math.floor(Math.random() * this.POTION_EFFECTS.length)
+    ]
+  }
 
   private readonly sheepStorage = {
     all: new Set<Sheep>(),
@@ -54,6 +72,7 @@ export class Board {
   }
 
   public set score(value: number) {
+    value < 0 && (value = 0)
     this._score = value
     const score = document.getElementById("score")
     score && (score.innerText = value.toString())
@@ -216,7 +235,8 @@ export class Board {
       heroCell.secret = undefined
       heroCell.type = "empty"
       this.hero.isSick = false
-      // TODO: add more effects
+      const effect = this.getRandomPotionEffect()
+      effect()
     }
     if (heroCell.type === "portal") {
       heroCell.type = "portalActivated"
@@ -400,6 +420,9 @@ export class Board {
       if (sheep.demonized) {
         this.sheepStorage.demonized.add(sheep)
         this.sheepStorage.basic.delete(sheep)
+        if (this.portalCell.type === "portal") {
+          this.portalCell.type = "empty"
+        }
       } else {
         this.sheepStorage.demonized.delete(sheep)
         this.sheepStorage.basic.add(sheep)
