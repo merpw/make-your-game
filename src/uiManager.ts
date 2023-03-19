@@ -15,6 +15,8 @@ export class UIManager {
 
   constructor(uiButtons: UIButton[] = []) {
     this.buttonsPanel = document.createElement("div")
+    // arrange buttons in one column using css
+    this.buttonsPanel.classList.add("buttons-panel")
     // this.buttonsPanel.classList.add("pause")
     this.addButtons(uiButtons)
   }
