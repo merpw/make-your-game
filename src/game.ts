@@ -27,7 +27,12 @@ export const restartLevel = () => setLevel(currentLevel)
 let currentLevel: Level
 export let currentBoard: Board | null
 
-setLevel(level1)
+/* the function keyword used to move the function to the top of scope (hoisting), or error happens inside keys.ts in time of initialisation */
+export function startGameFirstTime() {
+  // remove the start screen
+  document.getElementById("kill-me-once")?.remove()
+  setLevel(level1)
+}
 
 let lastTime = 0
 let lastFrameTime = 1000 / FPS

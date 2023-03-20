@@ -286,3 +286,22 @@ div.buttons-panel {
   justify-content: center;
   height: 100%;
 }
+
+div.mainscreen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* start screen button */
+div.mainscreen button {
+  color: black;
+  background: firebrick;
+}

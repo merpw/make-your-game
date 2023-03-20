@@ -1,5 +1,5 @@
 import { Way } from "./hero"
-import { currentBoard, restartLevel } from "./game.js"
+import { currentBoard, restartLevel, startGameFirstTime } from "./game.js"
 import { pauseUIManager } from "./uiManager.js"
 
 /** Configuration of the control keys. */
@@ -73,8 +73,11 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
 })
 
 window.addEventListener("keyup", (event: KeyboardEvent) => {
-  if (!currentBoard) return
   const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
+  if (!currentBoard) {
+    if (key === "Enter") startGameFirstTime()
+    return
+  }
 
   if (!currentBoard.isPaused) {
     if (MoveInputState.has(key)) {
@@ -109,6 +112,11 @@ window.addEventListener("blur", () => {
   if (!currentBoard) return
   currentBoard.isPaused = true
 })
+
+const startGameButton = document.getElementById("startGameFirstTimeButton")
+if (startGameButton) {
+  startGameButton.addEventListener("click", startGameFirstTime)
+}
 
 const touchControls = document.getElementById("touch-controls")
 const buttons = document.querySelectorAll(
