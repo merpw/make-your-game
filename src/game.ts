@@ -31,6 +31,7 @@ export let currentBoard: Board | null
 export function startGameFirstTime() {
   // remove the start screen
   document.getElementById("kill-me-once")?.remove()
+  document.getElementById("board")?.classList.remove("game-field")
   setLevel(level1)
 }
 

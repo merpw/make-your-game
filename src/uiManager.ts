@@ -81,14 +81,14 @@ export type UIButton = {
 /** pause uiManager includes restart, continue, resume buttons*/
 export const pauseUIManager = new UIManager([
   {
-    name: "Restart",
+    name: "RESTART",
     onClick: () => {
       console.log("restart")
       restartLevel()
     },
   },
   {
-    name: "Continue",
+    name: "CONTINUE",
     onClick: () => {
       console.log("continue")
       if (!currentBoard) return
