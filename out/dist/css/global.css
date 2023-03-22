@@ -227,43 +227,7 @@ main {
 #popup img.foreground {
   position: relative;
   left: 35%;
-  z-index: 1;
-}
-
-#popup img.middleground-left {
-  width: 70%;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  z-index: -2;
-  filter: brightness(0.5);
-}
-
-#popup img.middleground-right {
-  width: 70%;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  z-index: -2;
-  filter: brightness(0.5);
-}
-
-#popup img.background-left {
-  width: 50%;
-  position: absolute;
-  right: 75%;
-  bottom: 0;
-  z-index: -1;
-  overflow: hidden;
-}
-
-#popup img.background-right {
-  width: 70%;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  z-index: -2;
-  filter: brightness(0.5);
+  
 }
 
 #touch-controls {
