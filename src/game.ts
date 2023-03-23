@@ -30,7 +30,7 @@ export let currentBoard: Board | null
 /* the function keyword used to move the function to the top of scope (hoisting), or error happens inside keys.ts in time of initialisation */
 export function startGameFirstTime() {
   // remove the start screen
-  document.getElementById("kill-me-once")?.remove()
+  document.getElementById("start-screen")?.remove()
   document.getElementById("board")?.classList.remove("game-field")
   setLevel(level1)
 }

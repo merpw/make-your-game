@@ -113,7 +113,7 @@ window.addEventListener("blur", () => {
   currentBoard.isPaused = true
 })
 
-const startGameButton = document.getElementById("startGameFirstTimeButton")
+const startGameButton = document.getElementById("startButton")
 if (startGameButton) {
   startGameButton.addEventListener("click", startGameFirstTime)
 }
