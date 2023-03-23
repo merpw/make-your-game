@@ -29,6 +29,12 @@ export const MoveInputState = new Map<string, boolean>(
   )
 )
 
+/** Reset the {@link MoveInputState} and {@link currentBoard.hero.way}*/
+const resetInputState = () => {
+  MoveInputState.forEach((_, key) => MoveInputState.set(key, false))
+  currentBoard && (currentBoard.hero.way = getWay())
+}
+
 /** Get the current way of the Hero according to the {@link MoveInputState| state of the control keys} */
 const getWay = (): Way => ({
   up: CONTROLS.move.Up.some((key) => MoveInputState.get(key)),
@@ -38,7 +44,13 @@ const getWay = (): Way => ({
 })
 
 window.addEventListener("keydown", (event: KeyboardEvent) => {
-  if (event.repeat || !currentBoard) return
+  if (!currentBoard) {
+    if (event.key === "Enter") {
+      startGameFirstTime()
+    }
+    return
+  }
+  if (event.repeat) return
   const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
 
   if (currentBoard.isPaused) {
@@ -49,11 +61,24 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
     if (key === CONTROLS.Pause) {
       currentBoard.isPaused = false
     }
+    if (key === "Enter") {
+      pauseUIManager.clickActiveButton()
+      return
+    }
+    if (CONTROLS.move.Up.includes(key) || CONTROLS.move.Left.includes(key)) {
+      pauseUIManager.selectPreviousButton()
+      return
+    }
+    if (CONTROLS.move.Down.includes(key) || CONTROLS.move.Right.includes(key)) {
+      pauseUIManager.selectNextButton()
+      return
+    }
     return
   }
 
   if (key === CONTROLS.Pause) {
     currentBoard.isPaused = true
+    resetInputState()
     return
   }
 
@@ -73,44 +98,19 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
 })
 
 window.addEventListener("keyup", (event: KeyboardEvent) => {
+  if (!currentBoard || currentBoard.isPaused) return
   const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
-  if (!currentBoard) {
-    if (key === "Enter") startGameFirstTime()
+
+  if (MoveInputState.has(key)) {
+    MoveInputState.set(key, false)
+    currentBoard.hero.way = getWay()
     return
-  }
-
-  if (!currentBoard.isPaused) {
-    if (MoveInputState.has(key)) {
-      MoveInputState.set(key, false)
-      currentBoard.hero.way = getWay()
-      return
-    }
-  } else {
-    switch (key) {
-      case "ArrowUp":
-      case "ArrowLeft":
-      case "w":
-      case "a":
-        pauseUIManager.selectPreviousButton()
-        break
-      case "ArrowDown":
-      case "ArrowRight":
-      case "s":
-      case "d":
-        pauseUIManager.selectNextButton()
-        break
-      case "Enter":
-        pauseUIManager.clickActiveButton()
-        break
-
-      default:
-        break
-    }
   }
 })
 window.addEventListener("blur", () => {
   if (!currentBoard) return
   currentBoard.isPaused = true
+  resetInputState()
 })
 
 const startGameButton = document.getElementById("startButton")
