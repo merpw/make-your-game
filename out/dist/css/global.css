@@ -21,6 +21,17 @@ main {
   color: #666666;
 }
 
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+    background-color: #101810;
+  }
+
+  main {
+    border-color: #2e312a;
+  }
+}
+
 #project {
   margin: 20px 0 0 0;
   padding: 0;
@@ -47,55 +58,22 @@ main {
   text-align: center;
   width: 1280px;
   max-width: 90vw;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 #board {
-  border-radius: 10px;
-  border: 1px solid #b7c3b2;
   height: 100%;
   width: 100%;
 }
 
-.game-field {
+#game.startScreen #board {
   display: none;
-  position: absolute;
 }
 
 .pixelated {
   image-rendering: pixelated;
   overflow: hidden;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-    background-color: #101810;
-  }
-
-  main {
-    border-color: #2e312a;
-  }
-
-  #board {
-    border-color: #2e312a;
-  }
-}
-
-#start {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  height: 100%;
-  width: 100%;
-  color: #dc3836;
-  font-family: "Notalot35", serif;
-  font-size: 10vmax;
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow-x: scroll;
-  overflow-y: scroll;
 }
 
 #ui {
@@ -183,8 +161,6 @@ main {
 #game.over .over {
   display: block;
   font-family: "Nunito", serif;
-  margin: 20px 0 20px 0;
-  padding: 0;
 }
 
 #game.over .over.state {
@@ -219,18 +195,8 @@ main {
   display: none;
 }
 
-#score {
-  color: white;
-  font-family: "Notalot35", serif;
-  font-size: xx-large;
-}
-
-#time {
-  color: white;
-  font-family: "Notalot35", serif;
-  font-size: xx-large;
-}
-
+#score,
+#time,
 #lives {
   color: white;
   font-family: "Notalot35", serif;
@@ -269,7 +235,7 @@ main {
   50% {
     filter: brightness(2);
   }
-  to {
+  100% {
     filter: brightness(1);
   }
 }
@@ -308,13 +274,12 @@ main {
 
 #start-screen {
   border-radius: 10px;
-  border: 1px solid #3c413a;
   height: 100%;
   width: 100%;
   outline: 10px;
 }
 
-div.mainscreen {
+#start-screen {
   position: relative;
   width: 100%;
   height: 100%;
@@ -327,19 +292,16 @@ div.mainscreen {
   align-items: center;
 }
 
-#start-screen img.mainscreen {
-  border-radius: 10px;
-  border: 0 solid transparent;
+#start-screen img {
   width: 100%;
-  height: 100%;
 }
 
 #start-screen div.ewexorcism {
-  top: 10%;
+  top: 8%;
   position: absolute;
   color: rgb(252, 174, 215);
   font-family: "Notalot35", serif;
-  font-size: 15vw;
+  font-size: 15vmin;
 }
 
 #start-screen span.xorcism {
@@ -348,16 +310,14 @@ div.mainscreen {
 
 /* start screen button */
 #start-screen button {
-  width: -moz-fit-content;
-  width: fit-content;
   padding: 0 17px;
-  border: 2px solid;
+  border: 4px solid;
   background-color: transparent;
   position: absolute;
-  top: 35%;
+  top: 30%;
   color: white;
   font-family: "Notalot35", serif;
-  font-size: 3vw;
+  font-size: 7vw;
 }
 
 #start-screen button:hover {

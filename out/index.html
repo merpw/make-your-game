@@ -10,10 +10,9 @@
     <main>
       <h1 id="project">Make Your Game</h1>
       <h3 id="game-name">• EWEXORCISM •</h3>
-      <div id="game">
+      <div id="game" class="startScreen">
         <svg
           id="board"
-          class="game-field"
           viewBox="0 0 95 55"
           preserveAspectRatio="xMidYMin slice"
         >
@@ -40,7 +39,6 @@
               <span class="pause the-key">R</span>
               to restart
             </p>
-            <div id="pause-buttons"></div>
             <h1 class="over state">GAME OVER</h1>
             <p class="over keys">
               Press
@@ -61,6 +59,11 @@
             />
           </div>
         </div>
+        <div id="start-screen">
+          <img src="images/start.webp" alt="EWEXORCISM" class="pixelated" />
+          <div class="ewexorcism">EWE<span class="xorcism">XORCISM</span></div>
+          <button id="startButton">START</button>
+        </div>
       </div>
       <div id="touch-controls">
         <div>
@@ -73,16 +76,6 @@
           <button id="touchDown">⬇️</button>
           <button id="touchRight">➡️</button>
         </div>
-      </div>
-
-      <div id="start-screen" class="mainscreen">
-        <img
-          src="images/start.webp"
-          alt="EWEXORCISM"
-          class="mainscreen pixelated"
-        />
-        <div class="ewexorcism">EWE<span class="xorcism">XORCISM</span></div>
-        <button id="startButton">START</button>
       </div>
 
       <h5 id="authors">
