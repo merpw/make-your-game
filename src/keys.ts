@@ -30,7 +30,7 @@ export const MoveInputState = new Map<string, boolean>(
 )
 
 /** Reset the {@link MoveInputState} and {@link currentBoard.hero.way}*/
-const resetInputState = () => {
+export const resetInputState = () => {
   MoveInputState.forEach((_, key) => MoveInputState.set(key, false))
   currentBoard && (currentBoard.hero.way = getWay())
 }

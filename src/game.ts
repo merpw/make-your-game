@@ -1,12 +1,14 @@
 import { Board } from "./board.js"
 import { Level, level1 } from "./levels.js"
 import "./keys.js"
+import { resetInputState } from "./keys.js"
 
 const FPS = 60
 const NORMAL_FRAME_TIME = 1000 / FPS
 
 /** removes all elements in layers and {@link currentBoard} */
 const clean = () => {
+  resetInputState()
   document
     .querySelectorAll("#game g.layer > *")
     .forEach((node) => node.remove())
