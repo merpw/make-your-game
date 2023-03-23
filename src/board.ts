@@ -8,7 +8,6 @@ import Cell, {
   PORTAL_EXIT_TIME,
 } from "./cell.js"
 import Timer from "./timer.js"
-import { pauseUIManager } from "./uiManager.js"
 
 /** camera height in cells */
 const CAMERA_HEIGHT = 7
@@ -111,9 +110,6 @@ export class Board {
     if (value) {
       document.getElementById("game")?.classList.add("paused")
 
-      document.getElementById("pause-buttons")?.classList.add("pause")
-      this.pauseUIButtons.classList.add("pause")
-
       this.timer.pause()
       this.eventTimer?.pause()
       this.hero.pause()
@@ -121,9 +117,6 @@ export class Board {
       this.sheepStorage.all.forEach((sheep) => sheep.pause())
     } else {
       document.getElementById("game")?.classList.remove("paused")
-
-      document.getElementById("pause-buttons")?.classList.remove("pause")
-      this.pauseUIButtons.classList.remove("pause")
 
       this.timer.resume()
       this.eventTimer?.resume()
@@ -219,6 +212,7 @@ export class Board {
         this.time * SCORES.timeBonus +
         this.hero.lives * SCORES.livesBonus
     }
+    document.getElementById("game")?.classList.remove("paused")
     document.getElementById("game")?.classList.add(isWin ? "win" : "over")
   }
 
@@ -466,10 +460,5 @@ export class Board {
         : CAMERA_ASPECT_RATIO) * this.cameraHeight
     )
     this.centerCamera()
-
-    document.getElementById("pause-buttons")?.appendChild(this.pauseUIButtons)
   }
-
-  public pauseUIButtons = pauseUIManager.getButtonsPanel()
-  // mainUIButtons =
 }

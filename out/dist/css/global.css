@@ -290,18 +290,14 @@ main {
   color: #2d7a2d;
 }
 
-/*active button*/
-.active {
-  color: white;
-}
-
-/* arrange buttons inside div in one column using css */
-div.buttons-panel {
-  display: flex !important;
+.buttons-panel {
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100%;
+}
+
+#game.paused .buttons-panel.pause,
+#game.over .buttons-panel.over {
+  display: flex;
 }
 
 #start-screen {
@@ -360,4 +356,13 @@ div.mainscreen {
 
 #start-screen button:hover {
   color: #07786e;
+}
+
+/*active button*/
+button.active {
+  color: white !important;
+}
+
+button {
+  cursor: pointer;
 }

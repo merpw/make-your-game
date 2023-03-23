@@ -1,79 +1,61 @@
 import { currentBoard, restartLevel } from "./game.js"
 
-/** class includes functionality to create the html div element
- * which will be used to display the UI.
- * Every UI element will be a child of this div.
- * At the moment only buttons are supported.
- * The UI is created as class instance and property buttonPanel can be added to the DOM.
- * Buttons placed from the top to the bottom in one column (need css supply).
- * Buttons can be added to the UI by calling the addButtons method.
- */
 export class UIManager {
-  private buttonsPanel: HTMLDivElement
+  public element: HTMLDivElement
   private buttons: HTMLButtonElement[] = []
-  private activeButtonIndex = 0
+
+  private set activeButton(button: HTMLButtonElement | null) {
+    this._activeButton?.classList.remove("active")
+    button?.classList.add("active")
+    this._activeButton = button
+  }
+
+  private get activeButton() {
+    return this._activeButton
+  }
+
+  private _activeButton!: HTMLButtonElement | null
 
   constructor(uiButtons: UIButton[] = []) {
-    this.buttonsPanel = document.createElement("div")
-    // arrange buttons in one column using css
-    this.buttonsPanel.classList.add("buttons-panel")
-    // this.buttonsPanel.classList.add("pause")
-    this.addButtons(uiButtons)
+    this.element = document.createElement("div")
+    this.element.classList.add("buttons-panel")
+    uiButtons.forEach((button) => this.addButton(button))
+    this.activeButton = this.buttons[0] || null
   }
 
   private addButton(button: UIButton) {
     const newButton = document.createElement("button")
     newButton.innerText = button.name
     newButton.onclick = button.onClick
+    newButton.onmouseenter = () => {
+      this.activeButton = newButton
+    }
     this.buttons.push(newButton)
-    this.buttonsPanel.appendChild(newButton)
+    this.element.appendChild(newButton)
   }
 
-  public addButtons(buttons: UIButton[]) {
-    if (buttons.length === 0) return
-    buttons.forEach((button) => this.addButton(button))
-    this.buttons[0].classList.add("active")
-  }
-
-  /** returns the div element which can be added to the DOM */
-  public getButtonsPanel() {
-    return this.buttonsPanel
-  }
-
-  /** call it when down arrow "keyUp" happens */
   public selectNextButton() {
-    if (this.buttons.length === 0) {
-      console.log("no buttons added")
-      return
-    }
-    this.buttons[this.activeButtonIndex].classList.remove("active")
-    this.activeButtonIndex = (this.activeButtonIndex + 1) % this.buttons.length
-    this.buttons[this.activeButtonIndex].classList.add("active")
+    const activeButtonIndex = this.activeButton
+      ? this.buttons.indexOf(this.activeButton)
+      : 0
+    const newButtonIndex = (activeButtonIndex + 1) % this.buttons.length
+    this.activeButton = this.buttons[newButtonIndex]
   }
 
-  /** call it when up arrow "keyUp" happens */
   public selectPreviousButton() {
-    if (this.buttons.length === 0) {
-      console.log("no buttons added")
-      return
-    }
-    this.buttons[this.activeButtonIndex].classList.remove("active")
-    this.activeButtonIndex =
-      (this.activeButtonIndex + this.buttons.length - 1) % this.buttons.length
-    this.buttons[this.activeButtonIndex].classList.add("active")
+    const activeButtonIndex = this.activeButton
+      ? this.buttons.indexOf(this.activeButton)
+      : 0
+    const newButtonIndex = (activeButtonIndex - 1) % this.buttons.length
+    this.activeButton = this.buttons[newButtonIndex]
   }
 
-  /** call it when Enter "keyUp" happens */
   public clickActiveButton() {
-    if (this.buttons.length === 0) {
-      console.log("no buttons added")
-      return
-    }
-    this.buttons[this.activeButtonIndex].click()
+    this.activeButton?.click()
   }
 }
 
-export type UIButton = {
+type UIButton = {
   name: string
   onClick: () => void
 }
@@ -83,16 +65,29 @@ export const pauseUIManager = new UIManager([
   {
     name: "RESTART",
     onClick: () => {
-      console.log("restart")
       restartLevel()
     },
   },
   {
     name: "CONTINUE",
     onClick: () => {
-      console.log("continue")
       if (!currentBoard) return
       currentBoard.isPaused = false
     },
   },
 ])
+pauseUIManager.element.classList.add("pause")
+
+export const gameOverManager = new UIManager([
+  {
+    name: "RESTART",
+    onClick: () => {
+      restartLevel()
+    },
+  },
+])
+gameOverManager.element.classList.add("over")
+
+document
+  .getElementById("popup")
+  ?.append(pauseUIManager.element, gameOverManager.element)
