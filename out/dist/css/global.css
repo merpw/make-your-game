@@ -278,6 +278,12 @@ main {
   animation: lucky 2s infinite;
 }
 
+#game.paused *,
+#game.over *,
+#game.win * {
+  animation-play-state: paused !important;
+}
+
 #ui button {
   display: inline-block !important;
   width: 50%;
