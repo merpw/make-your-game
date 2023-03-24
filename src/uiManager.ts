@@ -54,6 +54,10 @@ export class UIManager {
   public clickActiveButton() {
     this.activeButton?.click()
   }
+
+  public reset() {
+    this.activeButton = this.buttons[0] || null
+  }
 }
 
 type UIButton = {
@@ -64,16 +68,17 @@ type UIButton = {
 /** pause uiManager includes restart, continue, resume buttons*/
 export const pauseUIManager = new UIManager([
   {
-    name: "RESTART",
-    onClick: () => {
-      restartLevel()
-    },
-  },
-  {
     name: "CONTINUE",
     onClick: () => {
       if (!currentBoard) return
       currentBoard.isPaused = false
+    },
+  },
+  {
+    name: "RESTART",
+    onClick: () => {
+      restartLevel()
+      pauseUIManager.reset()
     },
   },
 ])
@@ -84,10 +89,12 @@ export const gameOverManager = new UIManager([
     name: "RESTART",
     onClick: () => {
       restartLevel()
+      gameOverManager.reset()
     },
   },
 ])
-gameOverManager.element.classList.add("over")
+gameOverManager.element.classList.add("over", "win")
+// TODO: add winManager
 
 document
   .getElementById("popup")
