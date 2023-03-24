@@ -46,7 +46,8 @@ export class UIManager {
     const activeButtonIndex = this.activeButton
       ? this.buttons.indexOf(this.activeButton)
       : 0
-    const newButtonIndex = (activeButtonIndex - 1) % this.buttons.length
+    const newButtonIndex =
+      (activeButtonIndex - 1 + this.buttons.length) % this.buttons.length
     this.activeButton = this.buttons[newButtonIndex]
   }
 
