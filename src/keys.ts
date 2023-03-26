@@ -1,6 +1,6 @@
 import { Way } from "./hero"
 import { currentBoard, restartLevel, startGameFirstTime } from "./game.js"
-import { pauseUIManager } from "./uiManager.js"
+import { activeUIManager } from "./uiManager.js"
 
 /** Configuration of the control keys. */
 const CONTROLS = {
@@ -62,15 +62,15 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
       currentBoard.isPaused = false
     }
     if (key === "Enter") {
-      pauseUIManager.clickActiveButton()
+      activeUIManager()?.clickActiveButton()
       return
     }
     if (CONTROLS.move.Up.includes(key) || CONTROLS.move.Left.includes(key)) {
-      pauseUIManager.selectPreviousButton()
+      activeUIManager()?.selectPreviousButton()
       return
     }
     if (CONTROLS.move.Down.includes(key) || CONTROLS.move.Right.includes(key)) {
-      pauseUIManager.selectNextButton()
+      activeUIManager()?.selectNextButton()
       return
     }
     return

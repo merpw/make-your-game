@@ -58,6 +58,11 @@ export class UIManager {
   public reset() {
     this.activeButton = this.buttons[0] || null
   }
+
+  /** check if the uiManager is active (visible) */
+  public isActive() {
+    return this.element.offsetParent !== null
+  }
 }
 
 type UIButton = {
@@ -93,9 +98,15 @@ export const gameOverManager = new UIManager([
     },
   },
 ])
-gameOverManager.element.classList.add("over", "win")
+gameOverManager.element.classList.add("win", "over")
 // TODO: add winManager
+
+const UIManagers = [gameOverManager, pauseUIManager] as const
 
 document
   .getElementById("popup")
-  ?.append(pauseUIManager.element, gameOverManager.element)
+  ?.append(...UIManagers.map((manager) => manager.element))
+
+/** returns an current active (visible) uiManager */
+export const activeUIManager = () =>
+  UIManagers.find((manager) => manager.isActive())
