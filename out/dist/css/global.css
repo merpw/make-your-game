@@ -44,8 +44,7 @@ main {
 }
 
 #authors {
-  margin: 0;
-  display: inline;
+  margin: 10px 0 0 0;
 }
 
 #place-date {
@@ -54,7 +53,7 @@ main {
 
 #game {
   position: relative;
-  margin: 20px 20px 0 20px;
+  margin: 20px 20px 10px 20px;
   text-align: center;
   width: 1280px;
   max-width: 90vw;
@@ -158,24 +157,15 @@ main {
   font-size: xx-large;
 }
 
-#touch-controls {
-  display: none;
-  touch-action: none; /* TODO: test, maybe add user-scalable=0 to prevent user from scrolling globally */
-}
-
-@media (max-width: 600px) {
-  body {
-    min-height: 90vh;
-  }
-
-  #touch-controls {
-    display: block;
-  }
-}
-
 #touch-controls button {
-  font-size: xxx-large;
-  margin: 5px;
+  font-size: 18vmin;
+  /*margin: 1px;*/
+}
+
+#touch-controls > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes lucky {
@@ -256,7 +246,7 @@ main {
   color: rgb(125, 89, 108);
 }
 
-#start-screen button {
+#startButton {
   padding: 0 17px;
   border: 4px solid;
   background-color: transparent;
@@ -267,10 +257,46 @@ main {
   font-size: 7vw;
 }
 
-#start-screen button:hover {
+#startButton:hover {
   color: #07786e;
 }
 
 button {
   cursor: pointer;
+}
+
+#touch-controls {
+  display: none;
+  touch-action: none; /* TODO: test, maybe add user-scalable=0 to prevent user from scrolling globally */
+}
+
+#start-screen img.img_mobile {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  body {
+    min-height: 90vh;
+  }
+
+  #touch-controls {
+    display: block;
+  }
+
+  #start-screen img.img_full {
+    display: none;
+  }
+
+  #start-screen img.img_mobile {
+    display: block;
+  }
+
+  #start-screen div.ewexorcism {
+    font-size: 20vmin;
+  }
+
+  #startButton {
+    top: 25%;
+    font-size: 15vw;
+  }
 }
