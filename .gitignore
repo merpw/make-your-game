@@ -1,5 +1,5 @@
 node_modules
 .idea
-out/dist/js
+# out/dist/js
 #TODO: remove before audit
 **.DS_Store

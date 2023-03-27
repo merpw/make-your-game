@@ -13,6 +13,8 @@ Solved during studying in Gritlab coding school on Åland, February 2023
 
 ---
 
+# Demo: [ewe.mer.pw](https://ewe.mer.pw)
+
 ## How to run?
 
 ### Start http server in the out directory
