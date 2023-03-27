@@ -1,7 +1,7 @@
 @import "font.css";
 
 html {
-  font-family: "Nunito", serif;
+  font-family: "Nunito", sans-serif;
 }
 
 body {
@@ -97,7 +97,6 @@ main {
   backdrop-filter: blur(3px) brightness(0.7);
   min-width: 100px;
 
-  font-family: "Nunito", serif;
   font-size: large;
   color: #79b753;
 }
@@ -158,8 +157,7 @@ main {
 }
 
 #touch-controls button {
-  font-size: 18vmin;
-  /*margin: 1px;*/
+  font-size: 18vw;
 }
 
 #touch-controls > div {
