@@ -158,7 +158,7 @@ main {
 #lives {
   color: white;
   font-family: "Notalot35", serif;
-  font-size: xx-large;
+  font-size: x-large;
 }
 
 #touch-controls button {
@@ -238,11 +238,12 @@ main {
 }
 
 #start-screen div.ewexorcism {
-  top: 8%;
   position: absolute;
+  top: 5%;
+
   color: rgb(252, 174, 215);
   font-family: "Notalot35", serif;
-  font-size: 15vmin;
+  font-size: 9vw;
 }
 
 #start-screen span.xorcism {
@@ -257,7 +258,7 @@ main {
   top: 30%;
   color: white;
   font-family: "Notalot35", serif;
-  font-size: 7vw;
+  font-size: 5rem;
 }
 
 #startButton:hover {
@@ -295,11 +296,12 @@ button {
   }
 
   #start-screen div.ewexorcism {
-    font-size: 20vmin;
+    top: 15px;
+    font-size: 13vw;
   }
 
   #startButton {
     top: 25%;
-    font-size: 15vw;
+    font-size: 10vw;
   }
 }
