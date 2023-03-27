@@ -1,5 +1,10 @@
 @import "font.css";
 
+:root {
+  /* remove to use less layers */
+  --backdrop-filter: blur(3px);
+}
+
 html {
   font-family: "Nunito", sans-serif;
 }
@@ -94,8 +99,8 @@ main {
   padding: 10px;
   border-radius: 15px;
 
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: var(--backdrop-filter);
+  backdrop-filter: var(--backdrop-filter);
   background: rgba(0, 0, 0, 0.3);
 
   min-width: 100px;
@@ -110,8 +115,8 @@ main {
   align-items: center;
 
   border-radius: 1px;
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: var(--backdrop-filter);
+  backdrop-filter: var(--backdrop-filter);
   background: rgba(0, 0, 0, 0.5);
 
   font-family: "Notalot35", serif;
