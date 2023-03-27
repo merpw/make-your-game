@@ -1,5 +1,6 @@
 import { Way } from "./hero"
-import { currentBoard, restartLevel } from "./game.js"
+import { currentBoard, restartLevel, startGameFirstTime } from "./game.js"
+import { activeUIManager } from "./uiManager.js"
 
 /** Configuration of the control keys. */
 const CONTROLS = {
@@ -14,7 +15,6 @@ const CONTROLS = {
 
   Restart: "r",
   Pause: "p",
-  Resume: "Enter",
 }
 
 /**
@@ -29,6 +29,12 @@ export const MoveInputState = new Map<string, boolean>(
   )
 )
 
+/** Reset the {@link MoveInputState} and {@link currentBoard.hero.way}*/
+export const resetInputState = () => {
+  MoveInputState.forEach((_, key) => MoveInputState.set(key, false))
+  currentBoard && (currentBoard.hero.way = getWay())
+}
+
 /** Get the current way of the Hero according to the {@link MoveInputState| state of the control keys} */
 const getWay = (): Way => ({
   up: CONTROLS.move.Up.some((key) => MoveInputState.get(key)),
@@ -38,7 +44,13 @@ const getWay = (): Way => ({
 })
 
 window.addEventListener("keydown", (event: KeyboardEvent) => {
-  if (event.repeat || !currentBoard) return
+  if (!currentBoard) {
+    if (event.key === "Enter") {
+      startGameFirstTime()
+    }
+    return
+  }
+  if (event.repeat) return
   const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
 
   if (currentBoard.isPaused) {
@@ -46,14 +58,27 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
       restartLevel()
       return
     }
-    if (key === CONTROLS.Resume || key === CONTROLS.Pause) {
+    if (key === CONTROLS.Pause) {
       currentBoard.isPaused = false
+    }
+    if (key === "Enter") {
+      activeUIManager()?.clickActiveButton()
+      return
+    }
+    if (CONTROLS.move.Up.includes(key) || CONTROLS.move.Left.includes(key)) {
+      activeUIManager()?.selectPreviousButton()
+      return
+    }
+    if (CONTROLS.move.Down.includes(key) || CONTROLS.move.Right.includes(key)) {
+      activeUIManager()?.selectNextButton()
+      return
     }
     return
   }
 
   if (key === CONTROLS.Pause) {
     currentBoard.isPaused = true
+    resetInputState()
     return
   }
 
@@ -73,7 +98,7 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
 })
 
 window.addEventListener("keyup", (event: KeyboardEvent) => {
-  if (!currentBoard) return
+  if (!currentBoard || currentBoard.isPaused) return
   const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
 
   if (MoveInputState.has(key)) {
@@ -85,7 +110,13 @@ window.addEventListener("keyup", (event: KeyboardEvent) => {
 window.addEventListener("blur", () => {
   if (!currentBoard) return
   currentBoard.isPaused = true
+  resetInputState()
 })
+
+const startGameButton = document.getElementById("startButton")
+if (startGameButton) {
+  startGameButton.addEventListener("click", startGameFirstTime)
+}
 
 const touchControls = document.getElementById("touch-controls")
 const buttons = document.querySelectorAll(

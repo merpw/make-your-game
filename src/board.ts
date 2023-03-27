@@ -212,6 +212,7 @@ export class Board {
         this.time * SCORES.timeBonus +
         this.hero.lives * SCORES.livesBonus
     }
+    document.getElementById("game")?.classList.remove("paused")
     document.getElementById("game")?.classList.add(isWin ? "win" : "over")
   }
 

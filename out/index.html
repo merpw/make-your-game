@@ -10,14 +10,13 @@
     <main>
       <h1 id="project">Make Your Game</h1>
       <h3 id="game-name">• EWEXORCISM •</h3>
-      <div id="game">
+      <div id="game" class="startScreen">
         <svg
           id="board"
           viewBox="0 0 95 55"
           preserveAspectRatio="xMidYMin slice"
         >
           <g id="landscape" class="layer"></g>
-          <g id="bushes" class="layer"></g>
           <g id="fungi" class="layer"></g>
           <g id="sheep" class="layer"></g>
           <g id="players" class="layer"></g>
@@ -30,34 +29,35 @@
             <span class="banner">Lives: <span id="lives">3</span></span>
           </div>
           <div id="popup">
-            <h1 class="pause state">PAUSE</h1>
-            <p class="pause keys">
-              Press
-              <span class="pause the-key">ENTER</span>
-              to continue<br class="pause newline" />
-              Press
-              <span class="pause the-key">R</span>
-              to restart
-            </p>
-            <h1 class="over state">GAME OVER</h1>
-            <p class="over keys">
-              Press
-              <span class="over the-key">R</span>
-              to restart
-            </p>
-
+            <h1 class="pause title">PAUSE</h1>
+            <h1 class="over title">GAME OVER</h1>
             <img
-              src="images/Game_over.webp"
+              src="images/game-over.webp"
               alt="GAME OVER"
-              class="over foreground pixelated"
+              class="over pixelated"
             />
-            <h1 class="win state">Thank you!</h1>
+            <h1 class="win title">Thank you!</h1>
             <img
-              src="images/Thank_you.webp"
+              src="images/thank-you.webp"
               alt="Thank you!"
-              class="win foreground pixelated"
+              class="win pixelated"
             />
           </div>
+        </div>
+        <div id="start-screen">
+          <img
+            src="images/start-full.webp"
+            alt="Start screen of EWEXORCISM game, a sheep surrounded by demons"
+            class="pixelated img_full"
+          />
+          <img
+            src="images/start-square.webp"
+            alt="Start screen of EWEXORCISM game, a sheep surrounded by demons"
+            class="pixelated img_mobile"
+          />
+
+          <div class="ewexorcism">EWE<span class="xorcism">XORCISM</span></div>
+          <button id="startButton">START</button>
         </div>
       </div>
       <div id="touch-controls">
@@ -77,7 +77,7 @@
         Authors: • Maksim Mikhailov • Natalia Kim • Sergei Ivanov •
       </h5>
 
-      <h6 id="place-date">Grit:lab coding school on Åland, February 2023</h6>
+      <h6 id="place-date">Grit:lab coding school on Åland, March 2023</h6>
     </main>
     <script src="dist/js/game.js" type="module"></script>
   </body>
