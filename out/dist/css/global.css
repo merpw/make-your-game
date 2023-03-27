@@ -93,8 +93,11 @@ main {
 #topbar .banner {
   padding: 10px;
   border-radius: 15px;
-  -webkit-backdrop-filter: blur(3px) brightness(0.7);
-  backdrop-filter: blur(3px) brightness(0.7);
+
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.3);
+
   min-width: 100px;
 
   font-size: large;
@@ -107,8 +110,10 @@ main {
   align-items: center;
 
   border-radius: 1px;
-  -webkit-backdrop-filter: blur(3px) brightness(0.5);
-  backdrop-filter: blur(3px) brightness(0.5);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.5);
+
   font-family: "Notalot35", serif;
   font-size: 4rem;
 
