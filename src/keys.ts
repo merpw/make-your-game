@@ -14,7 +14,7 @@ const CONTROLS = {
   TerminateFungi: "t",
 
   Restart: "r",
-  Pause: "p",
+  Pause: ["p", "Escape"],
 }
 
 /**
@@ -58,8 +58,9 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
       restartLevel()
       return
     }
-    if (key === CONTROLS.Pause) {
+    if (CONTROLS.Pause.includes(key)) {
       currentBoard.isPaused = false
+      return
     }
     if (key === "Enter") {
       activeUIManager()?.clickActiveButton()
@@ -76,7 +77,7 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
     return
   }
 
-  if (key === CONTROLS.Pause) {
+  if (CONTROLS.Pause.includes(key)) {
     currentBoard.isPaused = true
     resetInputState()
     return

@@ -11,7 +11,7 @@ const CONTROLS = {
     PlaceFungi: "f",
     TerminateFungi: "t",
     Restart: "r",
-    Pause: "p",
+    Pause: ["p", "Escape"],
 };
 /**
  * The state of the keys that control the game.
@@ -48,8 +48,9 @@ window.addEventListener("keydown", (event) => {
             restartLevel();
             return;
         }
-        if (key === CONTROLS.Pause) {
+        if (CONTROLS.Pause.includes(key)) {
             currentBoard.isPaused = false;
+            return;
         }
         if (key === "Enter") {
             (_a = activeUIManager()) === null || _a === void 0 ? void 0 : _a.clickActiveButton();
@@ -65,7 +66,7 @@ window.addEventListener("keydown", (event) => {
         }
         return;
     }
-    if (key === CONTROLS.Pause) {
+    if (CONTROLS.Pause.includes(key)) {
         currentBoard.isPaused = true;
         resetInputState();
         return;
