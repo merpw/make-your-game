@@ -1,4 +1,5 @@
-import { currentBoard, restartLevel } from "./game.js";
+import { currentBoard, restartLevel, startGameFirstTime } from "./game.js";
+import { activeUIManager } from "./uiManager.js";
 /** Configuration of the control keys. */
 const CONTROLS = {
     move: {
@@ -11,7 +12,6 @@ const CONTROLS = {
     TerminateFungi: "t",
     Restart: "r",
     Pause: "p",
-    Resume: "Enter",
 };
 /**
  * The state of the keys that control the game.
@@ -20,6 +20,11 @@ const CONTROLS = {
  * // false
  * */
 export const MoveInputState = new Map(Object.values(CONTROLS.move).flatMap((keys) => keys.map((key) => [key, false])));
+/** Reset the {@link MoveInputState} and {@link currentBoard.hero.way}*/
+export const resetInputState = () => {
+    MoveInputState.forEach((_, key) => MoveInputState.set(key, false));
+    currentBoard && (currentBoard.hero.way = getWay());
+};
 /** Get the current way of the Hero according to the {@link MoveInputState| state of the control keys} */
 const getWay = () => ({
     up: CONTROLS.move.Up.some((key) => MoveInputState.get(key)),
@@ -28,7 +33,14 @@ const getWay = () => ({
     right: CONTROLS.move.Right.some((key) => MoveInputState.get(key)),
 });
 window.addEventListener("keydown", (event) => {
-    if (event.repeat || !currentBoard)
+    var _a, _b, _c;
+    if (!currentBoard) {
+        if (event.key === "Enter") {
+            startGameFirstTime();
+        }
+        return;
+    }
+    if (event.repeat)
         return;
     const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key;
     if (currentBoard.isPaused) {
@@ -36,13 +48,26 @@ window.addEventListener("keydown", (event) => {
             restartLevel();
             return;
         }
-        if (key === CONTROLS.Resume || key === CONTROLS.Pause) {
+        if (key === CONTROLS.Pause) {
             currentBoard.isPaused = false;
+        }
+        if (key === "Enter") {
+            (_a = activeUIManager()) === null || _a === void 0 ? void 0 : _a.clickActiveButton();
+            return;
+        }
+        if (CONTROLS.move.Up.includes(key) || CONTROLS.move.Left.includes(key)) {
+            (_b = activeUIManager()) === null || _b === void 0 ? void 0 : _b.selectPreviousButton();
+            return;
+        }
+        if (CONTROLS.move.Down.includes(key) || CONTROLS.move.Right.includes(key)) {
+            (_c = activeUIManager()) === null || _c === void 0 ? void 0 : _c.selectNextButton();
+            return;
         }
         return;
     }
     if (key === CONTROLS.Pause) {
         currentBoard.isPaused = true;
+        resetInputState();
         return;
     }
     if (MoveInputState.has(key)) {
@@ -60,7 +85,7 @@ window.addEventListener("keydown", (event) => {
     }
 });
 window.addEventListener("keyup", (event) => {
-    if (!currentBoard)
+    if (!currentBoard || currentBoard.isPaused)
         return;
     const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key;
     if (MoveInputState.has(key)) {
@@ -73,7 +98,12 @@ window.addEventListener("blur", () => {
     if (!currentBoard)
         return;
     currentBoard.isPaused = true;
+    resetInputState();
 });
+const startGameButton = document.getElementById("startButton");
+if (startGameButton) {
+    startGameButton.addEventListener("click", startGameFirstTime);
+}
 const touchControls = document.getElementById("touch-controls");
 const buttons = document.querySelectorAll("#touch-controls button");
 if (touchControls && touchControls.style.display !== "none") {

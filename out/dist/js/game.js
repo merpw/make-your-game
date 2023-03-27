@@ -1,10 +1,12 @@
 import { Board } from "./board.js";
 import { level1 } from "./levels.js";
 import "./keys.js";
+import { resetInputState } from "./keys.js";
 const FPS = 60;
 const NORMAL_FRAME_TIME = 1000 / FPS;
 /** removes all elements in layers and {@link currentBoard} */
 const clean = () => {
+    resetInputState();
     document
         .querySelectorAll("#game g.layer > *")
         .forEach((node) => node.remove());
@@ -22,7 +24,14 @@ const setLevel = (newLevel) => {
 export const restartLevel = () => setLevel(currentLevel);
 let currentLevel;
 export let currentBoard;
-setLevel(level1);
+/* the function keyword used to move the function to the top of scope (hoisting), or error happens inside keys.ts in time of initialisation */
+export function startGameFirstTime() {
+    var _a, _b;
+    // remove the start screen
+    (_a = document.getElementById("start-screen")) === null || _a === void 0 ? void 0 : _a.remove();
+    (_b = document.getElementById("board")) === null || _b === void 0 ? void 0 : _b.classList.remove("game-field");
+    setLevel(level1);
+}
 let lastTime = 0;
 let lastFrameTime = 1000 / FPS;
 const step = (timestamp) => {

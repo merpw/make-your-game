@@ -105,7 +105,7 @@ export class Board {
         this.element.setAttribute("viewBox", `${this.cameraX.toFixed(2)} ${this.cameraY.toFixed(2)} ${this.cameraWidth * CELL_SIZE} ${this.cameraHeight * CELL_SIZE}`);
     }
     over(isWin = false) {
-        var _a;
+        var _a, _b;
         this.isPaused = true;
         this.isOver = true;
         this.timer.stop();
@@ -115,7 +115,8 @@ export class Board {
                     this.time * SCORES.timeBonus +
                     this.hero.lives * SCORES.livesBonus;
         }
-        (_a = document.getElementById("game")) === null || _a === void 0 ? void 0 : _a.classList.add(isWin ? "win" : "over");
+        (_a = document.getElementById("game")) === null || _a === void 0 ? void 0 : _a.classList.remove("paused");
+        (_b = document.getElementById("game")) === null || _b === void 0 ? void 0 : _b.classList.add(isWin ? "win" : "over");
     }
     render(frameTimeDiff, time) {
         if (this.isPaused)
