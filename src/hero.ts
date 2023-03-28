@@ -204,13 +204,13 @@ export default class Hero extends Creature<"hero"> {
     this.y = newY
   }
 
-  public placeFungi = () => {
+  public placeFungi() {
     if (
       this.fungi.length == MAX_FUNGI ||
       this.cell.type !== "empty" ||
       this.cell.secret
     )
-      return
+      return false
     this.cell.type = "fungus"
     this.fungi.push({
       cell: this.cell,
@@ -221,11 +221,12 @@ export default class Hero extends Creature<"hero"> {
         left: this.neighbourCells.left,
       },
     })
+    return true
   }
 
   public terminateFungi() {
     const fungus = this.fungi.shift()
-    if (!fungus) return
+    if (!fungus) return false
     const { cell, neighbourCells } = fungus
     cell.type = "cloud"
     ;[
@@ -236,6 +237,7 @@ export default class Hero extends Creature<"hero"> {
     ].forEach((cell) => {
       if (cell?.type === "empty") cell.type = "cloud"
     })
+    return true
   }
 
   /** Spawn the hero in the given cell */

@@ -153,14 +153,14 @@ if (touchControls && touchControls.style.display !== "none") {
     if (button.id === "touchPlaceFungi") {
       button.addEventListener("pointerdown", () => {
         if (!currentBoard || currentBoard.isPaused) return
-        currentBoard.hero.placeFungi()
+        currentBoard.hero.placeFungi() && navigator.vibrate?.(5)
       })
       return
     }
     if (button.id === "touchTerminateFungi") {
       button.addEventListener("pointerdown", () => {
         if (!currentBoard || currentBoard.isPaused) return
-        currentBoard?.hero.terminateFungi()
+        currentBoard?.hero.terminateFungi() && navigator.vibrate?.(90)
       })
     }
   })
