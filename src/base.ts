@@ -37,7 +37,7 @@ export class Animated<T extends AssetName> {
     this.timer = new Timer(callback, timeout)
   }
 
-  public cancelTimer() {
+  public stopTimer() {
     this.timer?.stop()
     this.timer = null
   }
