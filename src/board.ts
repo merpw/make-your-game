@@ -458,9 +458,8 @@ export class Board {
     this.element = svg
 
     this.cameraHeight = CAMERA_HEIGHT
-    // TODO: maybe improve mobile device detection
     this.cameraWidth = Math.floor(
-      (screen.orientation?.type === "portrait-primary"
+      (window.innerWidth < 600
         ? MOBILE_CAMERA_ASPECT_RATIO
         : CAMERA_ASPECT_RATIO) * this.cameraHeight
     )

@@ -131,7 +131,6 @@ const buttons = document.querySelectorAll(
 ) as NodeListOf<HTMLButtonElement>
 
 if (touchControls && touchControls.style.display !== "none") {
-  touchControls.addEventListener("selectstart", (e) => e.preventDefault())
   buttons.forEach((button) => {
     if (MoveInputState.has(button.id)) {
       button.addEventListener(

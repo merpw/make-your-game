@@ -166,8 +166,17 @@ main {
   font-size: x-large;
 }
 
+#touch-controls {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 #touch-controls button {
-  font-size: 18vw;
+  font-size: 20vw;
+  background: none;
+  margin: 0;
+  padding: 0;
+  border-width: 0;
 }
 
 #touch-controls > div {
