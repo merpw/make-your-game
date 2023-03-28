@@ -1,0 +1,350 @@
+@import "font.css";
+
+:root {
+  /* remove to use less layers */
+  --backdrop-filter: blur(3px);
+}
+
+html {
+  font-family: "Nunito", sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  min-height: 100vh;
+}
+
+main {
+  margin: auto;
+  border-radius: 10px;
+  border: 1px solid #b7c3b2;
+  height: 100%;
+  text-align: center;
+  font-size: large;
+  color: #666666;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+    background-color: #101810;
+  }
+
+  main {
+    border-color: #2e312a;
+  }
+}
+
+#project {
+  margin: 20px 0 0 0;
+  padding: 0;
+}
+
+#game-name {
+  margin: 0;
+  padding: 0;
+  color: #6fa84e82;
+}
+
+#authors {
+  margin: 10px 0 0 0;
+}
+
+#place-date {
+  margin: 0 0 10px 0;
+}
+
+#game {
+  position: relative;
+  margin: 20px 20px 10px 20px;
+  text-align: center;
+  width: 1280px;
+  max-width: 90vw;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#board {
+  height: 100%;
+  width: 100%;
+}
+
+#game.startScreen #board {
+  display: none;
+}
+
+.pixelated {
+  image-rendering: pixelated;
+  overflow: hidden;
+}
+
+#ui {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  color: white;
+}
+
+#topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+#topbar .banner {
+  padding: 10px;
+  border-radius: 15px;
+
+  -webkit-backdrop-filter: var(--backdrop-filter);
+  backdrop-filter: var(--backdrop-filter);
+  background: rgba(0, 0, 0, 0.3);
+
+  min-width: 100px;
+
+  font-size: large;
+  color: #79b753;
+}
+
+#popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  border-radius: 1px;
+  -webkit-backdrop-filter: var(--backdrop-filter);
+  backdrop-filter: var(--backdrop-filter);
+  background: rgba(0, 0, 0, 0.5);
+
+  font-family: "Notalot35", serif;
+  font-size: 3rem;
+
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#popup > * {
+  margin: 20px 0 20px 0;
+}
+
+#popup img {
+  width: 30%;
+  height: auto;
+  align-items: center;
+  margin: auto;
+}
+
+#popup .over.title {
+  color: #dc3836;
+}
+
+#popup .win.title {
+  color: #8ff4f8;
+}
+
+#popup .pause.title {
+  color: #2d7a2d;
+}
+
+#game.win #popup > *:not(.win),
+#game.over #popup > *:not(.over),
+#game.paused #popup > *:not(.pause),
+#game:not(.win):not(.over):not(.paused) #popup > * {
+  display: none;
+}
+
+#score,
+#time,
+#lives {
+  color: white;
+  font-family: "Notalot35", serif;
+  font-size: x-large;
+}
+
+#touch-controls {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#touch-controls button {
+  font-size: 20vw;
+  background: none;
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+}
+
+#touch-controls > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes lucky {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(2);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+#players svg.lucky image {
+  animation: lucky 2s infinite;
+}
+
+#game.paused *,
+#game.over *,
+#game.win * {
+  animation-play-state: paused !important;
+}
+
+#popup .buttons-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#popup .buttons-panel button {
+  width: 20ch;
+  margin: 5px;
+  font-family: "Notalot35", serif;
+  font-size: 2rem;
+  border: 2px solid;
+  background-color: transparent;
+  color: #2d7a2d;
+}
+
+#popup button.active {
+  color: white;
+}
+
+#start-screen {
+  border-radius: 10px;
+  height: 100%;
+  width: 100%;
+  outline: 10px;
+}
+
+#start-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#start-screen img {
+  width: 100%;
+}
+
+#start-screen div.ewexorcism {
+  position: absolute;
+  top: 5%;
+
+  color: rgb(252, 174, 215);
+  font-family: "Notalot35", serif;
+  font-size: 9vw;
+}
+
+#start-screen span.xorcism {
+  color: rgb(125, 89, 108);
+}
+
+#startButton {
+  padding: 0 17px;
+  border: 4px solid;
+  background-color: transparent;
+  position: absolute;
+  top: 30%;
+  color: white;
+  font-family: "Notalot35", serif;
+  font-size: 5rem;
+}
+
+#startButton:hover {
+  color: #07786e;
+}
+
+button {
+  cursor: pointer;
+}
+
+#touch-controls {
+  display: none;
+  touch-action: none; /* TODO: test, maybe add user-scalable=0 to prevent user from scrolling globally */
+}
+
+#start-screen img.img_mobile {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  body {
+    min-height: 90vh;
+  }
+
+  #topbar .banner {
+    padding: 5px 10px;
+    min-width: 50px;
+    font-size: medium;
+  }
+
+  #score,
+  #time,
+  #lives {
+    font-size: large;
+  }
+
+  #popup {
+    font-size: 1.5rem;
+  }
+
+  #popup > * {
+    margin: 10px 0 15px 0;
+  }
+
+  #popup img {
+    width: 50%;
+  }
+
+  #popup .buttons-panel button {
+    font-size: 1.5rem;
+    margin: 0 0 5px 0;
+  }
+
+  #touch-controls {
+    display: block;
+  }
+
+  #start-screen img.img_full {
+    display: none;
+  }
+
+  #start-screen img.img_mobile {
+    display: block;
+  }
+
+  #start-screen div.ewexorcism {
+    top: 15px;
+    font-size: 13vw;
+  }
+
+  #startButton {
+    top: 25%;
+    font-size: 10vw;
+  }
+}

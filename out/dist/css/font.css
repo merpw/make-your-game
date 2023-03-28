@@ -1,0 +1,11 @@
+@font-face {
+  font-family: "Notalot35";
+  src: url("fonts/Notalot35.woff2") format("woff2"),
+    url("fonts/Notalot35.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Nunito";
+  src: url("fonts/Nunito-Bold.woff2") format("woff2"),
+    url("fonts/Nunito-Bold.woff") format("woff");
+}
