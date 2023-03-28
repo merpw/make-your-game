@@ -2,8 +2,8 @@ import Hero from "./hero.js"
 import { Level } from "./levels"
 import Sheep from "./sheep.js"
 import Cell, {
-  CellCode,
   CELL_SIZE,
+  CellCode,
   NeighbourCells,
   PORTAL_EXIT_TIME,
 } from "./cell.js"
@@ -203,9 +203,14 @@ export class Board {
   }
 
   public over(isWin = false) {
-    this.isPaused = true
     this.isOver = true
+
     this.timer.stop()
+    this.eventTimer?.stop()
+    this.hero.stopTimer()
+    this.cells.flat().forEach((cell) => cell.stopTimer())
+    this.sheepStorage.all.forEach((sheep) => sheep.stopTimer())
+
     if (isWin) {
       this.score =
         this.score +
@@ -216,10 +221,10 @@ export class Board {
     document.getElementById("game")?.classList.add(isWin ? "win" : "over")
   }
 
-  private isOver = false
+  public isOver = false
 
   public render(frameTimeDiff: number, time: number) {
-    if (this.isPaused) return
+    if (this.isPaused || this.isOver) return
     if (this.hero.speedX !== 0 || this.hero.speedY !== 0) {
       this.centerCamera()
     }

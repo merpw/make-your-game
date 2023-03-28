@@ -53,47 +53,53 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
   if (event.repeat) return
   const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key
 
-  if (currentBoard.isPaused) {
-    if (key === CONTROLS.Restart) {
-      restartLevel()
+  if (!currentBoard.isOver && !currentBoard.isPaused) {
+    // Game is running
+    if (MoveInputState.has(key)) {
+      MoveInputState.set(key, true)
+      currentBoard.hero.way = getWay()
+      return
+    }
+    if (key === CONTROLS.PlaceFungi) {
+      currentBoard.hero.placeFungi()
+      return
+    }
+    if (key === CONTROLS.TerminateFungi) {
+      currentBoard.hero.terminateFungi()
       return
     }
     if (CONTROLS.Pause.includes(key)) {
-      currentBoard.isPaused = false
+      currentBoard.isPaused = true
+      resetInputState()
       return
     }
+    return
+  }
+
+  if (key === CONTROLS.Restart) {
+    restartLevel()
+    return
+  }
+
+  if (currentBoard.isPaused && CONTROLS.Pause.includes(key)) {
+    currentBoard.isPaused = false
+    return
+  }
+
+  const activeUI = activeUIManager()
+  if (activeUI) {
     if (key === "Enter") {
-      activeUIManager()?.clickActiveButton()
+      activeUI.clickActiveButton()
       return
     }
     if (CONTROLS.move.Up.includes(key) || CONTROLS.move.Left.includes(key)) {
-      activeUIManager()?.selectPreviousButton()
+      activeUI.selectPreviousButton()
       return
     }
     if (CONTROLS.move.Down.includes(key) || CONTROLS.move.Right.includes(key)) {
-      activeUIManager()?.selectNextButton()
+      activeUI.selectNextButton()
       return
     }
-    return
-  }
-
-  if (CONTROLS.Pause.includes(key)) {
-    currentBoard.isPaused = true
-    resetInputState()
-    return
-  }
-
-  if (MoveInputState.has(key)) {
-    MoveInputState.set(key, true)
-    currentBoard.hero.way = getWay()
-    return
-  }
-  if (key === CONTROLS.PlaceFungi) {
-    currentBoard.hero.placeFungi()
-    return
-  }
-  if (key === CONTROLS.TerminateFungi) {
-    currentBoard.hero.terminateFungi()
     return
   }
 })
