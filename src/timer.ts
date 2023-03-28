@@ -29,7 +29,7 @@ export default class Timer {
 
   public stop() {
     if (this.timer) {
-      clearTimeout(this.timer)
+      this.isInterval ? clearInterval(this.timer) : clearTimeout(this.timer)
       this.timeout = 0
       this.timer = null
     }
@@ -49,7 +49,7 @@ export default class Timer {
       callback()
 
       if (isInterval) {
-        if (this.timeout !== timeout) {
+        if (this.timeout > 0 && this.timeout !== timeout) {
           // interval was paused, and replaced with setTimeout for one iteration
           // we should create interval once again
           this.timeout = timeout
@@ -62,7 +62,6 @@ export default class Timer {
     this.timeout = timeout
     this.startTime = Date.now()
 
-    this.isPaused = true
     isInterval
       ? (this.timer = setInterval(this._callback, timeout))
       : (this.timer = setTimeout(this._callback, timeout))
