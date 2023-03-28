@@ -33,7 +33,6 @@ const getWay = () => ({
     right: CONTROLS.move.Right.some((key) => MoveInputState.get(key)),
 });
 window.addEventListener("keydown", (event) => {
-    var _a, _b, _c;
     if (!currentBoard) {
         if (event.key === "Enter") {
             startGameFirstTime();
@@ -43,45 +42,50 @@ window.addEventListener("keydown", (event) => {
     if (event.repeat)
         return;
     const key = event.key.match(/^[A-Z]$/) ? event.key.toLowerCase() : event.key;
-    if (currentBoard.isPaused) {
-        if (key === CONTROLS.Restart) {
-            restartLevel();
+    if (!currentBoard.isOver && !currentBoard.isPaused) {
+        // Game is running
+        if (MoveInputState.has(key)) {
+            MoveInputState.set(key, true);
+            currentBoard.hero.way = getWay();
+            return;
+        }
+        if (key === CONTROLS.PlaceFungi) {
+            currentBoard.hero.placeFungi();
+            return;
+        }
+        if (key === CONTROLS.TerminateFungi) {
+            currentBoard.hero.terminateFungi();
             return;
         }
         if (CONTROLS.Pause.includes(key)) {
-            currentBoard.isPaused = false;
+            currentBoard.isPaused = true;
+            resetInputState();
             return;
         }
+        return;
+    }
+    if (key === CONTROLS.Restart) {
+        restartLevel();
+        return;
+    }
+    if (currentBoard.isPaused && CONTROLS.Pause.includes(key)) {
+        currentBoard.isPaused = false;
+        return;
+    }
+    const activeUI = activeUIManager();
+    if (activeUI) {
         if (key === "Enter") {
-            (_a = activeUIManager()) === null || _a === void 0 ? void 0 : _a.clickActiveButton();
+            activeUI.clickActiveButton();
             return;
         }
         if (CONTROLS.move.Up.includes(key) || CONTROLS.move.Left.includes(key)) {
-            (_b = activeUIManager()) === null || _b === void 0 ? void 0 : _b.selectPreviousButton();
+            activeUI.selectPreviousButton();
             return;
         }
         if (CONTROLS.move.Down.includes(key) || CONTROLS.move.Right.includes(key)) {
-            (_c = activeUIManager()) === null || _c === void 0 ? void 0 : _c.selectNextButton();
+            activeUI.selectNextButton();
             return;
         }
-        return;
-    }
-    if (CONTROLS.Pause.includes(key)) {
-        currentBoard.isPaused = true;
-        resetInputState();
-        return;
-    }
-    if (MoveInputState.has(key)) {
-        MoveInputState.set(key, true);
-        currentBoard.hero.way = getWay();
-        return;
-    }
-    if (key === CONTROLS.PlaceFungi) {
-        currentBoard.hero.placeFungi();
-        return;
-    }
-    if (key === CONTROLS.TerminateFungi) {
-        currentBoard.hero.terminateFungi();
         return;
     }
 });

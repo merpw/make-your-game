@@ -105,21 +105,24 @@ export class Board {
         this.element.setAttribute("viewBox", `${this.cameraX.toFixed(2)} ${this.cameraY.toFixed(2)} ${this.cameraWidth * CELL_SIZE} ${this.cameraHeight * CELL_SIZE}`);
     }
     over(isWin = false) {
-        var _a, _b;
-        this.isPaused = true;
+        var _a, _b, _c;
         this.isOver = true;
         this.timer.stop();
+        (_a = this.eventTimer) === null || _a === void 0 ? void 0 : _a.stop();
+        this.hero.stopTimer();
+        this.cells.flat().forEach((cell) => cell.stopTimer());
+        this.sheepStorage.all.forEach((sheep) => sheep.stopTimer());
         if (isWin) {
             this.score =
                 this.score +
                     this.time * SCORES.timeBonus +
                     this.hero.lives * SCORES.livesBonus;
         }
-        (_a = document.getElementById("game")) === null || _a === void 0 ? void 0 : _a.classList.remove("paused");
-        (_b = document.getElementById("game")) === null || _b === void 0 ? void 0 : _b.classList.add(isWin ? "win" : "over");
+        (_b = document.getElementById("game")) === null || _b === void 0 ? void 0 : _b.classList.remove("paused");
+        (_c = document.getElementById("game")) === null || _c === void 0 ? void 0 : _c.classList.add(isWin ? "win" : "over");
     }
     render(frameTimeDiff, time) {
-        if (this.isPaused)
+        if (this.isPaused || this.isOver)
             return;
         if (this.hero.speedX !== 0 || this.hero.speedY !== 0) {
             this.centerCamera();

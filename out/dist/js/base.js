@@ -21,7 +21,7 @@ export class Animated {
         (_a = this.timer) === null || _a === void 0 ? void 0 : _a.stop();
         this.timer = new Timer(callback, timeout);
     }
-    cancelTimer() {
+    stopTimer() {
         var _a;
         (_a = this.timer) === null || _a === void 0 ? void 0 : _a.stop();
         this.timer = null;

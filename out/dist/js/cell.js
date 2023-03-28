@@ -16,7 +16,7 @@ export default class Cell extends Animated {
     set type(value) {
         var _a, _b, _c, _d, _e, _f, _g;
         this._type = value;
-        this.cancelTimer();
+        this.stopTimer();
         if (value === "empty") {
             if (!this.secret) {
                 this.setAsset("none");
