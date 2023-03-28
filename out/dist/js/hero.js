@@ -160,10 +160,27 @@ export default class Hero extends Creature {
         this.x = newX;
         this.y = newY;
     }
+    placeFungi() {
+        if (this.fungi.length == MAX_FUNGI ||
+            this.cell.type !== "empty" ||
+            this.cell.secret)
+            return false;
+        this.cell.type = "fungus";
+        this.fungi.push({
+            cell: this.cell,
+            neighbourCells: {
+                top: this.neighbourCells.top,
+                bottom: this.neighbourCells.bottom,
+                right: this.neighbourCells.right,
+                left: this.neighbourCells.left,
+            },
+        });
+        return true;
+    }
     terminateFungi() {
         const fungus = this.fungi.shift();
         if (!fungus)
-            return;
+            return false;
         const { cell, neighbourCells } = fungus;
         cell.type = "cloud";
         [
@@ -175,6 +192,7 @@ export default class Hero extends Creature {
             if ((cell === null || cell === void 0 ? void 0 : cell.type) === "empty")
                 cell.type = "cloud";
         });
+        return true;
     }
     /** Spawn the hero in the given cell */
     spawn(cell) {
@@ -209,22 +227,6 @@ export default class Hero extends Creature {
         this.speedY = 0;
         this._isSick = false;
         this.fungi = [];
-        this.placeFungi = () => {
-            if (this.fungi.length == MAX_FUNGI ||
-                this.cell.type !== "empty" ||
-                this.cell.secret)
-                return;
-            this.cell.type = "fungus";
-            this.fungi.push({
-                cell: this.cell,
-                neighbourCells: {
-                    top: this.neighbourCells.top,
-                    bottom: this.neighbourCells.bottom,
-                    right: this.neighbourCells.right,
-                    left: this.neighbourCells.left,
-                },
-            });
-        };
         // x and y will be set in spawn()
         this.lives = LIVES;
         this.spawn(cell);

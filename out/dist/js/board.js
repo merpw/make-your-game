@@ -261,7 +261,6 @@ export class Board {
             .slice(0, count);
     }
     constructor(level) {
-        var _a;
         this.POTION_EFFECTS = [
             () => (this.hero.isLucky = true),
             () => (this.hero.isSick = true),
@@ -331,8 +330,7 @@ export class Board {
         this.width = this.cells[0].length * CELL_SIZE;
         this.element = svg;
         this.cameraHeight = CAMERA_HEIGHT;
-        // TODO: maybe improve mobile device detection
-        this.cameraWidth = Math.floor((((_a = screen.orientation) === null || _a === void 0 ? void 0 : _a.type) === "portrait-primary"
+        this.cameraWidth = Math.floor((window.innerWidth < 600
             ? MOBILE_CAMERA_ASPECT_RATIO
             : CAMERA_ASPECT_RATIO) * this.cameraHeight);
         this.centerCamera();

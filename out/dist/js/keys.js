@@ -112,7 +112,6 @@ if (startGameButton) {
 const touchControls = document.getElementById("touch-controls");
 const buttons = document.querySelectorAll("#touch-controls button");
 if (touchControls && touchControls.style.display !== "none") {
-    touchControls.addEventListener("selectstart", (e) => e.preventDefault());
     buttons.forEach((button) => {
         if (MoveInputState.has(button.id)) {
             button.addEventListener("pointerdown", (e) => button.releasePointerCapture(e.pointerId)
@@ -134,17 +133,19 @@ if (touchControls && touchControls.style.display !== "none") {
         }
         if (button.id === "touchPlaceFungi") {
             button.addEventListener("pointerdown", () => {
+                var _a;
                 if (!currentBoard || currentBoard.isPaused)
                     return;
-                currentBoard.hero.placeFungi();
+                currentBoard.hero.placeFungi() && ((_a = navigator.vibrate) === null || _a === void 0 ? void 0 : _a.call(navigator, 5));
             });
             return;
         }
         if (button.id === "touchTerminateFungi") {
             button.addEventListener("pointerdown", () => {
+                var _a;
                 if (!currentBoard || currentBoard.isPaused)
                     return;
-                currentBoard === null || currentBoard === void 0 ? void 0 : currentBoard.hero.terminateFungi();
+                (currentBoard === null || currentBoard === void 0 ? void 0 : currentBoard.hero.terminateFungi()) && ((_a = navigator.vibrate) === null || _a === void 0 ? void 0 : _a.call(navigator, 90));
             });
         }
     });
